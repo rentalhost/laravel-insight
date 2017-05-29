@@ -2,6 +2,8 @@ package net.rentalhost.idea.api;
 
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.jetbrains.php.lang.psi.elements.ClassReference;
+import com.jetbrains.php.lang.psi.elements.Field;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
 import org.junit.Assert;
 
@@ -53,6 +55,30 @@ public class PhpClassUtilTest extends FixtureSuite {
         // CC_UnresolvableParentClass is unresolvable, then we can't try search after that (case #2).
         Assert.assertTrue(PhpClassUtil.hasSuperOfType(fileClasses.get(3), "\\CC_UnresolvableParentClass"));
         Assert.assertFalse(PhpClassUtil.hasSuperOfType(fileClasses.get(3), "\\CC_ThereIsNothingAfterUnresolvableParentClass"));
+    }
+
+    public void testGetSuperReference() {
+        final List<PhpClass> fileClasses = getPhpClasses();
+
+        // FirstClass have no super class.
+        Assert.assertNull(PhpClassUtil.getSuperReference(fileClasses.get(0)));
+
+        // FirstClass is the super class of SecondClass.
+        // Checking just one level, because is not a recursive method.
+        final ClassReference superReference = PhpClassUtil.getSuperReference(fileClasses.get(1));
+        Assert.assertNotNull(superReference);
+        Assert.assertEquals("\\FirstClass", superReference.getFQN());
+    }
+
+    public void testGetSuper() {
+        final List<PhpClass> fileClasses = getPhpClasses();
+
+        // FirstClass have no super class.
+        Assert.assertNull(PhpClassUtil.getSuper(fileClasses.get(0)));
+
+        // FirstClass is the super class of SecondClass.
+        // Checking just one level, because is not a recursive method.
+        Assert.assertEquals(fileClasses.get(0), PhpClassUtil.getSuper(fileClasses.get(1)));
     }
 
     @NotNull

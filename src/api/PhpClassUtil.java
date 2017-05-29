@@ -1,10 +1,14 @@
 package net.rentalhost.idea.api;
 
 import com.jetbrains.php.lang.psi.elements.ClassReference;
+import com.jetbrains.php.lang.psi.elements.Field;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+
+import org.jetbrains.annotations.Nullable;
 
 public enum PhpClassUtil {
     ;
@@ -16,6 +20,7 @@ public enum PhpClassUtil {
         return findSuperOfType(classObject, superNameExpected) != null;
     }
 
+    @Nullable
     public static ClassReference findSuperOfType(
         final PhpClass classObject,
         final String superNameExpected
@@ -23,13 +28,11 @@ public enum PhpClassUtil {
         PhpClass classCurrent = classObject;
 
         while (true) {
-            final List<ClassReference> classExtendsList = classCurrent.getExtendsList().getReferenceElements();
+            final ClassReference classSuperReference = getSuperReference(classCurrent);
 
-            if (classExtendsList.isEmpty()) {
+            if (classSuperReference == null) {
                 return null;
             }
-
-            final ClassReference classSuperReference = classExtendsList.get(0);
 
             if (Objects.equals(classSuperReference.getFQN(), superNameExpected)) {
                 return classSuperReference;
@@ -43,5 +46,27 @@ public enum PhpClassUtil {
 
             classCurrent = classSuperResolved;
         }
+    }
+
+    @Nullable
+    public static ClassReference getSuperReference(final PhpClass phpClass) {
+        final List<ClassReference> classExtendsList = phpClass.getExtendsList().getReferenceElements();
+
+        if (classExtendsList.isEmpty()) {
+            return null;
+        }
+
+        return classExtendsList.get(0);
+    }
+
+    @Nullable
+    public static PhpClass getSuper(final PhpClass phpClass) {
+        final ClassReference superReference = getSuperReference(phpClass);
+
+        if (superReference == null) {
+            return null;
+        }
+
+        return (PhpClass) superReference.resolve();
     }
 }
