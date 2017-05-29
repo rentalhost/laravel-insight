@@ -78,9 +78,7 @@ public class PhpClassUtilTest extends FixtureSuite {
 
         // FirstClass is the super class of SecondClass.
         // Checking just one level, because is not a recursive method.
-        final ClassReference superReference = PhpClassUtil.getSuperReference(fileClasses.get(1));
-        Assert.assertNotNull(superReference);
-        Assert.assertEquals("\\FirstClass", superReference.getFQN());
+        Assert.assertEquals("\\FirstClass", valueOf(PhpClassUtil.getSuperReference(fileClasses.get(1))).getFQN());
     }
 
     public void testGetSuper() {
@@ -110,52 +108,29 @@ public class PhpClassUtilTest extends FixtureSuite {
         Assert.assertNull(PhpClassUtil.findPropertyDeclaration(classThirdClass, "propertyInexistent"));
 
         // FirstClass have only $propertyFromFirst.
-        final Field propertyFromFirst = PhpClassUtil.findPropertyDeclaration(classFirstClass, "propertyFromFirst");
-        Assert.assertNotNull(propertyFromFirst);
-        Assert.assertEquals(classFirstClass, propertyFromFirst.getContainingClass());
+        Assert.assertEquals(classFirstClass, valueOf(PhpClassUtil.findPropertyDeclaration(classFirstClass, "propertyFromFirst")).getContainingClass());
 
         // SecondClass have both $propertyFromFirst (from #1) and $propertyFromSecond.
-        final Field propertyFromFirst1 = PhpClassUtil.findPropertyDeclaration(classSecondClass, "propertyFromFirst");
-        Assert.assertNotNull(propertyFromFirst1);
-        Assert.assertEquals(classFirstClass, propertyFromFirst1.getContainingClass());
-        final Field propertyFromSecond = PhpClassUtil.findPropertyDeclaration(classSecondClass, "propertyFromSecond");
-        Assert.assertNotNull(propertyFromSecond);
-        Assert.assertEquals(classSecondClass, propertyFromSecond.getContainingClass());
+        Assert.assertEquals(classFirstClass, valueOf(PhpClassUtil.findPropertyDeclaration(classSecondClass, "propertyFromFirst")).getContainingClass());
+        Assert.assertEquals(classSecondClass, valueOf(PhpClassUtil.findPropertyDeclaration(classSecondClass, "propertyFromSecond")).getContainingClass());
 
         // SecondClass have all $propertyFromFirst (from #1) and $propertyFromSecond (from #2) and $propertyFromThird.
-        final Field propertyFromFirst2 = PhpClassUtil.findPropertyDeclaration(classThirdClass, "propertyFromFirst");
-        Assert.assertNotNull(propertyFromFirst2);
-        Assert.assertEquals(classFirstClass, propertyFromFirst2.getContainingClass());
-        final Field propertyFromSecond1 = PhpClassUtil.findPropertyDeclaration(classThirdClass, "propertyFromSecond");
-        Assert.assertNotNull(propertyFromSecond1);
-        Assert.assertEquals(classSecondClass, propertyFromSecond1.getContainingClass());
-        final Field propertyFromThird = PhpClassUtil.findPropertyDeclaration(classThirdClass, "propertyFromThird");
-        Assert.assertNotNull(propertyFromThird);
-        Assert.assertEquals(classThirdClass, propertyFromThird.getContainingClass());
+        Assert.assertEquals(classFirstClass, valueOf(PhpClassUtil.findPropertyDeclaration(classThirdClass, "propertyFromFirst")).getContainingClass());
+        Assert.assertEquals(classSecondClass, valueOf(PhpClassUtil.findPropertyDeclaration(classThirdClass, "propertyFromSecond")).getContainingClass());
+        Assert.assertEquals(classThirdClass, valueOf(PhpClassUtil.findPropertyDeclaration(classThirdClass, "propertyFromThird")).getContainingClass());
 
         final PhpClass traitFirstTrait  = fileClasses.get(0);
         final PhpClass traitSecondTrait = fileClasses.get(1);
 
         // $firstPropertyOnTrait should be detected from FirstClass, SecondClass or ThirdClass.
-        final Field propertyFromFirstTrait = PhpClassUtil.findPropertyDeclaration(classFirstClass, "propertyFromFirstTrait");
-        Assert.assertNotNull(propertyFromFirstTrait);
-        Assert.assertEquals(traitFirstTrait, propertyFromFirstTrait.getContainingClass());
-        final Field propertyFromFirstTrait1 = PhpClassUtil.findPropertyDeclaration(classSecondClass, "propertyFromFirstTrait");
-        Assert.assertNotNull(propertyFromFirstTrait1);
-        Assert.assertEquals(traitFirstTrait, propertyFromFirstTrait1.getContainingClass());
-        final Field propertyFromFirstTrait2 = PhpClassUtil.findPropertyDeclaration(classThirdClass, "propertyFromFirstTrait");
-        Assert.assertNotNull(propertyFromFirstTrait2);
-        Assert.assertEquals(traitFirstTrait, propertyFromFirstTrait2.getContainingClass());
+        Assert.assertEquals(traitFirstTrait, valueOf(PhpClassUtil.findPropertyDeclaration(classFirstClass, "propertyFromFirstTrait")).getContainingClass());
+        Assert.assertEquals(traitFirstTrait, valueOf(PhpClassUtil.findPropertyDeclaration(classSecondClass, "propertyFromFirstTrait")).getContainingClass());
+        Assert.assertEquals(traitFirstTrait, valueOf(PhpClassUtil.findPropertyDeclaration(classThirdClass, "propertyFromFirstTrait")).getContainingClass());
 
         // $secondPropertyOnTrait should be detected from SecondClass or ThirdClass, but not at classFirstClass.
-        final Field propertyFromSecondTrait = PhpClassUtil.findPropertyDeclaration(classFirstClass, "propertyFromSecondTrait");
-        Assert.assertNull(propertyFromSecondTrait);
-        final Field propertyFromSecondTrait1 = PhpClassUtil.findPropertyDeclaration(classSecondClass, "propertyFromSecondTrait");
-        Assert.assertNotNull(propertyFromSecondTrait1);
-        Assert.assertEquals(traitSecondTrait, propertyFromSecondTrait1.getContainingClass());
-        final Field propertyFromSecondTrait2 = PhpClassUtil.findPropertyDeclaration(classThirdClass, "propertyFromSecondTrait");
-        Assert.assertNotNull(propertyFromSecondTrait2);
-        Assert.assertEquals(traitSecondTrait, propertyFromSecondTrait2.getContainingClass());
+        Assert.assertNull(PhpClassUtil.findPropertyDeclaration(classFirstClass, "propertyFromSecondTrait"));
+        Assert.assertEquals(traitSecondTrait, valueOf(PhpClassUtil.findPropertyDeclaration(classSecondClass, "propertyFromSecondTrait")).getContainingClass());
+        Assert.assertEquals(traitSecondTrait, valueOf(PhpClassUtil.findPropertyDeclaration(classThirdClass, "propertyFromSecondTrait")).getContainingClass());
     }
 
     public void testFindMethodDeclaration() {
@@ -174,74 +149,40 @@ public class PhpClassUtilTest extends FixtureSuite {
         Assert.assertNull(PhpClassUtil.findMethodDeclaration(classThirdClass, "methodInexistent"));
 
         // FirstClass have only methodFromFirstClass().
-        final Method methodFromFirstClass = PhpClassUtil.findMethodDeclaration(classFirstClass, "methodFromFirstClass");
-        Assert.assertNotNull(methodFromFirstClass);
-        Assert.assertEquals(classFirstClass, methodFromFirstClass.getContainingClass());
+        Assert.assertEquals(classFirstClass, valueOf(PhpClassUtil.findMethodDeclaration(classFirstClass, "methodFromFirstClass")).getContainingClass());
 
         // SecondClass have both methodFromFirstClass() (from #1) and methodFromSecondClass().
-        final Method methodFromFirstClass1 = PhpClassUtil.findMethodDeclaration(classSecondClass, "methodFromFirstClass");
-        Assert.assertNotNull(methodFromFirstClass1);
-        Assert.assertEquals(classFirstClass, methodFromFirstClass1.getContainingClass());
-        final Method methodFromSecondClass = PhpClassUtil.findMethodDeclaration(classSecondClass, "methodFromSecondClass");
-        Assert.assertNotNull(methodFromSecondClass);
-        Assert.assertEquals(classSecondClass, methodFromSecondClass.getContainingClass());
+        Assert.assertEquals(classFirstClass, valueOf(PhpClassUtil.findMethodDeclaration(classSecondClass, "methodFromFirstClass")).getContainingClass());
+        Assert.assertEquals(classSecondClass, valueOf(PhpClassUtil.findMethodDeclaration(classSecondClass, "methodFromSecondClass")).getContainingClass());
 
         // SecondClass have all methodFromFirstClass() (from #1) and methodFromSecondClass() (from #2) and methodFromThirdClass().
-        final Method methodFromFirstClass2 = PhpClassUtil.findMethodDeclaration(classThirdClass, "methodFromFirstClass");
-        Assert.assertNotNull(methodFromFirstClass2);
-        Assert.assertEquals(classFirstClass, methodFromFirstClass2.getContainingClass());
-        final Method methodFromSecondClass1 = PhpClassUtil.findMethodDeclaration(classThirdClass, "methodFromSecondClass");
-        Assert.assertNotNull(methodFromSecondClass1);
-        Assert.assertEquals(classSecondClass, methodFromSecondClass1.getContainingClass());
-        final Method methodFromThirdClass = PhpClassUtil.findMethodDeclaration(classThirdClass, "methodFromThirdClass");
-        Assert.assertNotNull(methodFromThirdClass);
-        Assert.assertEquals(classThirdClass, methodFromThirdClass.getContainingClass());
+        Assert.assertEquals(classFirstClass, valueOf(PhpClassUtil.findMethodDeclaration(classThirdClass, "methodFromFirstClass")).getContainingClass());
+        Assert.assertEquals(classSecondClass, valueOf(PhpClassUtil.findMethodDeclaration(classThirdClass, "methodFromSecondClass")).getContainingClass());
+        Assert.assertEquals(classThirdClass, valueOf(PhpClassUtil.findMethodDeclaration(classThirdClass, "methodFromThirdClass")).getContainingClass());
 
         final PhpClass traitFirstTrait  = fileClasses.get(0);
         final PhpClass traitSecondTrait = fileClasses.get(1);
 
         // methodFromFirstTrait() should be detected from FirstClass, SecondClass or ThirdClass.
-        final Method methodFromFirstTrait = PhpClassUtil.findMethodDeclaration(classFirstClass, "methodFromFirstTrait");
-        Assert.assertNotNull(methodFromFirstTrait);
-        Assert.assertEquals(traitFirstTrait, methodFromFirstTrait.getContainingClass());
-        final Method methodFromFirstTrait1 = PhpClassUtil.findMethodDeclaration(classSecondClass, "methodFromFirstTrait");
-        Assert.assertNotNull(methodFromFirstTrait1);
-        Assert.assertEquals(traitFirstTrait, methodFromFirstTrait1.getContainingClass());
-        final Method methodFromFirstTrait2 = PhpClassUtil.findMethodDeclaration(classThirdClass, "methodFromFirstTrait");
-        Assert.assertNotNull(methodFromFirstTrait2);
-        Assert.assertEquals(traitFirstTrait, methodFromFirstTrait2.getContainingClass());
+        Assert.assertEquals(traitFirstTrait, valueOf(PhpClassUtil.findMethodDeclaration(classFirstClass, "methodFromFirstTrait")).getContainingClass());
+        Assert.assertEquals(traitFirstTrait, valueOf(PhpClassUtil.findMethodDeclaration(classSecondClass, "methodFromFirstTrait")).getContainingClass());
+        Assert.assertEquals(traitFirstTrait, valueOf(PhpClassUtil.findMethodDeclaration(classThirdClass, "methodFromFirstTrait")).getContainingClass());
 
         // methodFromSecondTrait() should be detected from SecondClass or ThirdClass, but not at classFirstClass.
-        final Method methodFromSecondTrait = PhpClassUtil.findMethodDeclaration(classFirstClass, "methodFromSecondTrait");
-        Assert.assertNull(methodFromSecondTrait);
-        final Method methodFromSecondTrait1 = PhpClassUtil.findMethodDeclaration(classSecondClass, "methodFromSecondTrait");
-        Assert.assertNotNull(methodFromSecondTrait1);
-        Assert.assertEquals(traitSecondTrait, methodFromSecondTrait1.getContainingClass());
-        final Method methodFromSecondTrait2 = PhpClassUtil.findMethodDeclaration(classThirdClass, "methodFromSecondTrait");
-        Assert.assertNotNull(methodFromSecondTrait2);
-        Assert.assertEquals(traitSecondTrait, methodFromSecondTrait2.getContainingClass());
+        Assert.assertNull(PhpClassUtil.findMethodDeclaration(classFirstClass, "methodFromSecondTrait"));
+        Assert.assertEquals(traitSecondTrait, valueOf(PhpClassUtil.findMethodDeclaration(classSecondClass, "methodFromSecondTrait")).getContainingClass());
+        Assert.assertEquals(traitSecondTrait, valueOf(PhpClassUtil.findMethodDeclaration(classThirdClass, "methodFromSecondTrait")).getContainingClass());
 
         final PhpClass classTraitMethodAliased = fileClasses.get(5);
 
-        final Method aliasedMethod = PhpClassUtil.findMethodDeclaration(classTraitMethodAliased, "aliasedMethod");
-        Assert.assertNotNull(aliasedMethod);
-        Assert.assertEquals(traitFirstTrait, aliasedMethod.getContainingClass());
+        Assert.assertEquals(traitFirstTrait, valueOf(PhpClassUtil.findMethodDeclaration(classTraitMethodAliased, "aliasedMethod")).getContainingClass());
 
         final PhpClass classTraitMethodWithInsteadofClass = fileClasses.get(6);
 
-        final Method methodFromBothTraits = PhpClassUtil.findMethodDeclaration(classTraitMethodWithInsteadofClass, "methodFromBothTraits");
-        Assert.assertNotNull(methodFromBothTraits);
-        Assert.assertEquals(traitSecondTrait, methodFromBothTraits.getContainingClass());
-        final Method secondMethodFromBothTraits = PhpClassUtil.findMethodDeclaration(classTraitMethodWithInsteadofClass, "secondMethodFromBothTraits");
-        Assert.assertNotNull(secondMethodFromBothTraits);
-        Assert.assertEquals(traitSecondTrait, secondMethodFromBothTraits.getContainingClass());
-
-        final Method recoveredMethodFromBothTraits = PhpClassUtil.findMethodDeclaration(classTraitMethodWithInsteadofClass, "recoveredMethodFromBothTraits");
-        Assert.assertNotNull(recoveredMethodFromBothTraits);
-        Assert.assertEquals(traitFirstTrait, recoveredMethodFromBothTraits.getContainingClass());
-
-        final Method ccUnresolvedReference = PhpClassUtil.findMethodDeclaration(classTraitMethodWithInsteadofClass, "CC_unresolvedReference");
-        Assert.assertNull(ccUnresolvedReference);
+        Assert.assertEquals(traitSecondTrait, valueOf(PhpClassUtil.findMethodDeclaration(classTraitMethodWithInsteadofClass, "methodFromBothTraits")).getContainingClass());
+        Assert.assertEquals(traitSecondTrait, valueOf(PhpClassUtil.findMethodDeclaration(classTraitMethodWithInsteadofClass, "secondMethodFromBothTraits")).getContainingClass());
+        Assert.assertEquals(traitFirstTrait, valueOf(PhpClassUtil.findMethodDeclaration(classTraitMethodWithInsteadofClass, "recoveredMethodFromBothTraits")).getContainingClass());
+        Assert.assertNull(PhpClassUtil.findMethodDeclaration(classTraitMethodWithInsteadofClass, "CC_unresolvedReference"));
     }
 
     @NotNull
