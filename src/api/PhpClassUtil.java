@@ -127,4 +127,30 @@ public enum PhpClassUtil {
             classCurrent = classSuperResolved;
         }
     }
+
+    @Nullable
+    public static Method findMethodDeclaration(
+        final PhpClass classObject,
+        final String methodNameExpected
+    ) {
+        PhpClass classCurrent = classObject;
+
+        while (true) {
+            final Collection<Method> classMethods = classCurrent.getMethods();
+
+            for (final Method classMethod : classMethods) {
+                if (classMethod.getName().equals(methodNameExpected)) {
+                    return classMethod;
+                }
+            }
+
+            final PhpClass classSuperResolved = getSuper(classCurrent);
+
+            if (classSuperResolved == null) {
+                return null;
+            }
+
+            classCurrent = classSuperResolved;
+        }
+    }
 }
