@@ -81,6 +81,42 @@ public class PhpClassUtilTest extends FixtureSuite {
         Assert.assertEquals(fileClasses.get(0), PhpClassUtil.getSuper(fileClasses.get(1)));
     }
 
+    public void testFindPropertyDeclaration() {
+        final PsiFile        fileSample  = getResourceFile("api/PhpClassUtil.findDeclaration.php");
+        final List<PhpClass> fileClasses = new ArrayList<>(PsiTreeUtil.findChildrenOfType(fileSample, PhpClass.class));
+
+        Assert.assertEquals(3, fileClasses.size());
+
+        // Bogus assertions...
+        Assert.assertNull(PhpClassUtil.findPropertyDeclaration(fileClasses.get(0), "propertyInexistent"));
+        Assert.assertNull(PhpClassUtil.findPropertyDeclaration(fileClasses.get(1), "propertyInexistent"));
+        Assert.assertNull(PhpClassUtil.findPropertyDeclaration(fileClasses.get(2), "propertyInexistent"));
+
+        // FirstClass have only $propertyFromFirst.
+        final Field propertyFromFirst = PhpClassUtil.findPropertyDeclaration(fileClasses.get(0), "propertyFromFirst");
+        Assert.assertNotNull(propertyFromFirst);
+        Assert.assertEquals(fileClasses.get(0), propertyFromFirst.getContainingClass());
+
+        // SecondClass have both $propertyFromFirst (from #1) and $propertyFromSecond.
+        final Field propertyFromFirst1 = PhpClassUtil.findPropertyDeclaration(fileClasses.get(1), "propertyFromFirst");
+        Assert.assertNotNull(propertyFromFirst1);
+        Assert.assertEquals(fileClasses.get(0), propertyFromFirst1.getContainingClass());
+        final Field propertyFromSecond = PhpClassUtil.findPropertyDeclaration(fileClasses.get(1), "propertyFromSecond");
+        Assert.assertNotNull(propertyFromSecond);
+        Assert.assertEquals(fileClasses.get(1), propertyFromSecond.getContainingClass());
+
+        // SecondClass have all $propertyFromFirst (from #1) and $propertyFromSecond (from #2) and $propertyFromThird.
+        final Field propertyFromFirst2 = PhpClassUtil.findPropertyDeclaration(fileClasses.get(2), "propertyFromFirst");
+        Assert.assertNotNull(propertyFromFirst2);
+        Assert.assertEquals(fileClasses.get(0), propertyFromFirst2.getContainingClass());
+        final Field propertyFromSecond1 = PhpClassUtil.findPropertyDeclaration(fileClasses.get(2), "propertyFromSecond");
+        Assert.assertNotNull(propertyFromSecond1);
+        Assert.assertEquals(fileClasses.get(1), propertyFromSecond1.getContainingClass());
+        final Field propertyFromThird = PhpClassUtil.findPropertyDeclaration(fileClasses.get(2), "propertyFromThird");
+        Assert.assertNotNull(propertyFromThird);
+        Assert.assertEquals(fileClasses.get(2), propertyFromThird.getContainingClass());
+    }
+
     @NotNull
     private List<PhpClass> getPhpClasses() {
         final PsiFile        fileSample  = getResourceFile("api/PhpClassUtil.superClasses.php");
