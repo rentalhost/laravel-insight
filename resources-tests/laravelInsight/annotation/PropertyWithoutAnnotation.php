@@ -97,3 +97,16 @@ class EloquentDates_CreatedAndUpdatedAt extends Model
         <weak_warning descr="@property $updated_at was not annotated">'updated_at'</weak_warning> => 'DateTime',
     ];
 }
+
+class EloquentDates_CreatedAndUpdatedAt_WithConstants extends Model
+{
+    const CREATED_AT = 'created_at';
+    const UPDATED_AT = 'updated_at';
+
+    const CC_DATETIME = 'DateTime';
+
+    protected $dates = [
+        <weak_warning descr="@property $created_at was not annotated">self::CREATED_AT</weak_warning> => self::CC_DATETIME,
+        <weak_warning descr="@property $updated_at was not annotated">self::UPDATED_AT</weak_warning> => self::CC_DATETIME,
+    ];
+}

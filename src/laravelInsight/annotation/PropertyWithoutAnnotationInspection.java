@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import net.rentalhost.idea.api.PhpClassUtil;
 import net.rentalhost.idea.api.PhpDocCommentUtil;
+import net.rentalhost.idea.api.PhpExpressionUtil;
 import net.rentalhost.idea.laravelInsight.resources.LaravelClasses;
 
 public class PropertyWithoutAnnotationInspection extends PhpInspection {
@@ -45,8 +46,10 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
 
         @Override
         public void visitPhpField(final Field field) {
-            if (!Objects.equals(field.getName(), "casts") &&
-                !Objects.equals(field.getName(), "dates")) {
+            final String fieldName = field.getName();
+
+            if (!Objects.equals(fieldName, "casts") &&
+                !Objects.equals(fieldName, "dates")) {
                 return;
             }
 
@@ -72,19 +75,25 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
             final Iterable<ArrayHashElement> fieldHashes = ((ArrayCreationExpression) fieldValue).getHashElements();
 
             for (final ArrayHashElement fieldHash : fieldHashes) {
-                if (!(fieldHash.getValue() instanceof StringLiteralExpression)) {
+                final PhpPsiElement fieldHashValue = fieldHash.getValue();
+                assert fieldHashValue != null;
+
+                final PhpExpression fieldHashResolvedValue = PhpExpressionUtil.from((PhpExpression) fieldHashValue);
+
+                if (!(fieldHashResolvedValue instanceof StringLiteralExpression)) {
                     continue;
                 }
 
                 final PhpPsiElement hashKey = fieldHash.getKey();
-
                 assert hashKey != null;
 
-                if (!(hashKey instanceof StringLiteralExpression)) {
+                final PhpExpression hashKeyResolvedValue = PhpExpressionUtil.from((PhpExpression) hashKey);
+
+                if (!(hashKeyResolvedValue instanceof StringLiteralExpression)) {
                     continue;
                 }
 
-                final String hashKeyContents = ((StringLiteralExpression) hashKey).getContents();
+                final String hashKeyContents = ((StringLiteralExpression) hashKeyResolvedValue).getContents();
 
                 if (classDocComment == null) {
                     registerPropertyUndefined(hashKey, hashKeyContents);
