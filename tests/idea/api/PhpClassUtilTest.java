@@ -84,6 +84,16 @@ public class PhpClassUtilTest extends FixtureSuite {
         // FirstClassToTrait have both FirstTraitOfTrait and SecondTraitOfTrait.
         Assert.assertSame(traitFirstTraitOfTrait, valueOf(PhpClassUtil.findTraitOfType(classFirstClassToTrait, "\\FirstTraitOfTrait")).resolve());
         Assert.assertSame(traitSecondTraitOfTrait, valueOf(PhpClassUtil.findTraitOfType(classFirstClassToTrait, "\\SecondTraitOfTrait")).resolve());
+
+        final PsiFile        fileSample3  = getResourceFile("api/PhpClassUtil.namespacedTrait.php");
+        final List<PhpClass> fileClasses3 = new ArrayList<>(PsiTreeUtil.findChildrenOfType(fileSample3, PhpClass.class));
+
+        Assert.assertEquals(1, fileClasses3.size());
+
+        final PhpClass classTestClass = fileClasses3.get(0);
+
+        // Check if namespaced FQN is right.
+        Assert.assertEquals("\\Namespaced\\TraitClass", valueOf(PhpClassUtil.findTraitOfType(classTestClass, "\\Namespaced\\TraitClass")).getFQN());
     }
 
     public void testGetSuperReference() {
