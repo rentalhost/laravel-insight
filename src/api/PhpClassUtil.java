@@ -109,6 +109,18 @@ public enum PhpClassUtil {
     }
 
     @Nullable
+    public static PhpClass getTraitContainingClass(final PhpUse trait) {
+        if (trait.isTraitImport()) {
+            final PhpUseList useList = PhpUseImpl.getUseList(trait);
+            assert useList != null;
+
+            return (PhpClass) useList.getParent();
+        }
+
+        return null;
+    }
+
+    @Nullable
     public static Field findPropertyDeclaration(
         final PhpClass classObject,
         final String propertyNameExpected
