@@ -16,6 +16,10 @@ class FirstPropertyDeclarationClass
     use CC_UnresolvableTrait;
 
     public $propertyFromFirst;
+
+    public function methodFromFirstClass()
+    {
+    }
 }
 
 class SecondPropertyDeclarationClass extends FirstPropertyDeclarationClass
@@ -23,9 +27,17 @@ class SecondPropertyDeclarationClass extends FirstPropertyDeclarationClass
     use SecondPropertyOnTrait;
 
     public $propertyFromSecond;
+
+    public function methodFromSecondClass()
+    {
+    }
 }
 
 class ThirdPropertyDeclarationClass extends SecondPropertyDeclarationClass
 {
     public $propertyFromThird;
+
+    public function methodFromThirdClass()
+    {
+    }
 }

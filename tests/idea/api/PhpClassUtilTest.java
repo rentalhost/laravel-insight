@@ -3,10 +3,7 @@ package net.rentalhost.idea.api;
 import com.google.common.collect.Lists;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.jetbrains.php.lang.psi.elements.ClassReference;
-import com.jetbrains.php.lang.psi.elements.Field;
-import com.jetbrains.php.lang.psi.elements.PhpClass;
-import com.jetbrains.php.lang.psi.elements.PhpUse;
+import com.jetbrains.php.lang.psi.elements.*;
 import org.junit.Assert;
 
 import java.util.ArrayList;
@@ -139,7 +136,7 @@ public class PhpClassUtilTest extends FixtureSuite {
         final PhpClass traitFirstTrait  = fileClasses.get(0);
         final PhpClass traitSecondTrait = fileClasses.get(1);
 
-        // FirstPropertyOnTrait should be detected from classFirstClass, SecondClass or ThirdClass.
+        // $firstPropertyOnTrait should be detected from FirstClass, SecondClass or ThirdClass.
         final Field propertyFromFirstTrait = PhpClassUtil.findPropertyDeclaration(classFirstClass, "propertyFromFirstTrait");
         Assert.assertNotNull(propertyFromFirstTrait);
         Assert.assertEquals(traitFirstTrait, propertyFromFirstTrait.getContainingClass());
@@ -150,7 +147,7 @@ public class PhpClassUtilTest extends FixtureSuite {
         Assert.assertNotNull(propertyFromFirstTrait2);
         Assert.assertEquals(traitFirstTrait, propertyFromFirstTrait2.getContainingClass());
 
-        // SecondPropertyOnTrait should be detected from SecondClass or ThirdClass, but not at classFirstClass.
+        // $secondPropertyOnTrait should be detected from SecondClass or ThirdClass, but not at classFirstClass.
         final Field propertyFromSecondTrait = PhpClassUtil.findPropertyDeclaration(classFirstClass, "propertyFromSecondTrait");
         Assert.assertNull(propertyFromSecondTrait);
         final Field propertyFromSecondTrait1 = PhpClassUtil.findPropertyDeclaration(classSecondClass, "propertyFromSecondTrait");
@@ -159,6 +156,46 @@ public class PhpClassUtilTest extends FixtureSuite {
         final Field propertyFromSecondTrait2 = PhpClassUtil.findPropertyDeclaration(classThirdClass, "propertyFromSecondTrait");
         Assert.assertNotNull(propertyFromSecondTrait2);
         Assert.assertEquals(traitSecondTrait, propertyFromSecondTrait2.getContainingClass());
+    }
+
+    public void testFindMethodDeclaration() {
+        final PsiFile        fileSample  = getResourceFile("api/PhpClassUtil.findDeclaration.php");
+        final List<PhpClass> fileClasses = new ArrayList<>(PsiTreeUtil.findChildrenOfType(fileSample, PhpClass.class));
+
+        Assert.assertEquals(5, fileClasses.size());
+
+        // Bogus assertions...
+        final PhpClass classFirstClass  = fileClasses.get(2);
+        final PhpClass classSecondClass = fileClasses.get(3);
+        final PhpClass classThirdClass  = fileClasses.get(4);
+
+        Assert.assertNull(PhpClassUtil.findMethodDeclaration(classFirstClass, "methodInexistent"));
+        Assert.assertNull(PhpClassUtil.findMethodDeclaration(classSecondClass, "methodInexistent"));
+        Assert.assertNull(PhpClassUtil.findMethodDeclaration(classThirdClass, "methodInexistent"));
+
+        // FirstClass have only methodFromFirstClass().
+        final Method methodFromFirstClass = PhpClassUtil.findMethodDeclaration(classFirstClass, "methodFromFirstClass");
+        Assert.assertNotNull(methodFromFirstClass);
+        Assert.assertEquals(classFirstClass, methodFromFirstClass.getContainingClass());
+
+        // SecondClass have both methodFromFirstClass() (from #1) and methodFromSecondClass().
+        final Method methodFromFirstClass1 = PhpClassUtil.findMethodDeclaration(classSecondClass, "methodFromFirstClass");
+        Assert.assertNotNull(methodFromFirstClass1);
+        Assert.assertEquals(classFirstClass, methodFromFirstClass1.getContainingClass());
+        final Method methodFromSecondClass = PhpClassUtil.findMethodDeclaration(classSecondClass, "methodFromSecondClass");
+        Assert.assertNotNull(methodFromSecondClass);
+        Assert.assertEquals(classSecondClass, methodFromSecondClass.getContainingClass());
+
+        // SecondClass have all methodFromFirstClass() (from #1) and methodFromSecondClass() (from #2) and methodFromThirdClass().
+        final Method methodFromFirstClass2 = PhpClassUtil.findMethodDeclaration(classThirdClass, "methodFromFirstClass");
+        Assert.assertNotNull(methodFromFirstClass2);
+        Assert.assertEquals(classFirstClass, methodFromFirstClass2.getContainingClass());
+        final Method methodFromSecondClass1 = PhpClassUtil.findMethodDeclaration(classThirdClass, "methodFromSecondClass");
+        Assert.assertNotNull(methodFromSecondClass1);
+        Assert.assertEquals(classSecondClass, methodFromSecondClass1.getContainingClass());
+        final Method methodFromThirdClass = PhpClassUtil.findMethodDeclaration(classThirdClass, "methodFromThirdClass");
+        Assert.assertNotNull(methodFromThirdClass);
+        Assert.assertEquals(classThirdClass, methodFromThirdClass.getContainingClass());
     }
 
     @NotNull
