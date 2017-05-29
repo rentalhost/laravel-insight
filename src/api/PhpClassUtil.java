@@ -1,6 +1,7 @@
 package net.rentalhost.idea.api;
 
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.jetbrains.php.lang.psi.elements.*;
 
@@ -141,6 +142,16 @@ public enum PhpClassUtil {
             for (final Method classMethod : classMethods) {
                 if (classMethod.getName().equals(methodNameExpected)) {
                     return classMethod;
+                }
+            }
+
+            for (final PhpTraitUseRule classTraitRule : classCurrent.getTraitUseRules()) {
+                if (Objects.equals(classTraitRule.getAlias(), methodNameExpected)) {
+                    final MethodReference classTraitReference = classTraitRule.getOriginalReference();
+
+                    assert classTraitReference != null;
+
+                    return (Method) classTraitReference.resolve();
                 }
             }
 

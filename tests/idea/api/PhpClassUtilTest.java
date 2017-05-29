@@ -98,13 +98,13 @@ public class PhpClassUtilTest extends FixtureSuite {
         final PsiFile        fileSample  = getResourceFile("api/PhpClassUtil.findDeclaration.php");
         final List<PhpClass> fileClasses = new ArrayList<>(PsiTreeUtil.findChildrenOfType(fileSample, PhpClass.class));
 
-        Assert.assertEquals(5, fileClasses.size());
+        Assert.assertEquals(6, fileClasses.size());
 
-        // Bogus assertions...
         final PhpClass classFirstClass  = fileClasses.get(2);
         final PhpClass classSecondClass = fileClasses.get(3);
         final PhpClass classThirdClass  = fileClasses.get(4);
 
+        // Bogus assertions...
         Assert.assertNull(PhpClassUtil.findPropertyDeclaration(classFirstClass, "propertyInexistent"));
         Assert.assertNull(PhpClassUtil.findPropertyDeclaration(classSecondClass, "propertyInexistent"));
         Assert.assertNull(PhpClassUtil.findPropertyDeclaration(classThirdClass, "propertyInexistent"));
@@ -162,13 +162,13 @@ public class PhpClassUtilTest extends FixtureSuite {
         final PsiFile        fileSample  = getResourceFile("api/PhpClassUtil.findDeclaration.php");
         final List<PhpClass> fileClasses = new ArrayList<>(PsiTreeUtil.findChildrenOfType(fileSample, PhpClass.class));
 
-        Assert.assertEquals(5, fileClasses.size());
+        Assert.assertEquals(6, fileClasses.size());
 
-        // Bogus assertions...
         final PhpClass classFirstClass  = fileClasses.get(2);
         final PhpClass classSecondClass = fileClasses.get(3);
         final PhpClass classThirdClass  = fileClasses.get(4);
 
+        // Bogus assertions...
         Assert.assertNull(PhpClassUtil.findMethodDeclaration(classFirstClass, "methodInexistent"));
         Assert.assertNull(PhpClassUtil.findMethodDeclaration(classSecondClass, "methodInexistent"));
         Assert.assertNull(PhpClassUtil.findMethodDeclaration(classThirdClass, "methodInexistent"));
@@ -220,6 +220,12 @@ public class PhpClassUtilTest extends FixtureSuite {
         final Method methodFromSecondTrait2 = PhpClassUtil.findMethodDeclaration(classThirdClass, "methodFromSecondTrait");
         Assert.assertNotNull(methodFromSecondTrait2);
         Assert.assertEquals(traitSecondTrait, methodFromSecondTrait2.getContainingClass());
+
+        final PhpClass classTraitMethodAliased = fileClasses.get(5);
+
+        final Method aliasedMethod = PhpClassUtil.findMethodDeclaration(classTraitMethodAliased, "aliasedMethod");
+        Assert.assertNotNull(aliasedMethod);
+        Assert.assertEquals(traitFirstTrait, aliasedMethod.getContainingClass());
     }
 
     @NotNull
