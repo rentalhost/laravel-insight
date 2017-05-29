@@ -66,6 +66,12 @@ class EloquentCasts_ShouldIgnoresMultidimensionalKeys extends Model
     ];
 }
 
+class CC_EloquentCasts_CastsIsNotArray extends Model
+{
+    /** @type array */
+    protected $casts = 123;
+}
+
 class EloquentCasts_WithoutCastsField extends Model
 {
 }
