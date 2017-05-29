@@ -19,5 +19,13 @@
     ]]></change-notes>
 
     <extensions defaultExtensionNs="com.intellij">
+        <localInspection language="PHP"
+                         groupPath="PHP,Laravel Insight"
+                         groupName="Annotation"
+                         displayName="Property is referenced but is not annotated"
+                         enabledByDefault="true"
+                         level="WEAK WARNING"
+                         shortName="PropertyWithoutAnnotationInspection"
+                         implementationClass="net.rentalhost.idea.laravelInsight.annotation.PropertyWithoutAnnotationInspection" />
     </extensions>
 </idea-plugin>

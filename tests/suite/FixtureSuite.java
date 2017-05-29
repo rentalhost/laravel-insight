@@ -15,6 +15,10 @@ public class FixtureSuite extends CodeInsightFixtureTestCase {
         return Paths.get("resources-tests").toAbsolutePath().toString();
     }
 
+    protected FixtureChain inspectTool(final Class<? extends LocalInspectionTool> inspectionTool) {
+        return new FixtureChain(myFixture).addInspectionTool(inspectionTool);
+    }
+
     protected PsiFile getResourceFile(final String path) {
         final String      pathAbsolute = Paths.get("resources-tests/" + path).toAbsolutePath().toString();
         final VirtualFile virtualFile  = LocalFileSystem.getInstance().findFileByPath(pathAbsolute);
