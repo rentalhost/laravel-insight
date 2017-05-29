@@ -127,6 +127,12 @@ class EloquentChild_ShouldConsiderParentProperties extends EloquentBasePropertie
     ];
 }
 
+class Eloquent_TraitSoftDeletes_DirectUsageOfSoftDeletesTrait_ShouldDeclareDeletedAtProperty extends Model
+{
+    use <weak_warning descr="@property $deleted_at was not annotated">SoftDeletes</weak_warning>,
+        ShouldNotReportsThat;
+}
+
 trait SoftDeletesWrapper
 {
     use SoftDeletes;
@@ -134,7 +140,8 @@ trait SoftDeletesWrapper
 
 class Eloquent_TraitSoftDeletes_ShouldDeclareDeletedAtProperty extends Model
 {
-    use <weak_warning descr="@property $deleted_at was not annotated">SoftDeletesWrapper</weak_warning>;
+    use <weak_warning descr="@property $deleted_at was not annotated">SoftDeletesWrapper</weak_warning>,
+        ShouldNotReportsThat;
 }
 
 trait NotAnySoftDeletesTrait

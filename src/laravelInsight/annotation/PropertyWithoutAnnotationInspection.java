@@ -100,15 +100,32 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
         @Override
         public void visitPhpUse(final PhpUse expression) {
             if (expression.isTraitImport()) {
+                final PhpReference traitReferenceClass = expression.getTargetReference();
+                assert traitReferenceClass != null;
+
                 final PhpClass traitContainingClass = PhpClassUtil.getTraitContainingClass(expression);
                 assert traitContainingClass != null;
 
-                if ((PhpClassUtil.findSuperOfType(traitContainingClass, LaravelClasses.ELOQUENT_MODEL.toString()) == null) ||
-                    (PhpClassUtil.findTraitOfType(traitContainingClass, LaravelClasses.ELOQUENT_SOFTDELETES_TRAIT.toString()) == null)) {
+                if (PhpClassUtil.findSuperOfType(traitContainingClass, LaravelClasses.ELOQUENT_MODEL.toString()) == null) {
                     return;
                 }
 
-                validatePropertyAnnotation(traitContainingClass, expression, "deleted_at");
+                if (Objects.equals(traitReferenceClass.getFQN(), LaravelClasses.ELOQUENT_SOFTDELETES_TRAIT.toString())) {
+                    validatePropertyAnnotation(traitContainingClass, expression, "deleted_at");
+                    return;
+                }
+
+                final PhpClass traitResolvedClass = (PhpClass) traitReferenceClass.resolve();
+
+                if (traitResolvedClass == null) {
+                    return;
+                }
+
+                if (PhpClassUtil.findTraitOfType(traitResolvedClass, LaravelClasses.ELOQUENT_SOFTDELETES_TRAIT.toString()) == null) {
+                    return;
+                }
+
+                validatePropertyAnnotation(traitResolvedClass, expression, "deleted_at");
             }
         }
 
