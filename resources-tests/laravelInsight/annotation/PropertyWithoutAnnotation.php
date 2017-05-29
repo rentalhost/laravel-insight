@@ -57,6 +57,15 @@ class EloquentCasts_ShouldIgnoresNonStringValues extends Model
     ];
 }
 
+class EloquentCasts_ShouldIgnoresMultidimensionalKeys extends Model
+{
+    protected $casts = [
+        'multidimensionalArray' => [
+            'shouldBeIgnored' => 'int'
+        ]
+    ];
+}
+
 class EloquentCasts_WithoutCastsField extends Model
 {
 }
