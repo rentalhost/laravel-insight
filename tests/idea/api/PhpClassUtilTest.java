@@ -71,27 +71,19 @@ public class PhpClassUtilTest extends FixtureSuite {
         // SecondClass have FirstTrait and SecondTrait.
         Assert.assertSame(traitFirstTrait, valueOf(PhpClassUtil.findTraitOfType(classSecondClass, "\\FirstTrait")).resolve());
         Assert.assertSame(traitSecondTrait, valueOf(PhpClassUtil.findTraitOfType(classSecondClass, "\\SecondTrait")).resolve());
-    }
 
-    public void testHasSuperOfType() {
-        final List<PhpClass> fileClasses = getPhpClasses();
+        final PsiFile        fileSample2  = getResourceFile("api/PhpClassUtil.traitOfTrait.php");
+        final List<PhpClass> fileClasses2 = new ArrayList<>(PsiTreeUtil.findChildrenOfType(fileSample2, PhpClass.class));
 
-        // Bogus assertions...
-        Assert.assertFalse(PhpClassUtil.hasSuperOfType(fileClasses.get(0), "\\ThisClassDontHaveParent"));
-        Assert.assertFalse(PhpClassUtil.hasSuperOfType(fileClasses.get(1), "\\ThisDoesButNotThat"));
-        Assert.assertFalse(PhpClassUtil.hasSuperOfType(fileClasses.get(2), "\\ThisDoesButNotThat"));
+        Assert.assertEquals(3, fileClasses2.size());
 
-        // FirstClass is parent of SecondClass.
-        Assert.assertTrue(PhpClassUtil.hasSuperOfType(fileClasses.get(1), "\\FirstClass"));
+        final PhpClass traitFirstTraitOfTrait  = fileClasses2.get(0);
+        final PhpClass traitSecondTraitOfTrait = fileClasses2.get(1);
+        final PhpClass classFirstClassToTrait  = fileClasses2.get(2);
 
-        // FirstClass and SecondClass are parent of ThirdClass.
-        Assert.assertTrue(PhpClassUtil.hasSuperOfType(fileClasses.get(2), "\\SecondClass"));
-        Assert.assertTrue(PhpClassUtil.hasSuperOfType(fileClasses.get(2), "\\FirstClass"));
-
-        // CC_UnresolvableParentClass is parent of CC_ChildClass (case #1).
-        // CC_UnresolvableParentClass is unresolvable, then we can't try search after that (case #2).
-        Assert.assertTrue(PhpClassUtil.hasSuperOfType(fileClasses.get(3), "\\CC_UnresolvableParentClass"));
-        Assert.assertFalse(PhpClassUtil.hasSuperOfType(fileClasses.get(3), "\\CC_ThereIsNothingAfterUnresolvableParentClass"));
+        // FirstClassToTrait have both FirstTraitOfTrait and SecondTraitOfTrait.
+        Assert.assertSame(traitFirstTraitOfTrait, valueOf(PhpClassUtil.findTraitOfType(classFirstClassToTrait, "\\FirstTraitOfTrait")).resolve());
+        Assert.assertSame(traitSecondTraitOfTrait, valueOf(PhpClassUtil.findTraitOfType(classFirstClassToTrait, "\\SecondTraitOfTrait")).resolve());
     }
 
     public void testGetSuperReference() {

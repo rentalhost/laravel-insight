@@ -61,7 +61,7 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
 
             assert fieldClass != null;
 
-            if (!PhpClassUtil.hasSuperOfType(fieldClass, LaravelClasses.ELOQUENT_MODEL.toString())) {
+            if (PhpClassUtil.findSuperOfType(fieldClass, LaravelClasses.ELOQUENT_MODEL.toString()) == null) {
                 return;
             }
 
