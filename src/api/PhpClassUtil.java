@@ -1,17 +1,32 @@
 package net.rentalhost.idea.api;
 
-import com.jetbrains.php.lang.psi.elements.ClassReference;
-import com.jetbrains.php.lang.psi.elements.Field;
-import com.jetbrains.php.lang.psi.elements.PhpClass;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.util.PsiTreeUtil;
+import com.jetbrains.php.lang.psi.elements.*;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import org.jetbrains.annotations.Nullable;
 
 public enum PhpClassUtil {
     ;
+
+    public static Iterable<PhpUse> getTraitsDeclared(final PsiElement classObject) {
+        assert classObject instanceof PhpClass;
+
+        final List<PhpUseList> usesLists = PsiTreeUtil.getChildrenOfTypeAsList(classObject, PhpUseList.class);
+        final Stack<PhpUse>    result    = new Stack<>();
+
+        for (final PhpUseList useList : usesLists) {
+            for (final PhpUse useDeclaration : useList.getDeclarations()) {
+                if (useDeclaration.isTraitImport()) {
+                    result.push(useDeclaration);
+                }
+            }
+        }
+
+        return result;
+    }
 
     public static boolean hasSuperOfType(
         final PhpClass classObject,

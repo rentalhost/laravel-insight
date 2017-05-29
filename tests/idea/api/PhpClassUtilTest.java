@@ -1,10 +1,12 @@
 package net.rentalhost.idea.api;
 
+import com.google.common.collect.Lists;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.jetbrains.php.lang.psi.elements.ClassReference;
 import com.jetbrains.php.lang.psi.elements.Field;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
+import com.jetbrains.php.lang.psi.elements.PhpUse;
 import org.junit.Assert;
 
 import java.util.ArrayList;
@@ -15,6 +17,20 @@ import org.jetbrains.annotations.NotNull;
 import net.rentalhost.suite.FixtureSuite;
 
 public class PhpClassUtilTest extends FixtureSuite {
+    public void testGetTraitsDeclared() {
+        final PsiFile        fileSample  = getResourceFile("api/PhpClassUtil.traitsDeclaration.php");
+        final List<PhpClass> fileClasses = new ArrayList<>(PsiTreeUtil.findChildrenOfType(fileSample, PhpClass.class));
+
+        Assert.assertEquals(1, fileClasses.size());
+
+        final ArrayList<PhpUse> phpUses = Lists.newArrayList(PhpClassUtil.getTraitsDeclared(fileClasses.get(0)));
+
+        Assert.assertSame(3, phpUses.size());
+        Assert.assertEquals("\\FirstTrait", phpUses.get(0).getFQN());
+        Assert.assertEquals("\\SecondTrait", phpUses.get(1).getFQN());
+        Assert.assertEquals("\\ThirdTrait", phpUses.get(2).getFQN());
+    }
+
     public void testFindSuperOfType() {
         final List<PhpClass> fileClasses = getPhpClasses();
 
