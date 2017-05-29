@@ -49,3 +49,10 @@ class ThirdPropertyDeclarationClass extends SecondPropertyDeclarationClass
     {
     }
 }
+
+class TraitMethodAliased
+{
+    use FirstPropertyOnTrait {
+        FirstPropertyOnTrait::methodFromFirstTrait as aliasedMethod;
+    }
+}
