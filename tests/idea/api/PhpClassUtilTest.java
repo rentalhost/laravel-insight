@@ -3,13 +3,14 @@ package net.rentalhost.idea.api;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
-import net.rentalhost.suite.FixtureSuite;
 import org.junit.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+
+import net.rentalhost.suite.FixtureSuite;
 
 public class PhpClassUtilTest extends FixtureSuite {
     public void testFindSuperOfType() {
@@ -26,6 +27,11 @@ public class PhpClassUtilTest extends FixtureSuite {
         // FirstClass and SecondClass are parent of ThirdClass.
         Assert.assertNotNull(PhpClassUtil.findSuperOfType(fileClasses.get(2), "\\SecondClass"));
         Assert.assertNotNull(PhpClassUtil.findSuperOfType(fileClasses.get(2), "\\FirstClass"));
+
+        // CC_UnresolvableParentClass is parent of CC_ChildClass (case #1).
+        // CC_UnresolvableParentClass is unresolvable, then we can't try search after that (case #2).
+        Assert.assertNotNull(PhpClassUtil.findSuperOfType(fileClasses.get(3), "\\CC_UnresolvableParentClass"));
+        Assert.assertNull(PhpClassUtil.findSuperOfType(fileClasses.get(3), "\\CC_ThereIsNothingAfterUnresolvableParentClass"));
     }
 
     public void testHasSuperOfType() {
@@ -42,6 +48,11 @@ public class PhpClassUtilTest extends FixtureSuite {
         // FirstClass and SecondClass are parent of ThirdClass.
         Assert.assertTrue(PhpClassUtil.hasSuperOfType(fileClasses.get(2), "\\SecondClass"));
         Assert.assertTrue(PhpClassUtil.hasSuperOfType(fileClasses.get(2), "\\FirstClass"));
+
+        // CC_UnresolvableParentClass is parent of CC_ChildClass (case #1).
+        // CC_UnresolvableParentClass is unresolvable, then we can't try search after that (case #2).
+        Assert.assertTrue(PhpClassUtil.hasSuperOfType(fileClasses.get(3), "\\CC_UnresolvableParentClass"));
+        Assert.assertFalse(PhpClassUtil.hasSuperOfType(fileClasses.get(3), "\\CC_ThereIsNothingAfterUnresolvableParentClass"));
     }
 
     @NotNull
@@ -49,7 +60,7 @@ public class PhpClassUtilTest extends FixtureSuite {
         final PsiFile        fileSample  = getResourceFile("api/PhpClassUtil.superClasses.php");
         final List<PhpClass> fileClasses = new ArrayList<>(PsiTreeUtil.findChildrenOfType(fileSample, PhpClass.class));
 
-        Assert.assertEquals(3, fileClasses.size());
+        Assert.assertEquals(4, fileClasses.size());
 
         return fileClasses;
     }
