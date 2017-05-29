@@ -4,8 +4,12 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.jetbrains.php.lang.psi.elements.*;
+import com.jetbrains.php.lang.psi.elements.impl.PhpUseImpl;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.Stack;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -55,6 +59,28 @@ public enum PhpClassUtil {
             }
 
             classCurrent = (PhpClass) classSuperReference.resolve();
+        }
+
+        return null;
+    }
+
+    @Nullable
+    public static ClassReference findTraitOfType(
+        final PhpClass classObject,
+        final String traitNameExpected
+    ) {
+        PhpClass classCurrent = classObject;
+
+        while (classCurrent != null) {
+            final Iterable<PhpUse> classTraits = getTraitsDeclared(classCurrent);
+
+            for (final PhpUse classTrait : classTraits) {
+                if (classTrait.getFQN().equals(traitNameExpected)) {
+                    return (ClassReference) classTrait.getTargetReference();
+                }
+            }
+
+            classCurrent = getSuper(classCurrent);
         }
 
         return null;
