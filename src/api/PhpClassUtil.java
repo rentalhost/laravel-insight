@@ -69,4 +69,30 @@ public enum PhpClassUtil {
 
         return (PhpClass) superReference.resolve();
     }
+
+    @Nullable
+    public static Field findPropertyDeclaration(
+        final PhpClass classObject,
+        final String propertyNameExpected
+    ) {
+        PhpClass classCurrent = classObject;
+
+        while (true) {
+            final Collection<Field> classFields = classCurrent.getFields();
+
+            for (final Field classField : classFields) {
+                if (classField.getName().equals(propertyNameExpected)) {
+                    return classField;
+                }
+            }
+
+            final PhpClass classSuperResolved = getSuper(classCurrent);
+
+            if (classSuperResolved == null) {
+                return null;
+            }
+
+            classCurrent = classSuperResolved;
+        }
+    }
 }
