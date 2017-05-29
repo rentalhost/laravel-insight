@@ -209,6 +209,17 @@ public class PhpClassUtilTest extends FixtureSuite {
         Assert.assertNull(PhpClassUtil.findMethodDeclaration(classTraitMethodWithInsteadofClass, "CC_unresolvedReference"));
     }
 
+    public void testGetTraitContainingClass() {
+        final PsiFile      fileSample    = getResourceFile("api/PhpClassUtil.traitClasses.php");
+        final List<PhpUse> fileTraitUses = new ArrayList<>(PsiTreeUtil.findChildrenOfType(fileSample, PhpUse.class));
+
+        Assert.assertEquals(2, fileTraitUses.size());
+
+        final PhpUse firstClassTraitUse = fileTraitUses.get(0);
+
+        Assert.assertNotNull(PhpClassUtil.getTraitContainingClass(firstClassTraitUse));
+    }
+
     @NotNull
     private List<PhpClass> getPhpClasses() {
         final PsiFile        fileSample  = getResourceFile("api/PhpClassUtil.superClasses.php");
