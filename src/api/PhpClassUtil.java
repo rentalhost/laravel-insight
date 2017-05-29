@@ -43,7 +43,7 @@ public enum PhpClassUtil {
     ) {
         PhpClass classCurrent = classObject;
 
-        while (true) {
+        while (classCurrent != null) {
             final ClassReference classSuperReference = getSuperReference(classCurrent);
 
             if (classSuperReference == null) {
@@ -54,14 +54,10 @@ public enum PhpClassUtil {
                 return classSuperReference;
             }
 
-            final PhpClass classSuperResolved = (PhpClass) classSuperReference.resolve();
-
-            if (classSuperResolved == null) {
-                return null;
-            }
-
-            classCurrent = classSuperResolved;
+            classCurrent = (PhpClass) classSuperReference.resolve();
         }
+
+        return null;
     }
 
     @Nullable
@@ -93,7 +89,7 @@ public enum PhpClassUtil {
     ) {
         PhpClass classCurrent = classObject;
 
-        while (true) {
+        while (classCurrent != null) {
             final Collection<Field> classFields = classCurrent.getFields();
 
             for (final Field classField : classFields) {
@@ -119,14 +115,10 @@ public enum PhpClassUtil {
                 }
             }
 
-            final PhpClass classSuperResolved = getSuper(classCurrent);
-
-            if (classSuperResolved == null) {
-                return null;
-            }
-
-            classCurrent = classSuperResolved;
+            classCurrent = getSuper(classCurrent);
         }
+
+        return null;
     }
 
     @Nullable
