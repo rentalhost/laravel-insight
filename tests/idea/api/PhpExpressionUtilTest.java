@@ -29,6 +29,7 @@ public class PhpExpressionUtilTest extends FixtureSuite {
 
         Assert.assertEquals(9, fileAssignments.size());
 
+        // Default const types.
         Assert.assertEquals("directValue", ((StringLiteralExpression) getExpressionFromIndex(fileAssignments, 0)).getContents());
 
         Assert.assertEquals("indirectValue", ((StringLiteralExpression) getExpressionFromIndex(fileAssignments, 1)).getContents());
@@ -37,5 +38,9 @@ public class PhpExpressionUtilTest extends FixtureSuite {
         Assert.assertEquals("indirectValue", ((StringLiteralExpression) getExpressionFromIndex(fileAssignments, 4)).getContents());
 
         Assert.assertNull(PhpExpressionUtil.from((PhpExpression) valueOf(fileAssignments.get(6).getValue())));
+
+        // Class const types.
+        Assert.assertEquals("indirectClassValue", ((StringLiteralExpression) getExpressionFromIndex(fileAssignments, 7)).getContents());
+        Assert.assertEquals("indirectClassValue", ((StringLiteralExpression) getExpressionFromIndex(fileAssignments, 8)).getContents());
     }
 }
