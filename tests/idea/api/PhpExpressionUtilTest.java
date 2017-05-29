@@ -27,7 +27,7 @@ public class PhpExpressionUtilTest extends FixtureSuite {
         final PsiFile                    fileSample      = getResourceFile("api/PhpExpressionUtil.warpingLiterals.php");
         final List<AssignmentExpression> fileAssignments = new ArrayList<>(PsiTreeUtil.findChildrenOfType(fileSample, AssignmentExpression.class));
 
-        Assert.assertEquals(9, fileAssignments.size());
+        Assert.assertEquals(12, fileAssignments.size());
 
         // Default const types.
         Assert.assertEquals("directValue", ((StringLiteralExpression) getExpressionFromIndex(fileAssignments, 0)).getContents());
@@ -42,5 +42,9 @@ public class PhpExpressionUtilTest extends FixtureSuite {
         // Class const types.
         Assert.assertEquals("indirectClassValue", ((StringLiteralExpression) getExpressionFromIndex(fileAssignments, 7)).getContents());
         Assert.assertEquals("indirectClassValue", ((StringLiteralExpression) getExpressionFromIndex(fileAssignments, 8)).getContents());
+
+        // Avoiding complex loopings.
+        Assert.assertNull(PhpExpressionUtil.from((PhpExpression) valueOf(fileAssignments.get(9).getValue())));
+        Assert.assertNull(PhpExpressionUtil.from((PhpExpression) valueOf(fileAssignments.get(10).getValue())));
     }
 }
