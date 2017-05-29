@@ -153,6 +153,26 @@ public enum PhpClassUtil {
 
                     return (Method) classTraitReference.resolve();
                 }
+
+                final MethodReference classTraitRuleMethodScopedReference = (MethodReference) classTraitRule.getFirstPsiChild();
+                assert classTraitRuleMethodScopedReference != null;
+
+                final PsiReference classTraitRuleMethodClassReference = (PsiReference) classTraitRuleMethodScopedReference.getFirstPsiChild();
+                assert classTraitRuleMethodClassReference != null;
+
+                final PsiElement classTraitRuleMethodClass = classTraitRuleMethodClassReference.resolve();
+
+                if (classTraitRuleMethodClass == null) {
+                    continue;
+                }
+
+                final Method classTraitRuleMethod = findMethodDeclaration((PhpClass) classTraitRuleMethodClass, methodNameExpected);
+
+                if (classTraitRuleMethod == null) {
+                    continue;
+                }
+
+                return classTraitRuleMethod;
             }
 
             for (final PhpUse classTrait : getTraitsDeclared(classCurrent)) {

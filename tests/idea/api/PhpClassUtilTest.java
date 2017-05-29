@@ -98,7 +98,7 @@ public class PhpClassUtilTest extends FixtureSuite {
         final PsiFile        fileSample  = getResourceFile("api/PhpClassUtil.findDeclaration.php");
         final List<PhpClass> fileClasses = new ArrayList<>(PsiTreeUtil.findChildrenOfType(fileSample, PhpClass.class));
 
-        Assert.assertEquals(6, fileClasses.size());
+        Assert.assertEquals(7, fileClasses.size());
 
         final PhpClass classFirstClass  = fileClasses.get(2);
         final PhpClass classSecondClass = fileClasses.get(3);
@@ -162,7 +162,7 @@ public class PhpClassUtilTest extends FixtureSuite {
         final PsiFile        fileSample  = getResourceFile("api/PhpClassUtil.findDeclaration.php");
         final List<PhpClass> fileClasses = new ArrayList<>(PsiTreeUtil.findChildrenOfType(fileSample, PhpClass.class));
 
-        Assert.assertEquals(6, fileClasses.size());
+        Assert.assertEquals(7, fileClasses.size());
 
         final PhpClass classFirstClass  = fileClasses.get(2);
         final PhpClass classSecondClass = fileClasses.get(3);
@@ -226,6 +226,22 @@ public class PhpClassUtilTest extends FixtureSuite {
         final Method aliasedMethod = PhpClassUtil.findMethodDeclaration(classTraitMethodAliased, "aliasedMethod");
         Assert.assertNotNull(aliasedMethod);
         Assert.assertEquals(traitFirstTrait, aliasedMethod.getContainingClass());
+
+        final PhpClass classTraitMethodWithInsteadofClass = fileClasses.get(6);
+
+        final Method methodFromBothTraits = PhpClassUtil.findMethodDeclaration(classTraitMethodWithInsteadofClass, "methodFromBothTraits");
+        Assert.assertNotNull(methodFromBothTraits);
+        Assert.assertEquals(traitSecondTrait, methodFromBothTraits.getContainingClass());
+        final Method secondMethodFromBothTraits = PhpClassUtil.findMethodDeclaration(classTraitMethodWithInsteadofClass, "secondMethodFromBothTraits");
+        Assert.assertNotNull(secondMethodFromBothTraits);
+        Assert.assertEquals(traitSecondTrait, secondMethodFromBothTraits.getContainingClass());
+
+        final Method recoveredMethodFromBothTraits = PhpClassUtil.findMethodDeclaration(classTraitMethodWithInsteadofClass, "recoveredMethodFromBothTraits");
+        Assert.assertNotNull(recoveredMethodFromBothTraits);
+        Assert.assertEquals(traitFirstTrait, recoveredMethodFromBothTraits.getContainingClass());
+
+        final Method ccUnresolvedReference = PhpClassUtil.findMethodDeclaration(classTraitMethodWithInsteadofClass, "CC_unresolvedReference");
+        Assert.assertNull(ccUnresolvedReference);
     }
 
     @NotNull
