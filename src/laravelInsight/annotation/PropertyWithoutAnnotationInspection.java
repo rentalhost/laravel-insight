@@ -69,6 +69,10 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
             final Collection<ArrayHashElement> fieldHashes = PsiTreeUtil.findChildrenOfType(fieldValue, ArrayHashElement.class);
 
             for (final ArrayHashElement fieldHash : fieldHashes) {
+                if (!(fieldHash.getValue() instanceof StringLiteralExpression)) {
+                    continue;
+                }
+
                 final PhpPsiElement hashKey = fieldHash.getKey();
 
                 assert hashKey != null;
