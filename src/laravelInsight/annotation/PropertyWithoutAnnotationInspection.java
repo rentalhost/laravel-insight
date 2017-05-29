@@ -45,7 +45,8 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
 
         @Override
         public void visitPhpField(final Field field) {
-            if (!Objects.equals(field.getName(), "casts")) {
+            if (!Objects.equals(field.getName(), "casts") &&
+                !Objects.equals(field.getName(), "dates")) {
                 return;
             }
 

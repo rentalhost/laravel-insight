@@ -89,3 +89,11 @@ class CC_NoEloquentModel_WithCastsField
 {
     protected $casts = [ 'CC' ];
 }
+
+class EloquentDates_CreatedAndUpdatedAt extends Model
+{
+    protected $dates = [
+        <weak_warning descr="@property $created_at was not annotated">'created_at'</weak_warning> => 'DateTime',
+        <weak_warning descr="@property $updated_at was not annotated">'updated_at'</weak_warning> => 'DateTime',
+    ];
+}
