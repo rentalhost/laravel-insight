@@ -1,7 +1,8 @@
 package net.rentalhost.idea.laravelInsight.resources;
 
 public enum LaravelClasses {
-    ELOQUENT_MODEL("\\Illuminate\\Database\\Eloquent\\Model");
+    ELOQUENT_MODEL("\\Illuminate\\Database\\Eloquent\\Model"),
+    ELOQUENT_SOFTDELETES_TRAIT("\\Illuminate\\Database\\Eloquent\\SoftDeletes");
 
     private final String text;
 
