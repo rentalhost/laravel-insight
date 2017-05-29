@@ -4,6 +4,7 @@ import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.PsiNameIdentifierOwner;
 import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocComment;
 import com.jetbrains.php.lang.inspections.PhpInspection;
 import com.jetbrains.php.lang.psi.elements.*;
@@ -42,6 +43,25 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
 
         ElementVisitor(final ProblemsHolder problemsHolder) {
             this.problemsHolder = problemsHolder;
+        }
+
+        @NotNull
+        private static PsiElement getReportableElement(
+            final PsiNameIdentifierOwner phpClass,
+            final PhpClassMember fieldPrimaryKey
+        ) {
+            final PsiElement issueReceptor;
+
+            if (Objects.equals(fieldPrimaryKey.getContainingClass(), phpClass)) {
+                issueReceptor = fieldPrimaryKey.getNameIdentifier();
+                assert issueReceptor != null;
+            }
+            else {
+                issueReceptor = phpClass.getNameIdentifier();
+                assert issueReceptor != null;
+            }
+
+            return issueReceptor;
         }
 
         @Override
@@ -135,6 +155,11 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
                 return;
             }
 
+            reportTimestamps(phpClass);
+            reportPrimaryKey(phpClass);
+        }
+
+        private void reportTimestamps(final PhpClass phpClass) {
             final Field fieldTimestamps = PhpClassUtil.findPropertyDeclaration(phpClass, "timestamps");
 
             if (fieldTimestamps == null) {
@@ -151,19 +176,34 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
                 return;
             }
 
-            final PsiElement issueReceptor;
-
-            if (Objects.equals(fieldTimestamps.getContainingClass(), phpClass)) {
-                issueReceptor = fieldTimestamps.getNameIdentifier();
-                assert issueReceptor != null;
-            }
-            else {
-                issueReceptor = phpClass.getNameIdentifier();
-                assert issueReceptor != null;
-            }
+            final PsiElement issueReceptor = getReportableElement(phpClass, fieldTimestamps);
 
             validatePropertyAnnotation(phpClass, issueReceptor, "created_at");
             validatePropertyAnnotation(phpClass, issueReceptor, "updated_at");
+        }
+
+        private void reportPrimaryKey(final PhpClass phpClass) {
+            final Field fieldPrimaryKey = PhpClassUtil.findPropertyDeclaration(phpClass, "primaryKey");
+
+            if (fieldPrimaryKey == null) {
+                return;
+            }
+
+            final PsiElement fieldPrimaryKeyValue = fieldPrimaryKey.getDefaultValue();
+
+            if (!(fieldPrimaryKeyValue instanceof PhpExpression)) {
+                return;
+            }
+
+            final PhpExpression fieldPrimaryKeyValueResolved = PhpExpressionUtil.from((PhpExpression) fieldPrimaryKeyValue);
+
+            if (!(fieldPrimaryKeyValueResolved instanceof StringLiteralExpression)) {
+                return;
+            }
+
+            final PsiElement issueReceptor = getReportableElement(phpClass, fieldPrimaryKey);
+
+            validatePropertyAnnotation(phpClass, issueReceptor, ((StringLiteralExpression) fieldPrimaryKeyValueResolved).getContents());
         }
 
         private void validatePropertyAnnotation(
