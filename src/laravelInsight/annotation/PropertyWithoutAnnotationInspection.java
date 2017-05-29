@@ -65,8 +65,7 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
                 return;
             }
 
-            final PhpDocComment classDocComment = fieldClass.getDocComment();
-            final PsiElement    fieldValue      = field.getDefaultValue();
+            final PsiElement fieldValue = field.getDefaultValue();
 
             if (!(fieldValue instanceof ArrayCreationExpression)) {
                 return;
@@ -95,12 +94,21 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
 
                 final String hashKeyContents = ((StringLiteralExpression) hashKeyResolvedValue).getContents();
 
-                if (classDocComment == null) {
-                    registerPropertyUndefined(hashKey, hashKeyContents);
-                    continue;
-                }
+                PhpClass fieldClassCurrent = fieldClass;
+                boolean  isNotAnnotated    = true;
 
-                final boolean isNotAnnotated = !PhpDocCommentUtil.hasProperty(classDocComment, hashKeyContents);
+                while (fieldClassCurrent != null) {
+                    final PhpDocComment classDocComment = fieldClassCurrent.getDocComment();
+
+                    if (classDocComment != null) {
+                        if (PhpDocCommentUtil.hasProperty(classDocComment, hashKeyContents)) {
+                            isNotAnnotated = false;
+                            break;
+                        }
+                    }
+
+                    fieldClassCurrent = PhpClassUtil.getSuper(fieldClassCurrent);
+                }
 
                 if (isNotAnnotated) {
                     registerPropertyUndefined(hashKey, hashKeyContents);
