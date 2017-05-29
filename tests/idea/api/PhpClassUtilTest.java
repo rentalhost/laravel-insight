@@ -196,6 +196,30 @@ public class PhpClassUtilTest extends FixtureSuite {
         final Method methodFromThirdClass = PhpClassUtil.findMethodDeclaration(classThirdClass, "methodFromThirdClass");
         Assert.assertNotNull(methodFromThirdClass);
         Assert.assertEquals(classThirdClass, methodFromThirdClass.getContainingClass());
+
+        final PhpClass traitFirstTrait  = fileClasses.get(0);
+        final PhpClass traitSecondTrait = fileClasses.get(1);
+
+        // methodFromFirstTrait() should be detected from FirstClass, SecondClass or ThirdClass.
+        final Method methodFromFirstTrait = PhpClassUtil.findMethodDeclaration(classFirstClass, "methodFromFirstTrait");
+        Assert.assertNotNull(methodFromFirstTrait);
+        Assert.assertEquals(traitFirstTrait, methodFromFirstTrait.getContainingClass());
+        final Method methodFromFirstTrait1 = PhpClassUtil.findMethodDeclaration(classSecondClass, "methodFromFirstTrait");
+        Assert.assertNotNull(methodFromFirstTrait1);
+        Assert.assertEquals(traitFirstTrait, methodFromFirstTrait1.getContainingClass());
+        final Method methodFromFirstTrait2 = PhpClassUtil.findMethodDeclaration(classThirdClass, "methodFromFirstTrait");
+        Assert.assertNotNull(methodFromFirstTrait2);
+        Assert.assertEquals(traitFirstTrait, methodFromFirstTrait2.getContainingClass());
+
+        // methodFromSecondTrait() should be detected from SecondClass or ThirdClass, but not at classFirstClass.
+        final Method methodFromSecondTrait = PhpClassUtil.findMethodDeclaration(classFirstClass, "methodFromSecondTrait");
+        Assert.assertNull(methodFromSecondTrait);
+        final Method methodFromSecondTrait1 = PhpClassUtil.findMethodDeclaration(classSecondClass, "methodFromSecondTrait");
+        Assert.assertNotNull(methodFromSecondTrait1);
+        Assert.assertEquals(traitSecondTrait, methodFromSecondTrait1.getContainingClass());
+        final Method methodFromSecondTrait2 = PhpClassUtil.findMethodDeclaration(classThirdClass, "methodFromSecondTrait");
+        Assert.assertNotNull(methodFromSecondTrait2);
+        Assert.assertEquals(traitSecondTrait, methodFromSecondTrait2.getContainingClass());
     }
 
     @NotNull
