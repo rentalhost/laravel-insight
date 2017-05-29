@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class EloquentCasts_WithoutPhpdoc extends Model
 {
@@ -124,4 +125,23 @@ class EloquentChild_ShouldConsiderParentProperties extends EloquentBasePropertie
         'created_at' => 'DateTime',
         <weak_warning descr="@property $updated_at was not annotated">'updated_at'</weak_warning> => 'DateTime',
     ];
+}
+
+trait SoftDeletesWrapper
+{
+    use SoftDeletes;
+}
+
+class Eloquent_TraitSoftDeletes_ShouldDeclareDeletedAtProperty extends Model
+{
+    use <weak_warning descr="@property $deleted_at was not annotated">SoftDeletesWrapper</weak_warning>;
+}
+
+trait NotAnySoftDeletesTrait
+{
+}
+
+class Eloquent_ShouldCheckIfIsTheRightSoftDeletesTrait extends Model
+{
+    use NotAnySoftDeletesTrait;
 }

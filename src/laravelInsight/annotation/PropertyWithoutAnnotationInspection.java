@@ -58,7 +58,6 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
             }
 
             final PhpClass fieldClass = field.getContainingClass();
-
             assert fieldClass != null;
 
             if (PhpClassUtil.findSuperOfType(fieldClass, LaravelClasses.ELOQUENT_MODEL.toString()) == null) {
@@ -94,25 +93,48 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
 
                 final String hashKeyContents = ((StringLiteralExpression) hashKeyResolvedValue).getContents();
 
-                PhpClass fieldClassCurrent = fieldClass;
-                boolean  isNotAnnotated    = true;
+                validatePropertyAnnotation(fieldClass, hashKey, hashKeyContents);
+            }
+        }
 
-                while (fieldClassCurrent != null) {
-                    final PhpDocComment classDocComment = fieldClassCurrent.getDocComment();
+        @Override
+        public void visitPhpUse(final PhpUse expression) {
+            if (expression.isTraitImport()) {
+                final PhpClass traitContainingClass = PhpClassUtil.getTraitContainingClass(expression);
+                assert traitContainingClass != null;
 
-                    if (classDocComment != null) {
-                        if (PhpDocCommentUtil.hasProperty(classDocComment, hashKeyContents)) {
-                            isNotAnnotated = false;
-                            break;
-                        }
+                if ((PhpClassUtil.findSuperOfType(traitContainingClass, LaravelClasses.ELOQUENT_MODEL.toString()) == null) ||
+                    (PhpClassUtil.findTraitOfType(traitContainingClass, LaravelClasses.ELOQUENT_SOFTDELETES_TRAIT.toString()) == null)) {
+                    return;
+                }
+
+                validatePropertyAnnotation(traitContainingClass, expression, "deleted_at");
+            }
+        }
+
+        private void validatePropertyAnnotation(
+            final PhpClass phpClass,
+            final PsiElement issueReference,
+            final String propertyName
+        ) {
+            PhpClass fieldClassCurrent = phpClass;
+            boolean  isNotAnnotated    = true;
+
+            while (fieldClassCurrent != null) {
+                final PhpDocComment classDocComment = fieldClassCurrent.getDocComment();
+
+                if (classDocComment != null) {
+                    if (PhpDocCommentUtil.hasProperty(classDocComment, propertyName)) {
+                        isNotAnnotated = false;
+                        break;
                     }
-
-                    fieldClassCurrent = PhpClassUtil.getSuper(fieldClassCurrent);
                 }
 
-                if (isNotAnnotated) {
-                    registerPropertyUndefined(hashKey, hashKeyContents);
-                }
+                fieldClassCurrent = PhpClassUtil.getSuper(fieldClassCurrent);
+            }
+
+            if (isNotAnnotated) {
+                registerPropertyUndefined(issueReference, propertyName);
             }
         }
 
