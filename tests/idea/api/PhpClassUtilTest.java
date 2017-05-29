@@ -101,36 +101,64 @@ public class PhpClassUtilTest extends FixtureSuite {
         final PsiFile        fileSample  = getResourceFile("api/PhpClassUtil.findDeclaration.php");
         final List<PhpClass> fileClasses = new ArrayList<>(PsiTreeUtil.findChildrenOfType(fileSample, PhpClass.class));
 
-        Assert.assertEquals(3, fileClasses.size());
+        Assert.assertEquals(5, fileClasses.size());
 
         // Bogus assertions...
-        Assert.assertNull(PhpClassUtil.findPropertyDeclaration(fileClasses.get(0), "propertyInexistent"));
-        Assert.assertNull(PhpClassUtil.findPropertyDeclaration(fileClasses.get(1), "propertyInexistent"));
-        Assert.assertNull(PhpClassUtil.findPropertyDeclaration(fileClasses.get(2), "propertyInexistent"));
+        final PhpClass classFirstClass  = fileClasses.get(2);
+        final PhpClass classSecondClass = fileClasses.get(3);
+        final PhpClass classThirdClass  = fileClasses.get(4);
+
+        Assert.assertNull(PhpClassUtil.findPropertyDeclaration(classFirstClass, "propertyInexistent"));
+        Assert.assertNull(PhpClassUtil.findPropertyDeclaration(classSecondClass, "propertyInexistent"));
+        Assert.assertNull(PhpClassUtil.findPropertyDeclaration(classThirdClass, "propertyInexistent"));
 
         // FirstClass have only $propertyFromFirst.
-        final Field propertyFromFirst = PhpClassUtil.findPropertyDeclaration(fileClasses.get(0), "propertyFromFirst");
+        final Field propertyFromFirst = PhpClassUtil.findPropertyDeclaration(classFirstClass, "propertyFromFirst");
         Assert.assertNotNull(propertyFromFirst);
-        Assert.assertEquals(fileClasses.get(0), propertyFromFirst.getContainingClass());
+        Assert.assertEquals(classFirstClass, propertyFromFirst.getContainingClass());
 
         // SecondClass have both $propertyFromFirst (from #1) and $propertyFromSecond.
-        final Field propertyFromFirst1 = PhpClassUtil.findPropertyDeclaration(fileClasses.get(1), "propertyFromFirst");
+        final Field propertyFromFirst1 = PhpClassUtil.findPropertyDeclaration(classSecondClass, "propertyFromFirst");
         Assert.assertNotNull(propertyFromFirst1);
-        Assert.assertEquals(fileClasses.get(0), propertyFromFirst1.getContainingClass());
-        final Field propertyFromSecond = PhpClassUtil.findPropertyDeclaration(fileClasses.get(1), "propertyFromSecond");
+        Assert.assertEquals(classFirstClass, propertyFromFirst1.getContainingClass());
+        final Field propertyFromSecond = PhpClassUtil.findPropertyDeclaration(classSecondClass, "propertyFromSecond");
         Assert.assertNotNull(propertyFromSecond);
-        Assert.assertEquals(fileClasses.get(1), propertyFromSecond.getContainingClass());
+        Assert.assertEquals(classSecondClass, propertyFromSecond.getContainingClass());
 
         // SecondClass have all $propertyFromFirst (from #1) and $propertyFromSecond (from #2) and $propertyFromThird.
-        final Field propertyFromFirst2 = PhpClassUtil.findPropertyDeclaration(fileClasses.get(2), "propertyFromFirst");
+        final Field propertyFromFirst2 = PhpClassUtil.findPropertyDeclaration(classThirdClass, "propertyFromFirst");
         Assert.assertNotNull(propertyFromFirst2);
-        Assert.assertEquals(fileClasses.get(0), propertyFromFirst2.getContainingClass());
-        final Field propertyFromSecond1 = PhpClassUtil.findPropertyDeclaration(fileClasses.get(2), "propertyFromSecond");
+        Assert.assertEquals(classFirstClass, propertyFromFirst2.getContainingClass());
+        final Field propertyFromSecond1 = PhpClassUtil.findPropertyDeclaration(classThirdClass, "propertyFromSecond");
         Assert.assertNotNull(propertyFromSecond1);
-        Assert.assertEquals(fileClasses.get(1), propertyFromSecond1.getContainingClass());
-        final Field propertyFromThird = PhpClassUtil.findPropertyDeclaration(fileClasses.get(2), "propertyFromThird");
+        Assert.assertEquals(classSecondClass, propertyFromSecond1.getContainingClass());
+        final Field propertyFromThird = PhpClassUtil.findPropertyDeclaration(classThirdClass, "propertyFromThird");
         Assert.assertNotNull(propertyFromThird);
-        Assert.assertEquals(fileClasses.get(2), propertyFromThird.getContainingClass());
+        Assert.assertEquals(classThirdClass, propertyFromThird.getContainingClass());
+
+        final PhpClass traitFirstTrait  = fileClasses.get(0);
+        final PhpClass traitSecondTrait = fileClasses.get(1);
+
+        // FirstPropertyOnTrait should be detected from classFirstClass, SecondClass or ThirdClass.
+        final Field propertyFromFirstTrait = PhpClassUtil.findPropertyDeclaration(classFirstClass, "propertyFromFirstTrait");
+        Assert.assertNotNull(propertyFromFirstTrait);
+        Assert.assertEquals(traitFirstTrait, propertyFromFirstTrait.getContainingClass());
+        final Field propertyFromFirstTrait1 = PhpClassUtil.findPropertyDeclaration(classSecondClass, "propertyFromFirstTrait");
+        Assert.assertNotNull(propertyFromFirstTrait1);
+        Assert.assertEquals(traitFirstTrait, propertyFromFirstTrait1.getContainingClass());
+        final Field propertyFromFirstTrait2 = PhpClassUtil.findPropertyDeclaration(classThirdClass, "propertyFromFirstTrait");
+        Assert.assertNotNull(propertyFromFirstTrait2);
+        Assert.assertEquals(traitFirstTrait, propertyFromFirstTrait2.getContainingClass());
+
+        // SecondPropertyOnTrait should be detected from SecondClass or ThirdClass, but not at classFirstClass.
+        final Field propertyFromSecondTrait = PhpClassUtil.findPropertyDeclaration(classFirstClass, "propertyFromSecondTrait");
+        Assert.assertNull(propertyFromSecondTrait);
+        final Field propertyFromSecondTrait1 = PhpClassUtil.findPropertyDeclaration(classSecondClass, "propertyFromSecondTrait");
+        Assert.assertNotNull(propertyFromSecondTrait1);
+        Assert.assertEquals(traitSecondTrait, propertyFromSecondTrait1.getContainingClass());
+        final Field propertyFromSecondTrait2 = PhpClassUtil.findPropertyDeclaration(classThirdClass, "propertyFromSecondTrait");
+        Assert.assertNotNull(propertyFromSecondTrait2);
+        Assert.assertEquals(traitSecondTrait, propertyFromSecondTrait2.getContainingClass());
     }
 
     @NotNull
