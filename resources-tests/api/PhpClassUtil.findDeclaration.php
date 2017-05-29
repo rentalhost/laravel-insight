@@ -3,11 +3,19 @@
 trait FirstPropertyOnTrait
 {
     public $propertyFromFirstTrait;
+
+    public function methodFromFirstTrait()
+    {
+    }
 }
 
 trait SecondPropertyOnTrait
 {
     public $propertyFromSecondTrait;
+
+    public function methodFromSecondTrait()
+    {
+    }
 }
 
 class FirstPropertyDeclarationClass

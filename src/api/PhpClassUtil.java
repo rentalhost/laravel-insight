@@ -144,6 +144,23 @@ public enum PhpClassUtil {
                 }
             }
 
+            for (final PhpUse classTrait : getTraitsDeclared(classCurrent)) {
+                final PhpReference traitReference = classTrait.getTargetReference();
+                assert traitReference != null;
+
+                final PhpClass resolve = (PhpClass) traitReference.resolve();
+
+                if (resolve == null) {
+                    continue;
+                }
+
+                final Method traitDeclaration = findMethodDeclaration(resolve, methodNameExpected);
+
+                if (traitDeclaration != null) {
+                    return traitDeclaration;
+                }
+            }
+
             final PhpClass classSuperResolved = getSuper(classCurrent);
 
             if (classSuperResolved == null) {
