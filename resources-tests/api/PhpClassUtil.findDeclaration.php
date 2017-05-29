@@ -7,6 +7,14 @@ trait FirstPropertyOnTrait
     public function methodFromFirstTrait()
     {
     }
+
+    public function methodFromBothTraits()
+    {
+    }
+
+    public function secondMethodFromBothTraits()
+    {
+    }
 }
 
 trait SecondPropertyOnTrait
@@ -14,6 +22,14 @@ trait SecondPropertyOnTrait
     public $propertyFromSecondTrait;
 
     public function methodFromSecondTrait()
+    {
+    }
+
+    public function methodFromBothTraits()
+    {
+    }
+
+    public function secondMethodFromBothTraits()
     {
     }
 }
@@ -54,5 +70,17 @@ class TraitMethodAliased
 {
     use FirstPropertyOnTrait {
         FirstPropertyOnTrait::methodFromFirstTrait as aliasedMethod;
+    }
+}
+
+class TraitMethodWithInsteadof
+{
+    use FirstPropertyOnTrait,
+        SecondPropertyOnTrait {
+        SecondPropertyOnTrait::methodFromBothTraits insteadof FirstPropertyOnTrait;
+        SecondPropertyOnTrait::secondMethodFromBothTraits insteadof FirstPropertyOnTrait;
+        FirstPropertyOnTrait::secondMethodFromBothTraits as recoveredMethodFromBothTraits;
+
+        CC_UnresolvedReferenceClass::CC_ignoredMethodReference insteadof CC_IgnoredClassReference;
     }
 }
