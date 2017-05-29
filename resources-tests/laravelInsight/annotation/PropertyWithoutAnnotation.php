@@ -50,6 +50,13 @@ class EloquentCasts_WithInvalidHashKeys extends Model
     ];
 }
 
+class EloquentCasts_ShouldIgnoresNonStringValues extends Model
+{
+    protected $casts = [
+        'shouldBeIgnored' => 123
+    ];
+}
+
 class EloquentCasts_WithoutCastsField extends Model
 {
 }
