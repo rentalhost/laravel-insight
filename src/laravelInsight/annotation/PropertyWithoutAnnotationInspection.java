@@ -4,14 +4,12 @@ import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocComment;
 import com.jetbrains.php.lang.inspections.PhpInspection;
 import com.jetbrains.php.lang.psi.elements.*;
 import com.jetbrains.php.lang.psi.resolve.types.PhpType;
 import com.jetbrains.php.lang.psi.visitors.PhpElementVisitor;
 
-import java.util.Collection;
 import java.util.Objects;
 
 import org.jetbrains.annotations.NotNull;
@@ -64,9 +62,13 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
             }
 
             final PhpDocComment classDocComment = fieldClass.getDocComment();
+            final PsiElement    fieldValue      = field.getDefaultValue();
 
-            final PsiElement                   fieldValue  = field.getDefaultValue();
-            final Collection<ArrayHashElement> fieldHashes = PsiTreeUtil.findChildrenOfType(fieldValue, ArrayHashElement.class);
+            if (!(fieldValue instanceof ArrayCreationExpression)) {
+                return;
+            }
+
+            final Iterable<ArrayHashElement> fieldHashes = ((ArrayCreationExpression) fieldValue).getHashElements();
 
             for (final ArrayHashElement fieldHash : fieldHashes) {
                 if (!(fieldHash.getValue() instanceof StringLiteralExpression)) {
