@@ -68,12 +68,12 @@ public enum PhpClassUtil {
             final Iterable<PhpUse> classTraits = getTraitsDeclared(classCurrent);
 
             for (final PhpUse classTrait : classTraits) {
-                if (classTrait.getFQN().equals(traitNameExpected)) {
-                    return (ClassReference) classTrait.getTargetReference();
-                }
-
                 final PhpReference traitTargetReference = classTrait.getTargetReference();
                 assert traitTargetReference != null;
+
+                if (Objects.equals(traitTargetReference.getFQN(), traitNameExpected)) {
+                    return (ClassReference) traitTargetReference;
+                }
 
                 final PhpClass traitResolved = (PhpClass) traitTargetReference.resolve();
 
