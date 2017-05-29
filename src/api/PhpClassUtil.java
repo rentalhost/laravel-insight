@@ -33,13 +33,6 @@ public enum PhpClassUtil {
         return result;
     }
 
-    public static boolean hasSuperOfType(
-        final PhpClass classObject,
-        final String superNameExpected
-    ) {
-        return findSuperOfType(classObject, superNameExpected) != null;
-    }
-
     @Nullable
     public static ClassReference findSuperOfType(
         final PhpClass classObject,
@@ -78,6 +71,23 @@ public enum PhpClassUtil {
                 if (classTrait.getFQN().equals(traitNameExpected)) {
                     return (ClassReference) classTrait.getTargetReference();
                 }
+
+                final PhpReference traitTargetReference = classTrait.getTargetReference();
+                assert traitTargetReference != null;
+
+                final PhpClass traitResolved = (PhpClass) traitTargetReference.resolve();
+
+                if (traitResolved == null) {
+                    continue;
+                }
+
+                final ClassReference traitOfTrait = findTraitOfType(traitResolved, traitNameExpected);
+
+                if (traitOfTrait == null) {
+                    continue;
+                }
+
+                return traitOfTrait;
             }
 
             classCurrent = getSuper(classCurrent);
