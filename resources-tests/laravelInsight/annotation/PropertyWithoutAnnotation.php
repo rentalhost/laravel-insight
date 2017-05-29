@@ -162,3 +162,18 @@ class <weak_warning descr="@property $created_at was not annotated"><weak_warnin
     extends EloquentTimestamps_SimulatingTheEloquentModelProperty
 {
 }
+
+class EloquentPrimaryKey_SimulatingTheEloquentModelProperty extends Model
+{
+    protected <weak_warning descr="@property $id was not annotated">$primaryKey</weak_warning> = 'id';
+}
+
+class <weak_warning descr="@property $id was not annotated">EloquentPrimaryKey_SimulatingTheEloquentModelProperty_Child</weak_warning>
+    extends EloquentPrimaryKey_SimulatingTheEloquentModelProperty
+{
+}
+
+class CC_EloquentPrimaryKey_PrimaryKeyWithoutDefaultValue extends Model
+{
+    protected $primaryKey;
+}
