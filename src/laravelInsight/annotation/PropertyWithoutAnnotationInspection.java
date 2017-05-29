@@ -129,6 +129,43 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
             }
         }
 
+        @Override
+        public void visitPhpClass(final PhpClass phpClass) {
+            if (PhpClassUtil.findSuperOfType(phpClass, LaravelClasses.ELOQUENT_MODEL.toString()) == null) {
+                return;
+            }
+
+            final Field fieldTimestamps = PhpClassUtil.findPropertyDeclaration(phpClass, "timestamps");
+
+            if (fieldTimestamps == null) {
+                return;
+            }
+
+            final PsiElement fieldTimestampsDefaultValue = fieldTimestamps.getDefaultValue();
+
+            if (!(fieldTimestampsDefaultValue instanceof ConstantReference)) {
+                return;
+            }
+
+            if (!"true".equals(fieldTimestampsDefaultValue.getText())) {
+                return;
+            }
+
+            final PsiElement issueReceptor;
+
+            if (Objects.equals(fieldTimestamps.getContainingClass(), phpClass)) {
+                issueReceptor = fieldTimestamps.getNameIdentifier();
+                assert issueReceptor != null;
+            }
+            else {
+                issueReceptor = phpClass.getNameIdentifier();
+                assert issueReceptor != null;
+            }
+
+            validatePropertyAnnotation(phpClass, issueReceptor, "created_at");
+            validatePropertyAnnotation(phpClass, issueReceptor, "updated_at");
+        }
+
         private void validatePropertyAnnotation(
             final PhpClass phpClass,
             final PsiElement issueReference,

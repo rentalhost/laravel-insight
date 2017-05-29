@@ -152,3 +152,13 @@ class Eloquent_ShouldCheckIfIsTheRightSoftDeletesTrait extends Model
 {
     use NotAnySoftDeletesTrait;
 }
+
+class EloquentTimestamps_SimulatingTheEloquentModelProperty extends Model
+{
+    protected <weak_warning descr="@property $created_at was not annotated"><weak_warning descr="@property $updated_at was not annotated">$timestamps</weak_warning></weak_warning> = true;
+}
+
+class <weak_warning descr="@property $created_at was not annotated"><weak_warning descr="@property $updated_at was not annotated">EloquentTimestamps_SimulatingTheEloquentModelProperty_Child</weak_warning></weak_warning>
+    extends EloquentTimestamps_SimulatingTheEloquentModelProperty
+{
+}
