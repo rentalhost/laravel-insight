@@ -7,9 +7,12 @@ import com.jetbrains.php.lang.documentation.phpdoc.psi.tags.PhpDocPropertyTag;
 import java.util.List;
 import java.util.Objects;
 
+import org.jetbrains.annotations.Nullable;
+
 public enum PhpDocCommentUtil {
     ;
 
+    @Nullable
     public static PhpDocProperty findProperty(
         final PhpDocComment docComment,
         final String propertyName

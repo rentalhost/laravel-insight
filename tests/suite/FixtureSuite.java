@@ -10,6 +10,8 @@ import com.intellij.testFramework.fixtures.CodeInsightFixtureTestCase;
 
 import java.nio.file.Paths;
 
+import org.jetbrains.annotations.Nullable;
+
 public class FixtureSuite extends CodeInsightFixtureTestCase {
     private static String getResourcesPath() {
         return Paths.get("resources-tests").toAbsolutePath().toString();
@@ -19,6 +21,7 @@ public class FixtureSuite extends CodeInsightFixtureTestCase {
         return new FixtureChain(myFixture).addInspectionTool(inspectionTool);
     }
 
+    @Nullable
     protected PsiFile getResourceFile(final String path) {
         final String      pathAbsolute = Paths.get("resources-tests/" + path).toAbsolutePath().toString();
         final VirtualFile virtualFile  = LocalFileSystem.getInstance().findFileByPath(pathAbsolute);
