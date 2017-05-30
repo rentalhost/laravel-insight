@@ -1,64 +1,65 @@
 package net.rentalhost.idea.api;
 
 import com.google.common.collect.Lists;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.jetbrains.php.lang.psi.elements.*;
+import com.jetbrains.php.lang.psi.elements.PhpClass;
+import com.jetbrains.php.lang.psi.elements.PhpUse;
 import org.junit.Assert;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import org.jetbrains.annotations.NotNull;
+import java.util.Collection;
 
 import net.rentalhost.suite.FixtureSuite;
 
 public class PhpClassUtilTest extends FixtureSuite {
     public void testGetTraitsDeclared() {
-        final PsiFile        fileSample  = getResourceFile("api/PhpClassUtil.traitsDeclaration.php");
-        final List<PhpClass> fileClasses = new ArrayList<>(PsiTreeUtil.findChildrenOfType(fileSample, PhpClass.class));
+        final PsiFile fileSample = getResourceFile("api/PhpClassUtil.traitsDeclaration.php");
 
-        Assert.assertEquals(1, fileClasses.size());
-
-        final ArrayList<PhpUse> phpUses = Lists.newArrayList(PhpClassUtil.getTraitsDeclared(fileClasses.get(0)));
+        final ArrayList<PhpUse> phpUses = Lists.newArrayList(PhpClassUtil.getTraitsDeclared(valueOf(getElementByName(fileSample, "ObjectClass"))));
 
         Assert.assertSame(3, phpUses.size());
-        Assert.assertEquals("\\FirstTrait", phpUses.get(0).getFQN());
-        Assert.assertEquals("\\SecondTrait", phpUses.get(1).getFQN());
-        Assert.assertEquals("\\ThirdTrait", phpUses.get(2).getFQN());
+
+        Assert.assertEquals("\\FirstTrait", valueOf(getElementByName(fileSample, "FirstTrait")).getFQN());
+        Assert.assertEquals("\\SecondTrait", valueOf(getElementByName(fileSample, "SecondTrait")).getFQN());
+        Assert.assertEquals("\\ThirdTrait", valueOf(getElementByName(fileSample, "ThirdTrait")).getFQN());
     }
 
     public void testFindSuperOfType() {
-        final List<PhpClass> fileClasses = getPhpClasses();
+        final PsiFile fileSample = getResourceFile("api/PhpClassUtil.superClasses.php");
+
+        final PhpClass classFirstClass  = (PhpClass) getElementByName(fileSample, "FirstClass");
+        final PhpClass classSecondClass = (PhpClass) getElementByName(fileSample, "SecondClass");
+        final PhpClass classThirdClass  = (PhpClass) getElementByName(fileSample, "ThirdClass");
 
         // Bogus assertions...
-        Assert.assertNull(PhpClassUtil.findSuperOfType(fileClasses.get(0), "\\ThisClassDontHaveParent"));
-        Assert.assertNull(PhpClassUtil.findSuperOfType(fileClasses.get(1), "\\ThisDoesButNotThat"));
-        Assert.assertNull(PhpClassUtil.findSuperOfType(fileClasses.get(2), "\\ThisDoesButNotThat"));
+        Assert.assertNull(PhpClassUtil.findSuperOfType(classFirstClass, "\\ThisClassDontHaveParent"));
+        Assert.assertNull(PhpClassUtil.findSuperOfType(classSecondClass, "\\ThisDoesButNotThat"));
+        Assert.assertNull(PhpClassUtil.findSuperOfType(classThirdClass, "\\ThisDoesButNotThat"));
 
         // FirstClass is parent of SecondClass.
-        Assert.assertNotNull(PhpClassUtil.findSuperOfType(fileClasses.get(1), "\\FirstClass"));
+        Assert.assertNotNull(PhpClassUtil.findSuperOfType(classSecondClass, "\\FirstClass"));
 
         // FirstClass and SecondClass are parent of ThirdClass.
-        Assert.assertNotNull(PhpClassUtil.findSuperOfType(fileClasses.get(2), "\\SecondClass"));
-        Assert.assertNotNull(PhpClassUtil.findSuperOfType(fileClasses.get(2), "\\FirstClass"));
+        Assert.assertNotNull(PhpClassUtil.findSuperOfType(classThirdClass, "\\SecondClass"));
+        Assert.assertNotNull(PhpClassUtil.findSuperOfType(classThirdClass, "\\FirstClass"));
+
+        final PhpClass classCC_ChildClass = (PhpClass) getElementByName(fileSample, "CC_ChildClass");
 
         // CC_UnresolvableParentClass is parent of CC_ChildClass (case #1).
         // CC_UnresolvableParentClass is unresolvable, then we can't try search after that (case #2).
-        Assert.assertNotNull(PhpClassUtil.findSuperOfType(fileClasses.get(3), "\\CC_UnresolvableParentClass"));
-        Assert.assertNull(PhpClassUtil.findSuperOfType(fileClasses.get(3), "\\CC_ThereIsNothingAfterUnresolvableParentClass"));
+        Assert.assertNotNull(PhpClassUtil.findSuperOfType(classCC_ChildClass, "\\CC_UnresolvableParentClass"));
+        Assert.assertNull(PhpClassUtil.findSuperOfType(classCC_ChildClass, "\\CC_ThereIsNothingAfterUnresolvableParentClass"));
     }
 
     public void testFindTraitOfType() {
-        final PsiFile        fileSample  = getResourceFile("api/PhpClassUtil.traitClasses.php");
-        final List<PhpClass> fileClasses = new ArrayList<>(PsiTreeUtil.findChildrenOfType(fileSample, PhpClass.class));
+        final PsiFile fileSample = getResourceFile("api/PhpClassUtil.traitClasses.php");
 
-        Assert.assertEquals(4, fileClasses.size());
-
-        final PhpClass traitFirstTrait  = fileClasses.get(0);
-        final PhpClass traitSecondTrait = fileClasses.get(1);
-        final PhpClass classFirstClass  = fileClasses.get(2);
-        final PhpClass classSecondClass = fileClasses.get(3);
+        final PhpClass traitFirstTrait  = (PhpClass) getElementByName(fileSample, "FirstTrait");
+        final PhpClass traitSecondTrait = (PhpClass) getElementByName(fileSample, "SecondTrait");
+        final PhpClass classFirstClass  = (PhpClass) getElementByName(fileSample, "FirstClass");
+        final PhpClass classSecondClass = (PhpClass) getElementByName(fileSample, "SecondClass");
 
         Assert.assertNull(PhpClassUtil.findTraitOfType(traitFirstTrait, "\\ThisTraitDoesntExists"));
         Assert.assertNull(PhpClassUtil.findTraitOfType(traitSecondTrait, "\\ThisTraitDoesntExists"));
@@ -72,61 +73,61 @@ public class PhpClassUtilTest extends FixtureSuite {
         Assert.assertSame(traitFirstTrait, valueOf(PhpClassUtil.findTraitOfType(classSecondClass, "\\FirstTrait")).resolve());
         Assert.assertSame(traitSecondTrait, valueOf(PhpClassUtil.findTraitOfType(classSecondClass, "\\SecondTrait")).resolve());
 
-        final PsiFile        fileSample2  = getResourceFile("api/PhpClassUtil.traitOfTrait.php");
-        final List<PhpClass> fileClasses2 = new ArrayList<>(PsiTreeUtil.findChildrenOfType(fileSample2, PhpClass.class));
+        final PsiFile              fileSample2  = getResourceFile("api/PhpClassUtil.traitOfTrait.php");
+        final Collection<PhpClass> fileClasses2 = new ArrayList<>(PsiTreeUtil.findChildrenOfType(fileSample2, PhpClass.class));
 
         Assert.assertEquals(3, fileClasses2.size());
 
-        final PhpClass traitFirstTraitOfTrait  = fileClasses2.get(0);
-        final PhpClass traitSecondTraitOfTrait = fileClasses2.get(1);
-        final PhpClass classFirstClassToTrait  = fileClasses2.get(2);
+        final PhpClass traitFirstTraitOfTrait  = (PhpClass) getElementByName(fileSample2, "FirstTraitOfTrait");
+        final PhpClass traitSecondTraitOfTrait = (PhpClass) getElementByName(fileSample2, "SecondTraitOfTrait");
+        final PhpClass classFirstClassToTrait  = (PhpClass) getElementByName(fileSample2, "FirstClassToTrait");
 
         // FirstClassToTrait have both FirstTraitOfTrait and SecondTraitOfTrait.
         Assert.assertSame(traitFirstTraitOfTrait, valueOf(PhpClassUtil.findTraitOfType(classFirstClassToTrait, "\\FirstTraitOfTrait")).resolve());
         Assert.assertSame(traitSecondTraitOfTrait, valueOf(PhpClassUtil.findTraitOfType(classFirstClassToTrait, "\\SecondTraitOfTrait")).resolve());
 
-        final PsiFile        fileSample3  = getResourceFile("api/PhpClassUtil.namespacedTrait.php");
-        final List<PhpClass> fileClasses3 = new ArrayList<>(PsiTreeUtil.findChildrenOfType(fileSample3, PhpClass.class));
+        final PsiFile              fileSample3  = getResourceFile("api/PhpClassUtil.namespacedTrait.php");
+        final Collection<PhpClass> fileClasses3 = new ArrayList<>(PsiTreeUtil.findChildrenOfType(fileSample3, PhpClass.class));
 
         Assert.assertEquals(1, fileClasses3.size());
 
-        final PhpClass classTestClass = fileClasses3.get(0);
+        final PhpClass classTestClass = (PhpClass) getElementByName(fileSample3, "TestClass");
 
         // Check if namespaced FQN is right.
         Assert.assertEquals("\\Namespaced\\TraitClass", valueOf(PhpClassUtil.findTraitOfType(classTestClass, "\\Namespaced\\TraitClass")).getFQN());
     }
 
     public void testGetSuperReference() {
-        final List<PhpClass> fileClasses = getPhpClasses();
+        final PsiFile fileSample = getResourceFile("api/PhpClassUtil.superClasses.php");
 
         // FirstClass have no super class.
-        Assert.assertNull(PhpClassUtil.getSuperReference(fileClasses.get(0)));
+        Assert.assertNull(PhpClassUtil.getSuperReference((PhpClass) getElementByName(fileSample, "FirstClass")));
 
         // FirstClass is the super class of SecondClass.
         // Checking just one level, because is not a recursive method.
-        Assert.assertEquals("\\FirstClass", valueOf(PhpClassUtil.getSuperReference(fileClasses.get(1))).getFQN());
+        Assert.assertEquals("\\FirstClass", valueOf(PhpClassUtil.getSuperReference((PhpClass) getElementByName(fileSample, "SecondClass"))).getFQN());
     }
 
     public void testGetSuper() {
-        final List<PhpClass> fileClasses = getPhpClasses();
+        final PsiFile fileSample = getResourceFile("api/PhpClassUtil.superClasses.php");
+
+        final PhpClass classFirstClass  = (PhpClass) getElementByName(fileSample, "FirstClass");
+        final PhpClass classSecondClass = (PhpClass) getElementByName(fileSample, "SecondClass");
 
         // FirstClass have no super class.
-        Assert.assertNull(PhpClassUtil.getSuper(fileClasses.get(0)));
+        Assert.assertNull(PhpClassUtil.getSuper(classFirstClass));
 
         // FirstClass is the super class of SecondClass.
         // Checking just one level, because is not a recursive method.
-        Assert.assertEquals(fileClasses.get(0), PhpClassUtil.getSuper(fileClasses.get(1)));
+        Assert.assertEquals(classFirstClass, PhpClassUtil.getSuper(classSecondClass));
     }
 
     public void testFindPropertyDeclaration() {
-        final PsiFile        fileSample  = getResourceFile("api/PhpClassUtil.findDeclaration.php");
-        final List<PhpClass> fileClasses = new ArrayList<>(PsiTreeUtil.findChildrenOfType(fileSample, PhpClass.class));
+        final PsiFile fileSample = getResourceFile("api/PhpClassUtil.findDeclaration.php");
 
-        Assert.assertEquals(7, fileClasses.size());
-
-        final PhpClass classFirstClass  = fileClasses.get(2);
-        final PhpClass classSecondClass = fileClasses.get(3);
-        final PhpClass classThirdClass  = fileClasses.get(4);
+        final PhpClass classFirstClass  = (PhpClass) getElementByName(fileSample, "FirstPropertyDeclarationClass");
+        final PhpClass classSecondClass = (PhpClass) getElementByName(fileSample, "SecondPropertyDeclarationClass");
+        final PhpClass classThirdClass  = (PhpClass) getElementByName(fileSample, "ThirdPropertyDeclarationClass");
 
         // Bogus assertions...
         Assert.assertNull(PhpClassUtil.findPropertyDeclaration(classFirstClass, "propertyInexistent"));
@@ -145,8 +146,8 @@ public class PhpClassUtilTest extends FixtureSuite {
         Assert.assertEquals(classSecondClass, valueOf(PhpClassUtil.findPropertyDeclaration(classThirdClass, "propertyFromSecond")).getContainingClass());
         Assert.assertEquals(classThirdClass, valueOf(PhpClassUtil.findPropertyDeclaration(classThirdClass, "propertyFromThird")).getContainingClass());
 
-        final PhpClass traitFirstTrait  = fileClasses.get(0);
-        final PhpClass traitSecondTrait = fileClasses.get(1);
+        final PhpClass traitFirstTrait  = (PhpClass) getElementByName(fileSample, "FirstPropertyOnTrait");
+        final PhpClass traitSecondTrait = (PhpClass) getElementByName(fileSample, "SecondPropertyOnTrait");
 
         // $firstPropertyOnTrait should be detected from FirstClass, SecondClass or ThirdClass.
         Assert.assertEquals(traitFirstTrait, valueOf(PhpClassUtil.findPropertyDeclaration(classFirstClass, "propertyFromFirstTrait")).getContainingClass());
@@ -160,14 +161,11 @@ public class PhpClassUtilTest extends FixtureSuite {
     }
 
     public void testFindMethodDeclaration() {
-        final PsiFile        fileSample  = getResourceFile("api/PhpClassUtil.findDeclaration.php");
-        final List<PhpClass> fileClasses = new ArrayList<>(PsiTreeUtil.findChildrenOfType(fileSample, PhpClass.class));
+        final PsiFile fileSample = getResourceFile("api/PhpClassUtil.findDeclaration.php");
 
-        Assert.assertEquals(7, fileClasses.size());
-
-        final PhpClass classFirstClass  = fileClasses.get(2);
-        final PhpClass classSecondClass = fileClasses.get(3);
-        final PhpClass classThirdClass  = fileClasses.get(4);
+        final PhpClass classFirstClass  = (PhpClass) getElementByName(fileSample, "FirstPropertyDeclarationClass");
+        final PhpClass classSecondClass = (PhpClass) getElementByName(fileSample, "SecondPropertyDeclarationClass");
+        final PhpClass classThirdClass  = (PhpClass) getElementByName(fileSample, "ThirdPropertyDeclarationClass");
 
         // Bogus assertions...
         Assert.assertNull(PhpClassUtil.findMethodDeclaration(classFirstClass, "methodInexistent"));
@@ -186,8 +184,8 @@ public class PhpClassUtilTest extends FixtureSuite {
         Assert.assertEquals(classSecondClass, valueOf(PhpClassUtil.findMethodDeclaration(classThirdClass, "methodFromSecondClass")).getContainingClass());
         Assert.assertEquals(classThirdClass, valueOf(PhpClassUtil.findMethodDeclaration(classThirdClass, "methodFromThirdClass")).getContainingClass());
 
-        final PhpClass traitFirstTrait  = fileClasses.get(0);
-        final PhpClass traitSecondTrait = fileClasses.get(1);
+        final PhpClass traitFirstTrait  = (PhpClass) getElementByName(fileSample, "FirstPropertyOnTrait");
+        final PhpClass traitSecondTrait = (PhpClass) getElementByName(fileSample, "SecondPropertyOnTrait");
 
         // methodFromFirstTrait() should be detected from FirstClass, SecondClass or ThirdClass.
         Assert.assertEquals(traitFirstTrait, valueOf(PhpClassUtil.findMethodDeclaration(classFirstClass, "methodFromFirstTrait")).getContainingClass());
@@ -199,11 +197,11 @@ public class PhpClassUtilTest extends FixtureSuite {
         Assert.assertEquals(traitSecondTrait, valueOf(PhpClassUtil.findMethodDeclaration(classSecondClass, "methodFromSecondTrait")).getContainingClass());
         Assert.assertEquals(traitSecondTrait, valueOf(PhpClassUtil.findMethodDeclaration(classThirdClass, "methodFromSecondTrait")).getContainingClass());
 
-        final PhpClass classTraitMethodAliased = fileClasses.get(5);
+        final PhpClass classTraitMethodAliased = (PhpClass) getElementByName(fileSample, "TraitMethodAliased");
 
         Assert.assertEquals(traitFirstTrait, valueOf(PhpClassUtil.findMethodDeclaration(classTraitMethodAliased, "aliasedMethod")).getContainingClass());
 
-        final PhpClass classTraitMethodWithInsteadofClass = fileClasses.get(6);
+        final PhpClass classTraitMethodWithInsteadofClass = (PhpClass) getElementByName(fileSample, "TraitMethodWithInsteadof");
 
         Assert.assertEquals(traitSecondTrait, valueOf(PhpClassUtil.findMethodDeclaration(classTraitMethodWithInsteadofClass, "methodFromBothTraits")).getContainingClass());
         Assert.assertEquals(traitSecondTrait, valueOf(PhpClassUtil.findMethodDeclaration(classTraitMethodWithInsteadofClass, "secondMethodFromBothTraits")).getContainingClass());
@@ -212,23 +210,10 @@ public class PhpClassUtilTest extends FixtureSuite {
     }
 
     public void testGetTraitContainingClass() {
-        final PsiFile      fileSample    = getResourceFile("api/PhpClassUtil.traitClasses.php");
-        final List<PhpUse> fileTraitUses = new ArrayList<>(PsiTreeUtil.findChildrenOfType(fileSample, PhpUse.class));
-
-        Assert.assertEquals(2, fileTraitUses.size());
-
-        final PhpUse firstClassTraitUse = fileTraitUses.get(0);
+        final PsiFile    fileSample         = getResourceFile("api/PhpClassUtil.traitClasses.php");
+        final PsiElement classFirstClass    = getElementByName(fileSample, "FirstClass");
+        final PhpUse     firstClassTraitUse = valueOf(PsiTreeUtil.findChildOfType(classFirstClass, PhpUse.class));
 
         Assert.assertNotNull(PhpClassUtil.getTraitContainingClass(firstClassTraitUse));
-    }
-
-    @NotNull
-    private List<PhpClass> getPhpClasses() {
-        final PsiFile        fileSample  = getResourceFile("api/PhpClassUtil.superClasses.php");
-        final List<PhpClass> fileClasses = new ArrayList<>(PsiTreeUtil.findChildrenOfType(fileSample, PhpClass.class));
-
-        Assert.assertEquals(4, fileClasses.size());
-
-        return fileClasses;
     }
 }

@@ -218,7 +218,7 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
                 final PhpDocComment classDocComment = fieldClassCurrent.getDocComment();
 
                 if (classDocComment != null) {
-                    if (PhpDocCommentUtil.hasProperty(classDocComment, propertyName)) {
+                    if (PhpDocCommentUtil.findProperty(classDocComment, propertyName) != null) {
                         isNotAnnotated = false;
                         break;
                     }
