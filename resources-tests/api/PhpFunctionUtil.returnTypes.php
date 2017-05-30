@@ -56,3 +56,20 @@ function respectReturnType_CCShouldIgnoresPhpdoc(): int
 function respectReturnType_ResolvableQualifier(): ResolvableQualifier
 {
 }
+
+function respectNewReturnType_UnresolvableQualifier()
+{
+    return new UnresolvableQualifier();
+}
+
+function respectNewReturnType_ResolvableQualifier()
+{
+    return new ResolvableQualifier();
+}
+
+function respectNewReturnType_ABCQualifiers()
+{
+    return new A();
+    return new B();
+    return new C();
+}
