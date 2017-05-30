@@ -183,6 +183,27 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
                 return;
             }
 
+            final String methodName = method.getName();
+
+            if (methodName.endsWith("Attribute")) {
+                if (methodName.startsWith("get") ||
+                    methodName.startsWith("set")) {
+                    final PsiElement methodIdentifier = method.getNameIdentifier();
+                    assert methodIdentifier != null;
+
+                    final String methodPropertyPart = methodName.substring(3, methodName.length() - 9);
+
+                    validatePropertyAnnotation(methodClass, methodIdentifier, CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, methodPropertyPart));
+                }
+            }
+
+            reportRelationship(method, methodClass);
+        }
+
+        private void reportRelationship(
+            final Function method,
+            final PhpClass methodClass
+        ) {
             final PhpType methodReturnType = PhpFunctionUtil.getReturnType(method);
 
             if (!isRelationship(methodReturnType.getTypes())) {

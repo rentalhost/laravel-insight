@@ -263,4 +263,10 @@ class EloquentRelationship_HasOne extends EloquentRelationship_SimulatingTheEloq
     public function <weak_warning descr="@property $belongs_to_many_property was not annotated">belongsToManyProperty</weak_warning>() {
         return $this->belongsToMany();
     }
+
+    public function <weak_warning descr="@property $some_property was not annotated">getSomePropertyAttribute</weak_warning>() {
+    }
+
+    public function <weak_warning descr="@property $some_property was not annotated">setSomePropertyAttribute</weak_warning>() {
+    }
 }
