@@ -85,5 +85,8 @@ public class PhpFunctionUtilTest extends FixtureSuite {
 
         Assert.assertTrue(hasOnlyTypes(fileSample, "respectChainedReturnType_singleCall_fromNew", typeChainSimulator));
         Assert.assertTrue(hasOnlyTypes(fileSample, "respectChainedReturnType_multiCall_fromVariable", typeChainSimulator));
+
+        Assert.assertTrue(hasOnlyTypes(fileSample, "respectMixedReturnType_fromUnresolvableReference_fromVariable", PhpType.MIXED));
+        Assert.assertTrue(hasOnlyTypes(fileSample, "respectMixedReturnType_fromUnresolvableReference_fromFunction", PhpType.MIXED));
     }
 }

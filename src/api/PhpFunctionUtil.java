@@ -63,10 +63,21 @@ public enum PhpFunctionUtil {
                             if (phpInstructionTypes != null) {
                                 mergeTypes(functionReturnTypes, phpInstructionTypes);
                             }
+
+                            continue;
                         }
+
+                        functionReturnTypes.add(PhpType.MIXED);
                     }
                     else if (phpInstructionArgument instanceof PhpTypedElement) {
-                        mergeTypes(functionReturnTypes, ((PhpTypedElement) phpInstructionArgument).getType());
+                        final PhpType phpInstructionType = ((PhpTypedElement) phpInstructionArgument).getType();
+
+                        if (phpInstructionType.isEmpty()) {
+                            functionReturnTypes.add(PhpType.MIXED);
+                            continue;
+                        }
+
+                        mergeTypes(functionReturnTypes, phpInstructionType);
                     }
                 }
             }
