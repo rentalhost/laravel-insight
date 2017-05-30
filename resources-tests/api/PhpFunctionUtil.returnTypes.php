@@ -145,3 +145,13 @@ function respectChainedReturnType_multiCall_fromVariable()
         ->chain()->chain()->chain()->chain()->chain()
         ->chain()->chain()->chain()->chain()->chain();
 }
+
+function respectMixedReturnType_fromUnresolvableReference_fromVariable()
+{
+    return $unresolvableVariable;
+}
+
+function respectMixedReturnType_fromUnresolvableReference_fromFunction()
+{
+    return unresolvableFunction();
+}
