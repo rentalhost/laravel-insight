@@ -2,20 +2,21 @@ package net.rentalhost.idea.api;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.jetbrains.php.lang.psi.elements.PhpNamedElement;
+import com.jetbrains.php.lang.psi.elements.Function;
 import com.jetbrains.php.lang.psi.resolve.types.PhpType;
 import org.junit.Assert;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import net.rentalhost.suite.FixtureSuite;
 
 public class PhpFunctionUtilTest extends FixtureSuite {
-    private static PhpNamedElement getFunction(
+    private static Function getFunction(
         final PsiElement fileSample,
         final String functionName
     ) {
-        return getElementByName(fileSample, functionName);
+        return (Function) getElementByName(fileSample, functionName);
     }
 
     private static boolean hasOnlyTypes(
@@ -23,7 +24,7 @@ public class PhpFunctionUtilTest extends FixtureSuite {
         final String functionName,
         final PhpType... expectedTypesList
     ) {
-        final Set<String> returnTypes = valueOf(PhpFunctionUtil.getReturnType(getFunction(fileSample, functionName))).getTypes();
+        final Collection<String> returnTypes = new ArrayList<>(valueOf(PhpFunctionUtil.getReturnType(getFunction(fileSample, functionName))).getTypes());
 
         for (final PhpType expectedTypes : expectedTypesList) {
             for (final String expectedType : expectedTypes.getTypes()) {
@@ -52,5 +53,11 @@ public class PhpFunctionUtilTest extends FixtureSuite {
         Assert.assertTrue(hasOnlyTypes(fileSample, "respectPhpdocReturnType_NullOrString", PhpType.STRING, PhpType.NULL));
         Assert.assertTrue(hasOnlyTypes(fileSample, "respectPhpdocReturnType_AllScalarTypes", PhpType.SCALAR));
         Assert.assertTrue(hasOnlyTypes(fileSample, "respectPhpdocReturnType_UnresolvableQualifier", typeUnresolvableQualifier));
+
+        Assert.assertTrue(hasOnlyTypes(fileSample, "respectReturnType_SingularType", PhpType.INT));
+        Assert.assertTrue(hasOnlyTypes(fileSample, "respectReturnType_SingularNullableType", PhpType.INT, PhpType.NULL));
+        Assert.assertTrue(hasOnlyTypes(fileSample, "respectReturnType_UnresolvableQualifierType", typeUnresolvableQualifier));
+        Assert.assertTrue(hasOnlyTypes(fileSample, "respectReturnType_UnresolvableQualifierNullableType", typeUnresolvableQualifier, PhpType.NULL));
+        Assert.assertTrue(hasOnlyTypes(fileSample, "respectReturnType_CCShouldIgnoresPhpdoc", PhpType.INT));
     }
 }

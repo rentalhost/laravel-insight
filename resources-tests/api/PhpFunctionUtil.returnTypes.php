@@ -24,3 +24,24 @@ function respectPhpdocReturnType_AllScalarTypes()
 function respectPhpdocReturnType_UnresolvableQualifier()
 {
 }
+
+function respectReturnType_SingularType(): int
+{
+}
+
+function respectReturnType_SingularNullableType(): ?int
+{
+}
+
+function respectReturnType_UnresolvableQualifierType(): UnresolvableQualifier
+{
+}
+
+function respectReturnType_UnresolvableQualifierNullableType(): ?UnresolvableQualifier
+{
+}
+
+/** @return string (ignored) */
+function respectReturnType_CCShouldIgnoresPhpdoc(): int
+{
+}
