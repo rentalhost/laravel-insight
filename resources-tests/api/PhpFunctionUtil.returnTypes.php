@@ -110,3 +110,10 @@ class ThisQualifier
         return $this;
     }
 }
+
+class SelfQualifier
+{
+    public function respectSelfQualifierOnReturn(): self
+    {
+    }
+}

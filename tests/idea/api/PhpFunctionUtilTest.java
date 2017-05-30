@@ -50,6 +50,7 @@ public class PhpFunctionUtilTest extends FixtureSuite {
         final PhpType typeResolvableQualifier   = PhpType.builder().add("\\MyNamespace\\ResolvableQualifier").build();
         final PhpType typeABCQualifiers         = PhpType.builder().add("\\A").add("\\B").add("\\C").build();
         final PhpType typeThisQualifier         = PhpType.builder().add("\\ThisQualifier").build();
+        final PhpType typeSelfQualifier         = PhpType.builder().add("\\SelfQualifier").build();
 
         Assert.assertTrue(hasOnlyTypes(fileSample, "respectPhpdocReturnType_StringOnly", PhpType.STRING));
         Assert.assertTrue(hasOnlyTypes(fileSample, "respectPhpdocReturnType_StringOrNull", PhpType.STRING, PhpType.NULL));
@@ -76,5 +77,7 @@ public class PhpFunctionUtilTest extends FixtureSuite {
 
         Assert.assertTrue(hasOnlyTypes(fileSample, "respectVariableTypeOnReturn", PhpType.STRING));
         Assert.assertTrue(hasOnlyTypes(fileSample, "respectThisTypeOnReturn", typeThisQualifier));
+
+        Assert.assertTrue(hasOnlyTypes(fileSample, "respectSelfQualifierOnReturn", typeSelfQualifier));
     }
 }
