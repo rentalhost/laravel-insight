@@ -1,5 +1,6 @@
 package net.rentalhost.idea.laravelInsight.annotation;
 
+import com.google.common.base.CaseFormat;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
@@ -11,6 +12,7 @@ import com.jetbrains.php.lang.psi.elements.*;
 import com.jetbrains.php.lang.psi.resolve.types.PhpType;
 import com.jetbrains.php.lang.psi.visitors.PhpElementVisitor;
 
+import java.util.Collection;
 import java.util.Objects;
 
 import org.jetbrains.annotations.NotNull;
@@ -18,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import net.rentalhost.idea.api.PhpClassUtil;
 import net.rentalhost.idea.api.PhpDocCommentUtil;
 import net.rentalhost.idea.api.PhpExpressionUtil;
+import net.rentalhost.idea.api.PhpFunctionUtil;
 import net.rentalhost.idea.laravelInsight.resources.LaravelClasses;
 
 public class PropertyWithoutAnnotationInspection extends PhpInspection {
@@ -62,6 +65,18 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
             }
 
             return issueReceptor;
+        }
+
+        private static boolean isRelationship(final Collection<String> functionTypes) {
+            return functionTypes.contains(LaravelClasses.ELOQUENT_RELATIONSHIP_HASONE.toString()) ||
+                   functionTypes.contains(LaravelClasses.ELOQUENT_RELATIONSHIP_HASMANY.toString()) ||
+                   functionTypes.contains(LaravelClasses.ELOQUENT_RELATIONSHIP_HASMANYTHROUGHT.toString()) ||
+                   functionTypes.contains(LaravelClasses.ELOQUENT_RELATIONSHIP_MORPHTO.toString()) ||
+                   functionTypes.contains(LaravelClasses.ELOQUENT_RELATIONSHIP_MORPHONE.toString()) ||
+                   functionTypes.contains(LaravelClasses.ELOQUENT_RELATIONSHIP_MORPHMANY.toString()) ||
+                   functionTypes.contains(LaravelClasses.ELOQUENT_RELATIONSHIP_MORPHTOMANY.toString()) ||
+                   functionTypes.contains(LaravelClasses.ELOQUENT_RELATIONSHIP_BELONGSTO.toString()) ||
+                   functionTypes.contains(LaravelClasses.ELOQUENT_RELATIONSHIP_BELONGSTOMANY.toString());
         }
 
         @Override
@@ -157,6 +172,28 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
 
             reportTimestamps(phpClass);
             reportPrimaryKey(phpClass);
+        }
+
+        @Override
+        public void visitPhpMethod(final Method method) {
+            final PhpClass methodClass = method.getContainingClass();
+            assert methodClass != null;
+
+            if (PhpClassUtil.findSuperOfType(methodClass, LaravelClasses.ELOQUENT_MODEL.toString()) == null) {
+                return;
+            }
+
+            final PhpType methodReturnType = PhpFunctionUtil.getReturnType(method);
+            assert methodReturnType != null;
+
+            if (!isRelationship(methodReturnType.getTypes())) {
+                return;
+            }
+
+            final PsiElement methodIdentifier = method.getNameIdentifier();
+            assert methodIdentifier != null;
+
+            validatePropertyAnnotation(methodClass, methodIdentifier, CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, method.getName()));
         }
 
         private void reportTimestamps(final PhpClass phpClass) {

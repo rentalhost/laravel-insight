@@ -2,6 +2,15 @@
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class EloquentCasts_WithoutPhpdoc extends Model
 {
@@ -176,4 +185,82 @@ class <weak_warning descr="@property $id was not annotated">EloquentPrimaryKey_S
 class CC_EloquentPrimaryKey_PrimaryKeyWithoutDefaultValue extends Model
 {
     protected $primaryKey;
+}
+
+class EloquentRelationship_SimulatingTheEloquentModelMethods extends Model
+{
+    /** @return HasOne */
+    public function <weak_warning descr="@property $has_one was not annotated">hasOne</weak_warning>() {
+    }
+
+    /** @return HasMany */
+    public function <weak_warning descr="@property $has_many was not annotated">hasMany</weak_warning>() {
+    }
+
+    /** @return HasManyThrough */
+    public function <weak_warning descr="@property $has_many_through was not annotated">hasManyThrough</weak_warning>() {
+    }
+
+    /** @return MorphTo */
+    public function <weak_warning descr="@property $morph_to was not annotated">morphTo</weak_warning>() {
+    }
+
+    /** @return MorphOne */
+    public function <weak_warning descr="@property $morph_one was not annotated">morphOne</weak_warning>() {
+    }
+
+    /** @return MorphMany */
+    public function <weak_warning descr="@property $morph_many was not annotated">morphMany</weak_warning>() {
+    }
+
+    /** @return MorphToMany */
+    public function <weak_warning descr="@property $morph_to_many was not annotated">morphToMany</weak_warning>() {
+    }
+
+    /** @return BelongsTo */
+    public function <weak_warning descr="@property $belongs_to was not annotated">belongsTo</weak_warning>() {
+    }
+
+    /** @return BelongsToMany */
+    public function <weak_warning descr="@property $belongs_to_many was not annotated">belongsToMany</weak_warning>() {
+    }
+}
+
+class EloquentRelationship_HasOne extends EloquentRelationship_SimulatingTheEloquentModelMethods
+{
+    public function <weak_warning descr="@property $has_one_property was not annotated">hasOneProperty</weak_warning>() {
+        return $this->hasOne();
+    }
+
+    public function <weak_warning descr="@property $has_many_property was not annotated">hasManyProperty</weak_warning>() {
+        return $this->hasMany();
+    }
+
+    public function <weak_warning descr="@property $has_many_through_property was not annotated">hasManyThroughProperty</weak_warning>() {
+        return $this->hasManyThrough();
+    }
+
+    public function <weak_warning descr="@property $morph_to_property was not annotated">morphToProperty</weak_warning>() {
+        return $this->morphTo();
+    }
+
+    public function <weak_warning descr="@property $morph_one_property was not annotated">morphOneProperty</weak_warning>() {
+        return $this->morphOne();
+    }
+
+    public function <weak_warning descr="@property $morph_many_property was not annotated">morphManyProperty</weak_warning>() {
+        return $this->morphMany();
+    }
+
+    public function <weak_warning descr="@property $morph_to_many_property was not annotated">morphToManyProperty</weak_warning>() {
+        return $this->morphToMany();
+    }
+
+    public function <weak_warning descr="@property $belongs_to_property was not annotated">belongsToProperty</weak_warning>() {
+        return $this->belongsTo();
+    }
+
+    public function <weak_warning descr="@property $belongs_to_many_property was not annotated">belongsToManyProperty</weak_warning>() {
+        return $this->belongsToMany();
+    }
 }
