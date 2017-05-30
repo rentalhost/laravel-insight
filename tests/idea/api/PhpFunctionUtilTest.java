@@ -48,6 +48,7 @@ public class PhpFunctionUtilTest extends FixtureSuite {
         // Tests...
         final PhpType typeUnresolvableQualifier = PhpType.builder().add("\\UnresolvableQualifier").build();
         final PhpType typeResolvableQualifier   = PhpType.builder().add("\\MyNamespace\\ResolvableQualifier").build();
+        final PhpType typeABCQualifiers         = PhpType.builder().add("\\A").add("\\B").add("\\C").build();
 
         Assert.assertTrue(hasOnlyTypes(fileSample, "respectPhpdocReturnType_StringOnly", PhpType.STRING));
         Assert.assertTrue(hasOnlyTypes(fileSample, "respectPhpdocReturnType_StringOrNull", PhpType.STRING, PhpType.NULL));
@@ -62,5 +63,9 @@ public class PhpFunctionUtilTest extends FixtureSuite {
         Assert.assertTrue(hasOnlyTypes(fileSample, "respectReturnType_UnresolvableQualifierNullableType", typeUnresolvableQualifier, PhpType.NULL));
         Assert.assertTrue(hasOnlyTypes(fileSample, "respectReturnType_CCShouldIgnoresPhpdoc", PhpType.INT));
         Assert.assertTrue(hasOnlyTypes(fileSample, "respectReturnType_ResolvableQualifier", typeResolvableQualifier));
+
+        Assert.assertTrue(hasOnlyTypes(fileSample, "respectNewReturnType_UnresolvableQualifier", typeUnresolvableQualifier));
+        Assert.assertTrue(hasOnlyTypes(fileSample, "respectNewReturnType_ResolvableQualifier", typeResolvableQualifier));
+        Assert.assertTrue(hasOnlyTypes(fileSample, "respectNewReturnType_ABCQualifiers", typeABCQualifiers));
     }
 }

@@ -2,10 +2,14 @@ package net.rentalhost.idea.api;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.jetbrains.php.codeInsight.controlFlow.instructions.PhpInstruction;
+import com.jetbrains.php.codeInsight.controlFlow.instructions.PhpReturnInstruction;
 import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocComment;
 import com.jetbrains.php.lang.documentation.phpdoc.psi.tags.PhpDocReturnTag;
 import com.jetbrains.php.lang.lexer.PhpTokenTypes;
+import com.jetbrains.php.lang.psi.elements.ClassReference;
 import com.jetbrains.php.lang.psi.elements.Function;
+import com.jetbrains.php.lang.psi.elements.NewExpression;
 import com.jetbrains.php.lang.psi.elements.PhpReference;
 import com.jetbrains.php.lang.psi.resolve.types.PhpType;
 
@@ -35,6 +39,30 @@ public enum PhpFunctionUtil {
             }
 
             return functionReturnTypePrimary.build();
+        }
+
+        final PhpInstruction[] phpInstructions = function.getControlFlow().getInstructions();
+        if (phpInstructions.length != 0) {
+            final PhpType.PhpTypeBuilder functionReturnTypes = PhpType.builder();
+
+            for (final PhpInstruction phpInstruction : phpInstructions) {
+                if (phpInstruction instanceof PhpReturnInstruction) {
+                    final PsiElement phpInstructionArgument = ((PhpReturnInstruction) phpInstruction).getArgument();
+
+                    if (phpInstructionArgument instanceof NewExpression) {
+                        final ClassReference phpInstructionClassReference = ((NewExpression) phpInstructionArgument).getClassReference();
+                        assert phpInstructionClassReference != null;
+
+                        functionReturnTypes.add(phpInstructionClassReference.getFQN());
+                    }
+                }
+            }
+
+            final PhpType functionReturnTypesBuilded = functionReturnTypes.build();
+
+            if (!functionReturnTypesBuilded.isEmpty()) {
+                return functionReturnTypesBuilded;
+            }
         }
 
         final PhpDocComment functionDocComment = function.getDocComment();
