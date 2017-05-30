@@ -184,7 +184,6 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
             }
 
             final PhpType methodReturnType = PhpFunctionUtil.getReturnType(method);
-            assert methodReturnType != null;
 
             if (!isRelationship(methodReturnType.getTypes())) {
                 return;
