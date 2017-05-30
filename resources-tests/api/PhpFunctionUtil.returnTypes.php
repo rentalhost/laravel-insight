@@ -96,3 +96,17 @@ function respectIndirectReturnType()
 {
     return returnResolvableQualifier();
 }
+
+function respectVariableTypeOnReturn()
+{
+    $variable = 'string';
+    return $variable;
+}
+
+class ThisQualifier
+{
+    public function respectThisTypeOnReturn()
+    {
+        return $this;
+    }
+}
