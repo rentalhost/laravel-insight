@@ -29,11 +29,4 @@ public enum PhpDocCommentUtil {
 
         return null;
     }
-
-    public static boolean hasProperty(
-        final PhpDocComment docComment,
-        final String propertyName
-    ) {
-        return findProperty(docComment, propertyName) != null;
-    }
 }
