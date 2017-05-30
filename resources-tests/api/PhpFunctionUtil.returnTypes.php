@@ -86,3 +86,13 @@ function respectClosureReturnType_shouldIgnoresInnerReturnType()
         return new ShouldIgnoreThat();
     };
 }
+
+function returnResolvableQualifier()
+{
+    return new ResolvableQualifier();
+}
+
+function respectIndirectReturnType()
+{
+    return returnResolvableQualifier();
+}

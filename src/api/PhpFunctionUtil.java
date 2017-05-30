@@ -54,6 +54,17 @@ public enum PhpFunctionUtil {
 
                         functionReturnTypes.add(phpInstructionClassReference.getFQN());
                     }
+                    else if (phpInstructionArgument instanceof FunctionReference) {
+                        final PsiElement phpInstructionResolved = ((PsiReference) phpInstructionArgument).resolve();
+
+                        if (phpInstructionResolved != null) {
+                            final PhpType phpInstructionTypes = getReturnType((Function) phpInstructionResolved);
+
+                            if (phpInstructionTypes != null) {
+                                mergeTypes(functionReturnTypes, phpInstructionTypes);
+                            }
+                        }
+                    }
                     else if (phpInstructionArgument instanceof PhpTypedElement) {
                         mergeTypes(functionReturnTypes, ((PhpTypedElement) phpInstructionArgument).getType());
                     }
