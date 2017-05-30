@@ -67,5 +67,8 @@ public class PhpFunctionUtilTest extends FixtureSuite {
         Assert.assertTrue(hasOnlyTypes(fileSample, "respectNewReturnType_UnresolvableQualifier", typeUnresolvableQualifier));
         Assert.assertTrue(hasOnlyTypes(fileSample, "respectNewReturnType_ResolvableQualifier", typeResolvableQualifier));
         Assert.assertTrue(hasOnlyTypes(fileSample, "respectNewReturnType_ABCQualifiers", typeABCQualifiers));
+
+        Assert.assertTrue(hasOnlyTypes(fileSample, "respectClosureReturnType", PhpType.CLOSURE));
+        Assert.assertTrue(hasOnlyTypes(fileSample, "respectClosureReturnType_shouldIgnoresInnerReturnType", PhpType.CLOSURE));
     }
 }

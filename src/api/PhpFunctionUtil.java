@@ -2,18 +2,17 @@ package net.rentalhost.idea.api;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiReference;
 import com.jetbrains.php.codeInsight.controlFlow.instructions.PhpInstruction;
 import com.jetbrains.php.codeInsight.controlFlow.instructions.PhpReturnInstruction;
 import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocComment;
 import com.jetbrains.php.lang.documentation.phpdoc.psi.tags.PhpDocReturnTag;
 import com.jetbrains.php.lang.lexer.PhpTokenTypes;
-import com.jetbrains.php.lang.psi.elements.ClassReference;
-import com.jetbrains.php.lang.psi.elements.Function;
-import com.jetbrains.php.lang.psi.elements.NewExpression;
-import com.jetbrains.php.lang.psi.elements.PhpReference;
+import com.jetbrains.php.lang.psi.elements.*;
 import com.jetbrains.php.lang.psi.resolve.types.PhpType;
 
 import java.util.Objects;
+import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -55,6 +54,9 @@ public enum PhpFunctionUtil {
 
                         functionReturnTypes.add(phpInstructionClassReference.getFQN());
                     }
+                    else if (phpInstructionArgument instanceof PhpTypedElement) {
+                        mergeTypes(functionReturnTypes, ((PhpTypedElement) phpInstructionArgument).getType());
+                    }
                 }
             }
 
@@ -76,5 +78,16 @@ public enum PhpFunctionUtil {
         }
 
         return null;
+    }
+
+    private static void mergeTypes(
+        final PhpType.PhpTypeBuilder typeBuilder,
+        final PhpType typeList
+    ) {
+        final Set<String> phpInstructionTypes = typeList.getTypes();
+
+        for (final String phpInstructionType : phpInstructionTypes) {
+            typeBuilder.add(phpInstructionType);
+        }
     }
 }

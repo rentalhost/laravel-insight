@@ -73,3 +73,16 @@ function respectNewReturnType_ABCQualifiers()
     return new B();
     return new C();
 }
+
+function respectClosureReturnType()
+{
+    return function () {
+    };
+}
+
+function respectClosureReturnType_shouldIgnoresInnerReturnType()
+{
+    return function () {
+        return new ShouldIgnoreThat();
+    };
+}
