@@ -270,3 +270,21 @@ class EloquentRelationship_HasOne extends EloquentRelationship_SimulatingTheEloq
     public function <weak_warning descr="@property $some_property was not annotated">setSomePropertyAttribute</weak_warning>() {
     }
 }
+
+class EloquentModel_MagicGetterAndSetter extends Model {
+    public $shouldBeIgnored_isAPublicProperty;
+    protected $should_be_accepted;
+}
+
+$someModel = new EloquentModel_MagicGetterAndSetter;
+$someModel-><weak_warning descr="@property $some_property was not annotated">some_property</weak_warning> = 5;
+echo $someModel-><weak_warning descr="@property $some_property was not annotated">some_property</weak_warning>;
+
+$someModel->shouldBeIgnored_onlyLowerCaseIsAllowed = 5;
+echo $someModel->shouldBeIgnored_onlyLowerCaseIsAllowed;
+
+$someModel->shouldBeIgnored_isAPublicProperty = 5;
+echo $someModel->shouldBeIgnored_isAPublicProperty;
+
+$notAModel = new NotAModel;
+$notAModel->should_be_ignored_is_not_from_a_eloquent_model;

@@ -3,9 +3,11 @@ package net.rentalhost.idea.laravelInsight.annotation;
 import com.google.common.base.CaseFormat;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
+import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiNameIdentifierOwner;
+import com.jetbrains.php.PhpIndex;
 import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocComment;
 import com.jetbrains.php.lang.inspections.PhpInspection;
 import com.jetbrains.php.lang.psi.elements.*;
@@ -198,6 +200,54 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
             }
 
             reportRelationship(method, methodClass);
+        }
+
+        @Override
+        public void visitPhpFieldReference(final FieldReference fieldReference) {
+            final ASTNode fieldNameNode = fieldReference.getNameNode();
+
+            if (fieldNameNode == null) {
+                return;
+            }
+
+            final String fieldNameText = fieldNameNode.getText();
+
+            if (!Objects.equals(fieldNameText, fieldNameText.toLowerCase())) {
+                return;
+            }
+
+            final PhpExpression fieldClassReference = fieldReference.getClassReference();
+
+            if (!PhpTypedElement.class.isInstance(fieldClassReference)) {
+                return;
+            }
+
+            for (final String fieldClassType : fieldClassReference.getType().getTypes()) {
+                final Collection<PhpClass> fieldClasses = PhpIndex.getInstance(problemsHolder.getProject()).getAnyByFQN(fieldClassType);
+
+                if (fieldClasses.isEmpty()) {
+                    continue;
+                }
+
+                final PhpClass fieldClass = fieldClasses.iterator().next();
+
+                if (PhpClassUtil.findSuperOfType(fieldClass, LaravelClasses.ELOQUENT_MODEL.toString()) == null) {
+                    continue;
+                }
+
+                final String fieldName = fieldReference.getName();
+                assert fieldName != null;
+
+                final Field fieldDeclaration = PhpClassUtil.findPropertyDeclaration(fieldClass, fieldName);
+
+                if ((fieldDeclaration != null) &&
+                    fieldDeclaration.getModifier().isPublic()) {
+                    continue;
+                }
+
+                validatePropertyAnnotation(fieldClass, fieldNameNode.getPsi(), fieldNameText);
+                break;
+            }
         }
 
         private void reportRelationship(
