@@ -1,5 +1,7 @@
 <?php
 
+use MyNamespace\ResolvableQualifier;
+
 /** @return string */
 function respectPhpdocReturnType_StringOnly()
 {
@@ -25,6 +27,11 @@ function respectPhpdocReturnType_UnresolvableQualifier()
 {
 }
 
+/** @return ResolvableQualifier */
+function respectPhpdocReturnType_ResolvableQualifier()
+{
+}
+
 function respectReturnType_SingularType(): int
 {
 }
@@ -43,5 +50,9 @@ function respectReturnType_UnresolvableQualifierNullableType(): ?UnresolvableQua
 
 /** @return string (ignored) */
 function respectReturnType_CCShouldIgnoresPhpdoc(): int
+{
+}
+
+function respectReturnType_ResolvableQualifier(): ResolvableQualifier
 {
 }
