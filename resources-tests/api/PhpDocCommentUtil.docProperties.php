@@ -6,3 +6,6 @@
  * @property int $param3 description
  * @property $param4 int
  */
+function reference()
+{
+}
