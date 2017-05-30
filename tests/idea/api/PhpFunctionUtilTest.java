@@ -51,6 +51,7 @@ public class PhpFunctionUtilTest extends FixtureSuite {
         final PhpType typeABCQualifiers         = PhpType.builder().add("\\A").add("\\B").add("\\C").build();
         final PhpType typeThisQualifier         = PhpType.builder().add("\\ThisQualifier").build();
         final PhpType typeSelfQualifier         = PhpType.builder().add("\\SelfQualifier").build();
+        final PhpType typeChainSimulator        = PhpType.builder().add("\\ChainSimulator").build();
 
         Assert.assertTrue(hasOnlyTypes(fileSample, "respectPhpdocReturnType_StringOnly", PhpType.STRING));
         Assert.assertTrue(hasOnlyTypes(fileSample, "respectPhpdocReturnType_StringOrNull", PhpType.STRING, PhpType.NULL));
@@ -81,5 +82,8 @@ public class PhpFunctionUtilTest extends FixtureSuite {
         Assert.assertTrue(hasOnlyTypes(fileSample, "respectSelfQualifierOnReturn", typeSelfQualifier));
 
         Assert.assertTrue(hasOnlyTypes(fileSample, "unifyDuplicatedReturnTypes", typeResolvableQualifier));
+
+        Assert.assertTrue(hasOnlyTypes(fileSample, "respectChainedReturnType_singleCall_fromNew", typeChainSimulator));
+        Assert.assertTrue(hasOnlyTypes(fileSample, "respectChainedReturnType_multiCall_fromVariable", typeChainSimulator));
     }
 }

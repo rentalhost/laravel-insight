@@ -123,3 +123,25 @@ function unifyDuplicatedReturnTypes()
     return new ResolvableQualifier;
     return new ResolvableQualifier;
 }
+
+class ChainSimulator
+{
+    public function chain()
+    {
+        return $this;
+    }
+}
+
+function respectChainedReturnType_singleCall_fromNew()
+{
+    return (new ChainSimulator())
+        ->chain();
+}
+
+function respectChainedReturnType_multiCall_fromVariable()
+{
+    $chainSimulator = new ChainSimulator();
+    return $chainSimulator
+        ->chain()->chain()->chain()->chain()->chain()
+        ->chain()->chain()->chain()->chain()->chain();
+}
