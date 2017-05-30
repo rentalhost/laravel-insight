@@ -6,7 +6,7 @@ import java.util.function.Function;
 
 import org.jetbrains.annotations.Nullable;
 
-public enum TreeUtil {
+enum TreeUtil {
     ;
 
     @Nullable
