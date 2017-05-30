@@ -117,3 +117,9 @@ class SelfQualifier
     {
     }
 }
+
+function unifyDuplicatedReturnTypes()
+{
+    return new ResolvableQualifier;
+    return new ResolvableQualifier;
+}

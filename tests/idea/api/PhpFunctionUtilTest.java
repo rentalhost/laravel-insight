@@ -79,5 +79,7 @@ public class PhpFunctionUtilTest extends FixtureSuite {
         Assert.assertTrue(hasOnlyTypes(fileSample, "respectThisTypeOnReturn", typeThisQualifier));
 
         Assert.assertTrue(hasOnlyTypes(fileSample, "respectSelfQualifierOnReturn", typeSelfQualifier));
+
+        Assert.assertTrue(hasOnlyTypes(fileSample, "unifyDuplicatedReturnTypes", typeResolvableQualifier));
     }
 }
