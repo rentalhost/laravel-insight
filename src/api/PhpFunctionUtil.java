@@ -13,14 +13,36 @@ import com.jetbrains.php.lang.psi.resolve.types.PhpType;
 
 import java.util.Objects;
 import java.util.Set;
+import java.util.Stack;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public enum PhpFunctionUtil {
     ;
 
-    @Nullable
+    @NotNull
     public static PhpType getReturnType(final Function function) {
+        final PhpType typeResolved = recursionResolver(function, new Stack<>());
+
+        if (typeResolved == null) {
+            return PhpType.MIXED;
+        }
+
+        return typeResolved;
+    }
+
+    @Nullable
+    private static PhpType recursionResolver(
+        final Function function,
+        final Stack<Function> stackedFunctions
+    ) {
+        if (stackedFunctions.contains(function)) {
+            return null;
+        }
+
+        stackedFunctions.push(function);
+
         final PsiElement functionReturnType = function.getReturnType();
 
         if (functionReturnType instanceof PhpReference) {
@@ -58,7 +80,7 @@ public enum PhpFunctionUtil {
                         final PsiElement phpInstructionResolved = ((PsiReference) phpInstructionArgument).resolve();
 
                         if (phpInstructionResolved != null) {
-                            final PhpType phpInstructionTypes = getReturnType((Function) phpInstructionResolved);
+                            final PhpType phpInstructionTypes = recursionResolver((Function) phpInstructionResolved, stackedFunctions);
 
                             if (phpInstructionTypes != null) {
                                 mergeTypes(functionReturnTypes, phpInstructionTypes);

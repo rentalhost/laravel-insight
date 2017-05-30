@@ -155,3 +155,34 @@ function respectMixedReturnType_fromUnresolvableReference_fromFunction()
 {
     return unresolvableFunction();
 }
+
+function avoidInfinityLoopingA_mixedType()
+{
+    return avoidInfinityLoopingB_mixedType();
+}
+
+function avoidInfinityLoopingB_mixedType()
+{
+    return avoidInfinityLoopingC_mixedType();
+}
+
+function avoidInfinityLoopingC_mixedType()
+{
+    return avoidInfinityLoopingA_mixedType();
+}
+
+/** @return string (should be respected over mixed) */
+function avoidInfinityLoopingA_respectPhpdoc()
+{
+    return avoidInfinityLoopingB_respectPhpdoc();
+}
+
+function avoidInfinityLoopingB_respectPhpdoc()
+{
+    return avoidInfinityLoopingC_respectPhpdoc();
+}
+
+function avoidInfinityLoopingC_respectPhpdoc()
+{
+    return avoidInfinityLoopingA_respectPhpdoc();
+}

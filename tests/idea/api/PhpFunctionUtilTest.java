@@ -88,5 +88,8 @@ public class PhpFunctionUtilTest extends FixtureSuite {
 
         Assert.assertTrue(hasOnlyTypes(fileSample, "respectMixedReturnType_fromUnresolvableReference_fromVariable", PhpType.MIXED));
         Assert.assertTrue(hasOnlyTypes(fileSample, "respectMixedReturnType_fromUnresolvableReference_fromFunction", PhpType.MIXED));
+
+        Assert.assertTrue(hasOnlyTypes(fileSample, "avoidInfinityLoopingA_mixedType", PhpType.MIXED));
+        Assert.assertTrue(hasOnlyTypes(fileSample, "avoidInfinityLoopingA_respectPhpdoc", PhpType.STRING));
     }
 }
