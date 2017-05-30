@@ -47,17 +47,20 @@ public class PhpFunctionUtilTest extends FixtureSuite {
 
         // Tests...
         final PhpType typeUnresolvableQualifier = PhpType.builder().add("\\UnresolvableQualifier").build();
+        final PhpType typeResolvableQualifier   = PhpType.builder().add("\\MyNamespace\\ResolvableQualifier").build();
 
         Assert.assertTrue(hasOnlyTypes(fileSample, "respectPhpdocReturnType_StringOnly", PhpType.STRING));
         Assert.assertTrue(hasOnlyTypes(fileSample, "respectPhpdocReturnType_StringOrNull", PhpType.STRING, PhpType.NULL));
         Assert.assertTrue(hasOnlyTypes(fileSample, "respectPhpdocReturnType_NullOrString", PhpType.STRING, PhpType.NULL));
         Assert.assertTrue(hasOnlyTypes(fileSample, "respectPhpdocReturnType_AllScalarTypes", PhpType.SCALAR));
         Assert.assertTrue(hasOnlyTypes(fileSample, "respectPhpdocReturnType_UnresolvableQualifier", typeUnresolvableQualifier));
+        Assert.assertTrue(hasOnlyTypes(fileSample, "respectPhpdocReturnType_ResolvableQualifier", typeResolvableQualifier));
 
         Assert.assertTrue(hasOnlyTypes(fileSample, "respectReturnType_SingularType", PhpType.INT));
         Assert.assertTrue(hasOnlyTypes(fileSample, "respectReturnType_SingularNullableType", PhpType.INT, PhpType.NULL));
         Assert.assertTrue(hasOnlyTypes(fileSample, "respectReturnType_UnresolvableQualifierType", typeUnresolvableQualifier));
         Assert.assertTrue(hasOnlyTypes(fileSample, "respectReturnType_UnresolvableQualifierNullableType", typeUnresolvableQualifier, PhpType.NULL));
         Assert.assertTrue(hasOnlyTypes(fileSample, "respectReturnType_CCShouldIgnoresPhpdoc", PhpType.INT));
+        Assert.assertTrue(hasOnlyTypes(fileSample, "respectReturnType_ResolvableQualifier", typeResolvableQualifier));
     }
 }
