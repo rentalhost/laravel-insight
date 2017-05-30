@@ -1,0 +1,45 @@
+package net.rentalhost.idea.api;
+
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocComment;
+import com.jetbrains.php.lang.lexer.PhpTokenTypes;
+import com.jetbrains.php.lang.psi.elements.Function;
+import org.junit.Assert;
+
+import net.rentalhost.suite.FixtureSuite;
+
+public class TreeUtilTest extends FixtureSuite {
+    public void testGetPrevMatch() {
+        final PsiFile fileSample = getResourceFile("api/TreeUtil.elements.php");
+
+        Assert.assertNull(TreeUtil.getPrevMatch(
+            getElementByName(fileSample, "referenceVariable"),
+            filterBy -> false,
+            stopBy -> false
+        ));
+
+        Assert.assertNull(TreeUtil.getPrevMatch(
+            getElementByName(fileSample, "referenceVariable"),
+            filterBy -> false,
+            stopBy -> true
+        ));
+
+        final Function   referenceFunction   = (Function) getElementByName(fileSample, "referenceFunction");
+        final PsiElement referenceReturnType = valueOf(referenceFunction.getReturnType());
+
+        Assert.assertNull(TreeUtil.getPrevMatch(
+            referenceReturnType,
+            filterBy -> (filterBy instanceof ASTNode) && filterBy.equals(PhpTokenTypes.opQUEST),
+            stopBy -> stopBy instanceof PhpDocComment
+        ));
+
+        Assert.assertEquals(PhpTokenTypes.opQUEST,
+                            valueOf(((ASTNode) TreeUtil.getPrevMatch(
+                                referenceReturnType,
+                                filterBy -> (filterBy instanceof ASTNode) && ((ASTNode) filterBy).getElementType().equals(PhpTokenTypes.opQUEST),
+                                stopBy -> false
+                            ))).getElementType());
+    }
+}
