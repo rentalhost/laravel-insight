@@ -1,7 +1,6 @@
 package net.rentalhost.suite;
 
 import com.intellij.codeInspection.LocalInspectionTool;
-import com.intellij.openapi.vfs.newvfs.impl.VfsRootAccess;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -51,19 +50,5 @@ public class FixtureSuite extends CodeInsightFixtureTestCase {
     @NotNull
     protected PsiFile getResourceFile(final String path) {
         return valueOf(myFixture.configureByFile("resources-tests/" + path));
-    }
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-
-        VfsRootAccess.allowRootAccess(getResourcesPath());
-    }
-
-    @Override
-    protected void tearDown() throws Exception {
-        VfsRootAccess.disallowRootAccess(getResourcesPath());
-
-        super.tearDown();
     }
 }
