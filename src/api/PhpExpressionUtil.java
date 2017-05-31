@@ -4,8 +4,6 @@ import com.intellij.psi.PsiElement;
 import com.jetbrains.php.lang.psi.elements.*;
 import com.jetbrains.php.lang.psi.elements.impl.ClassConstImpl;
 
-import java.util.Stack;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,17 +11,10 @@ public enum PhpExpressionUtil {
     ;
 
     @Nullable
-    static PhpExpression recursionResolver(
-        final PhpReference element,
-        final Stack<PhpReference> stackedReferences
-    ) {
-        final PsiElement elementResolved = element.resolve();
+    static PhpExpression recursionResolver(final RecursionResolver.Resolver<PhpReference, PhpExpression> resolver) {
+        final PsiElement elementResolved = resolver.getObject().resolve();
 
         if (elementResolved == null) {
-            return null;
-        }
-
-        if (stackedReferences.contains(element)) {
             return null;
         }
 
@@ -40,15 +31,13 @@ public enum PhpExpressionUtil {
             return (PhpExpression) referencedValue;
         }
 
-        stackedReferences.push(element);
-
-        return recursionResolver((PhpReference) referencedValue, stackedReferences);
+        return resolver.resolve((PhpReference) referencedValue);
     }
 
     @Nullable
     public static PhpExpression from(@NotNull final PhpExpression element) {
         if (element instanceof PhpReference) {
-            return recursionResolver((PhpReference) element, new Stack<>());
+            return RecursionResolver.resolve(element, PhpExpressionUtil::recursionResolver);
         }
 
         if (element instanceof AssignmentExpression) {
@@ -56,7 +45,7 @@ public enum PhpExpressionUtil {
             assert elementValue != null;
 
             if (elementValue instanceof PhpReference) {
-                return recursionResolver((PhpReference) elementValue, new Stack<>());
+                return RecursionResolver.resolve(elementValue, PhpExpressionUtil::recursionResolver);
             }
 
             return from((PhpExpression) elementValue);
