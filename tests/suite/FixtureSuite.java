@@ -49,4 +49,18 @@ public class FixtureSuite extends CodeInsightFixtureTestCase {
     protected PsiFile getResourceFile(final String path) {
         return valueOf(myFixture.configureByFile("resources-tests/" + path));
     }
+
+    @Nullable
+    protected <T> T runWriteAction(final Supplier<T> supplier) {
+        final AtomicReference<T> supplierResponse = new AtomicReference<>();
+
+        new WriteCommandAction.Simple(myFixture.getProject()) {
+            @Override
+            protected void run() throws Throwable {
+                supplierResponse.set(supplier.get());
+            }
+        }.execute();
+
+        return supplierResponse.get();
+    }
 }
