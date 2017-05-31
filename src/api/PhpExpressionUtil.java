@@ -35,22 +35,26 @@ public enum PhpExpressionUtil {
     }
 
     @Nullable
-    public static PhpExpression from(@NotNull final PhpExpression element) {
-        if (element instanceof PhpReference) {
-            return RecursionResolver.resolve(element, PhpExpressionUtil::recursionResolver);
-        }
+    public static PhpExpression from(@NotNull final PhpExpression elementInitial) {
+        return RecursionResolver.resolve(elementInitial, resolver -> {
+            final Object element = resolver.getObject();
 
-        if (element instanceof AssignmentExpression) {
-            final PhpPsiElement elementValue = ((AssignmentExpression) element).getValue();
-            assert elementValue != null;
-
-            if (elementValue instanceof PhpReference) {
-                return RecursionResolver.resolve(elementValue, PhpExpressionUtil::recursionResolver);
+            if (element instanceof PhpReference) {
+                return RecursionResolver.resolve(element, PhpExpressionUtil::recursionResolver);
             }
 
-            return from((PhpExpression) elementValue);
-        }
+            if (element instanceof AssignmentExpression) {
+                final PhpPsiElement elementValue = ((AssignmentExpression) element).getValue();
+                assert elementValue != null;
 
-        return element;
+                if (elementValue instanceof PhpReference) {
+                    return RecursionResolver.resolve(elementValue, PhpExpressionUtil::recursionResolver);
+                }
+
+                return (PhpExpression) resolver.resolve(elementValue);
+            }
+
+            return (PhpExpression) element;
+        });
     }
 }
