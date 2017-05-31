@@ -20,10 +20,7 @@ import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
 
-import net.rentalhost.idea.api.PhpClassUtil;
-import net.rentalhost.idea.api.PhpDocCommentUtil;
-import net.rentalhost.idea.api.PhpExpressionUtil;
-import net.rentalhost.idea.api.PhpFunctionUtil;
+import net.rentalhost.idea.api.*;
 import net.rentalhost.idea.laravelInsight.resources.LaravelClasses;
 
 public class PropertyWithoutAnnotationInspection extends PhpInspection {
@@ -217,13 +214,16 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
                 return;
             }
 
-            final PhpExpression fieldClassReference = fieldReference.getClassReference();
+            final PsiElement fieldClassReferenceRaw = fieldReference.getClassReference();
+            assert fieldClassReferenceRaw != null;
 
-            if (!PhpTypedElement.class.isInstance(fieldClassReference)) {
+            final PsiElement fieldClassReference = PsiElementUtil.skipParentheses(fieldClassReferenceRaw);
+
+            if (!(fieldClassReference instanceof PhpTypedElement)) {
                 return;
             }
 
-            final Set<String> fieldClassReferenceTypes = fieldClassReference.getType().global(problemsHolder.getProject()).getTypes();
+            final Set<String> fieldClassReferenceTypes = ((PhpTypedElement) fieldClassReference).getType().global(problemsHolder.getProject()).getTypes();
 
             for (final String fieldClassType : fieldClassReferenceTypes) {
                 final Collection<PhpClass> fieldClasses = PhpIndex.getInstance(problemsHolder.getProject()).getAnyByFQN(fieldClassType);
