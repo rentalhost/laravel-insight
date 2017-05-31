@@ -21,28 +21,34 @@ trait NotAnySoftDeletesTrait
 {
 }
 
+/**
+ * @property $someProperty
+ */
 class EloquentCasts_WithoutPhpdoc extends Model
 {
     protected $casts = [
-        <weak_warning descr="@property $someProperty was not annotated">'someProperty'</weak_warning> => 'int'
+        'someProperty' => 'int'
     ];
 }
 
-/** Class */
+/** Class
+ * @property $someProperty
+ */
 class EloquentCasts_WithPhpdoc_WithoutParam extends Model
 {
     protected $casts = [
-        <weak_warning descr="@property $someProperty was not annotated">'someProperty'</weak_warning> => 'int'
+        'someProperty' => 'int'
     ];
 }
 
 /**
  * @property $anotherProperty
+ * @property $someProperty
  */
 class EloquentCasts_WithPhpdoc_WithParam_WithoutSomePropertyParam extends Model
 {
     protected $casts = [
-        <weak_warning descr="@property $someProperty was not annotated">'someProperty'</weak_warning> => 'int'
+        'someProperty' => 'int'
     ];
 }
 
@@ -91,6 +97,9 @@ class CC_EloquentCasts_CastsIsNotArray extends Model
     protected $casts = 123;
 }
 
+/**
+ * @property $from_new_model_instance
+ */
 class EloquentCasts_WithoutCastsField extends Model
 {
 }
@@ -109,14 +118,22 @@ class CC_NoEloquentModel_WithCastsField
     protected $casts = ['CC'];
 }
 
+/**
+ * @property $created_at
+ * @property $updated_at
+ */
 class EloquentDates_CreatedAndUpdatedAt extends Model
 {
     protected $dates = [
-        <weak_warning descr="@property $created_at was not annotated">'created_at'</weak_warning> => 'DateTime',
-        <weak_warning descr="@property $updated_at was not annotated">'updated_at'</weak_warning> => 'DateTime',
+        'created_at' => 'DateTime',
+        'updated_at' => 'DateTime',
     ];
 }
 
+/**
+ * @property $created_at
+ * @property $updated_at
+ */
 class EloquentDates_CreatedAndUpdatedAt_WithConstants extends Model
 {
     const CREATED_AT = 'created_at';
@@ -125,8 +142,8 @@ class EloquentDates_CreatedAndUpdatedAt_WithConstants extends Model
     const CC_DATETIME = 'DateTime';
 
     protected $dates = [
-        <weak_warning descr="@property $created_at was not annotated">self::CREATED_AT</weak_warning> => self::CC_DATETIME,
-        <weak_warning descr="@property $updated_at was not annotated">self::UPDATED_AT</weak_warning> => self::CC_DATETIME,
+        self::CREATED_AT => self::CC_DATETIME,
+        self::UPDATED_AT => self::CC_DATETIME,
     ];
 }
 
@@ -137,23 +154,32 @@ class EloquentBaseProperties extends Model
 {
 }
 
+/**
+ * @property $updated_at
+ */
 class EloquentChild_ShouldConsiderParentProperties extends EloquentBaseProperties
 {
     protected $dates = [
         'created_at' => 'DateTime',
-        <weak_warning descr="@property $updated_at was not annotated">'updated_at'</weak_warning> => 'DateTime',
+        'updated_at' => 'DateTime',
     ];
 }
 
+/**
+ * @property $deleted_at
+ */
 class Eloquent_TraitSoftDeletes_DirectUsageOfSoftDeletesTrait_ShouldDeclareDeletedAtProperty extends Model
 {
-    use <weak_warning descr="@property $deleted_at was not annotated">SoftDeletes</weak_warning>,
+    use SoftDeletes,
         ShouldNotReportsThat;
 }
 
+/**
+ * @property $deleted_at
+ */
 class Eloquent_TraitSoftDeletes_ShouldDeclareDeletedAtProperty extends Model
 {
-    use <weak_warning descr="@property $deleted_at was not annotated">SoftDeletesWrapper</weak_warning>,
+    use SoftDeletesWrapper,
         ShouldNotReportsThat;
 }
 
@@ -171,22 +197,36 @@ class Eloquent_ShouldCheckIfIsTheRightSoftDeletesTrait extends Model
     use NotAnySoftDeletesTrait;
 }
 
+/**
+ * @property $created_at
+ * @property $updated_at
+ */
 class EloquentTimestamps_SimulatingTheEloquentModelProperty extends Model
 {
-    protected <weak_warning descr="@property $created_at was not annotated"><weak_warning descr="@property $updated_at was not annotated">$timestamps</weak_warning></weak_warning> = true;
+    protected $timestamps = true;
 }
 
-class <weak_warning descr="@property $created_at was not annotated"><weak_warning descr="@property $updated_at was not annotated">EloquentTimestamps_SimulatingTheEloquentModelProperty_Child</weak_warning></weak_warning>
+/**
+ * @property $created_at
+ * @property $updated_at
+ */
+class EloquentTimestamps_SimulatingTheEloquentModelProperty_Child
     extends EloquentTimestamps_SimulatingTheEloquentModelProperty
 {
 }
 
+/**
+ * @property $id
+ */
 class EloquentPrimaryKey_SimulatingTheEloquentModelProperty extends Model
 {
-    protected <weak_warning descr="@property $id was not annotated">$primaryKey</weak_warning> = 'id';
+    protected $primaryKey = 'id';
 }
 
-class <weak_warning descr="@property $id was not annotated">EloquentPrimaryKey_SimulatingTheEloquentModelProperty_Child</weak_warning>
+/**
+ * @property $id
+ */
+class EloquentPrimaryKey_SimulatingTheEloquentModelProperty_Child
     extends EloquentPrimaryKey_SimulatingTheEloquentModelProperty
 {
 }
@@ -196,110 +236,138 @@ class CC_EloquentPrimaryKey_PrimaryKeyWithoutDefaultValue extends Model
     protected $primaryKey;
 }
 
+/**
+ * @property $has_one
+ * @property $has_many
+ * @property $has_many_through
+ * @property $morph_to
+ * @property $morph_one
+ * @property $morph_many
+ * @property $morph_to_many
+ * @property $belongs_to
+ * @property $belongs_to_many
+ */
 class EloquentRelationship_SimulatingTheEloquentModelMethods extends Model
 {
     /** @return HasOne */
-    public function <weak_warning descr="@property $has_one was not annotated">hasOne</weak_warning>()
+    public function hasOne()
     {
     }
 
     /** @return HasMany */
-    public function <weak_warning descr="@property $has_many was not annotated">hasMany</weak_warning>()
+    public function hasMany()
     {
     }
 
     /** @return HasManyThrough */
-    public function <weak_warning descr="@property $has_many_through was not annotated">hasManyThrough</weak_warning>()
+    public function hasManyThrough()
     {
     }
 
     /** @return MorphTo */
-    public function <weak_warning descr="@property $morph_to was not annotated">morphTo</weak_warning>()
+    public function morphTo()
     {
     }
 
     /** @return MorphOne */
-    public function <weak_warning descr="@property $morph_one was not annotated">morphOne</weak_warning>()
+    public function morphOne()
     {
     }
 
     /** @return MorphMany */
-    public function <weak_warning descr="@property $morph_many was not annotated">morphMany</weak_warning>()
+    public function morphMany()
     {
     }
 
     /** @return MorphToMany */
-    public function <weak_warning descr="@property $morph_to_many was not annotated">morphToMany</weak_warning>()
+    public function morphToMany()
     {
     }
 
     /** @return BelongsTo */
-    public function <weak_warning descr="@property $belongs_to was not annotated">belongsTo</weak_warning>()
+    public function belongsTo()
     {
     }
 
     /** @return BelongsToMany */
-    public function <weak_warning descr="@property $belongs_to_many was not annotated">belongsToMany</weak_warning>()
+    public function belongsToMany()
     {
     }
 }
 
+/**
+ * @property $has_one_property
+ * @property $has_many_property
+ * @property $has_many_through_property
+ * @property $morph_to_property
+ * @property $morph_one_property
+ * @property $morph_many_property
+ * @property $morph_to_many_property
+ * @property $belongs_to_property
+ * @property $belongs_to_many_property
+ * @property $some_property
+ * @property $some_property
+ */
 class EloquentRelationship_HasOne extends EloquentRelationship_SimulatingTheEloquentModelMethods
 {
-    public function <weak_warning descr="@property $has_one_property was not annotated">hasOneProperty</weak_warning>()
+    public function hasOneProperty()
     {
         return $this->hasOne();
     }
 
-    public function <weak_warning descr="@property $has_many_property was not annotated">hasManyProperty</weak_warning>()
+    public function hasManyProperty()
     {
         return $this->hasMany();
     }
 
-    public function <weak_warning descr="@property $has_many_through_property was not annotated">hasManyThroughProperty</weak_warning>()
+    public function hasManyThroughProperty()
     {
         return $this->hasManyThrough();
     }
 
-    public function <weak_warning descr="@property $morph_to_property was not annotated">morphToProperty</weak_warning>()
+    public function morphToProperty()
     {
         return $this->morphTo();
     }
 
-    public function <weak_warning descr="@property $morph_one_property was not annotated">morphOneProperty</weak_warning>()
+    public function morphOneProperty()
     {
         return $this->morphOne();
     }
 
-    public function <weak_warning descr="@property $morph_many_property was not annotated">morphManyProperty</weak_warning>()
+    public function morphManyProperty()
     {
         return $this->morphMany();
     }
 
-    public function <weak_warning descr="@property $morph_to_many_property was not annotated">morphToManyProperty</weak_warning>()
+    public function morphToManyProperty()
     {
         return $this->morphToMany();
     }
 
-    public function <weak_warning descr="@property $belongs_to_property was not annotated">belongsToProperty</weak_warning>()
+    public function belongsToProperty()
     {
         return $this->belongsTo();
     }
 
-    public function <weak_warning descr="@property $belongs_to_many_property was not annotated">belongsToManyProperty</weak_warning>()
+    public function belongsToManyProperty()
     {
         return $this->belongsToMany();
     }
 
-    public function <weak_warning descr="@property $some_property was not annotated">getSomePropertyAttribute</weak_warning>()
+    public function getSomePropertyAttribute()
     {
     }
 
-    public function <weak_warning descr="@property $some_property was not annotated">setSomePropertyAttribute</weak_warning>()
+    public function setSomePropertyAttribute()
     {
     }
 }
 
+/**
+ * @property $some_property
+ * @property $some_property
+ */
 class EloquentModel_MagicGetterAndSetter extends Model
 {
     public $shouldBeIgnored_isAPublicProperty;
@@ -307,8 +375,8 @@ class EloquentModel_MagicGetterAndSetter extends Model
 }
 
 $someModel = new EloquentModel_MagicGetterAndSetter;
-$someModel-><weak_warning descr="@property $some_property was not annotated">some_property</weak_warning> = 5;
-echo $someModel-><weak_warning descr="@property $some_property was not annotated">some_property</weak_warning>;
+$someModel->some_property = 5;
+echo $someModel->some_property;
 
 $someModel->shouldBeIgnored_onlyLowerCaseIsAllowed = 5;
 echo $someModel->shouldBeIgnored_onlyLowerCaseIsAllowed;
@@ -320,8 +388,8 @@ $notAModel = new NotAModel;
 $notAModel->should_be_ignored_is_not_from_a_eloquent_model;
 
 $externalReference = ExternalReference::getModel();
-$externalReference-><weak_warning descr="@property $from_external_reference was not annotated">from_external_reference</weak_warning>;
+$externalReference->from_external_reference;
 
-(new EloquentCasts_WithoutCastsField)-><weak_warning descr="@property $from_new_model_instance was not annotated">from_new_model_instance</weak_warning>;
+(new EloquentCasts_WithoutCastsField)->from_new_model_instance;
 
 EloquentCasts_WithoutCastsField::$this_should_not_be_accepted;

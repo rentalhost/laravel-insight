@@ -7,6 +7,7 @@ public class PropertyWithoutAnnotationInspectionTest extends FixtureSuite {
         inspectTool(PropertyWithoutAnnotationInspection.class)
             .addTestFile("laravelInsight/annotation/PropertyWithoutAnnotation.externalReference.php")
             .addTestFile("laravelInsight/annotation/PropertyWithoutAnnotation.php")
-            .highlightTest();
+            .highlightTest()
+            .quickFixesTest("laravelInsight/annotation/PropertyWithoutAnnotation.php");
     }
 }
