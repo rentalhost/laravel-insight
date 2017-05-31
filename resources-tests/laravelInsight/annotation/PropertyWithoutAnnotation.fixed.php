@@ -306,7 +306,6 @@ class EloquentRelationship_SimulatingTheEloquentModelMethods extends Model
  * @property $belongs_to_property
  * @property $belongs_to_many_property
  * @property $some_property
- * @property $some_property
  */
 class EloquentRelationship_HasOne extends EloquentRelationship_SimulatingTheEloquentModelMethods
 {
@@ -366,7 +365,7 @@ class EloquentRelationship_HasOne extends EloquentRelationship_SimulatingTheEloq
 
 /**
  * @property $some_property
- * @property $some_property
+ * @property $repeated_property
  */
 class EloquentModel_MagicGetterAndSetter extends Model
 {
@@ -393,3 +392,7 @@ $externalReference->from_external_reference;
 (new EloquentCasts_WithoutCastsField)->from_new_model_instance;
 
 EloquentCasts_WithoutCastsField::$this_should_not_be_accepted;
+
+$shouldNotifyOnlyTheFirst = new EloquentModel_MagicGetterAndSetter;
+$shouldNotifyOnlyTheFirst->repeated_property = 5;
+$shouldNotifyOnlyTheFirst->repeated_property = 5;

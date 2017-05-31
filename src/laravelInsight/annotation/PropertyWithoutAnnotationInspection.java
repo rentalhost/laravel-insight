@@ -10,6 +10,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.jetbrains.php.PhpIndex;
 import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocComment;
+import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocProperty;
 import com.jetbrains.php.lang.inspections.PhpInspection;
 import com.jetbrains.php.lang.psi.elements.*;
 import com.jetbrains.php.lang.psi.resolve.types.PhpType;
@@ -185,7 +186,6 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
         final boolean b
     ) {
         return new PhpElementVisitor() {
-
             @Override
             public void visitPhpField(final Field field) {
                 final String fieldName = field.getName();
@@ -397,6 +397,16 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
         ) {
             final PhpClass primaryClass = primaryClassPointer.getElement();
             assert primaryClass != null;
+
+            final PhpDocComment primaryClassDocComment = primaryClass.getDocComment();
+
+            if (primaryClassDocComment != null) {
+                final PhpDocProperty primaryClassProperty = PhpDocCommentUtil.findProperty(primaryClassDocComment, propertyName);
+
+                if (!Objects.equals(primaryClassProperty, null)) {
+                    return;
+                }
+            }
 
             PhpDocCommentUtil.createTag(primaryClass, "@property", '$' + propertyName);
         }
