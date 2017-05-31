@@ -325,3 +325,7 @@ $externalReference-><weak_warning descr="@property $from_external_reference was 
 (new EloquentCasts_WithoutCastsField)-><weak_warning descr="@property $from_new_model_instance was not annotated">from_new_model_instance</weak_warning>;
 
 EloquentCasts_WithoutCastsField::$this_should_not_be_accepted;
+
+$shouldNotifyOnlyTheFirst = new EloquentModel_MagicGetterAndSetter;
+$shouldNotifyOnlyTheFirst-><weak_warning descr="@property $repeated_property was not annotated">repeated_property</weak_warning> = 5;
+$shouldNotifyOnlyTheFirst-><weak_warning descr="@property $repeated_property was not annotated">repeated_property</weak_warning> = 5;
