@@ -38,9 +38,8 @@ public enum PhpClassUtil {
         final PhpClass classObject,
         final String superNameExpected
     ) {
-        PhpClass classCurrent = classObject;
-
-        while (classCurrent != null) {
+        return RecursionResolver.resolve(classObject, resolver -> {
+            final PhpClass       classCurrent        = (PhpClass) resolver.getObject();
             final ClassReference classSuperReference = getSuperReference(classCurrent);
 
             if (classSuperReference == null) {
@@ -51,10 +50,14 @@ public enum PhpClassUtil {
                 return classSuperReference;
             }
 
-            classCurrent = (PhpClass) classSuperReference.resolve();
-        }
+            final PhpClass classCurrentResolved = (PhpClass) classSuperReference.resolve();
 
-        return null;
+            if (classCurrentResolved == null) {
+                return null;
+            }
+
+            return (ClassReference) resolver.resolve(classCurrentResolved);
+        });
     }
 
     @Nullable
@@ -62,10 +65,9 @@ public enum PhpClassUtil {
         final PhpClass classObject,
         final String traitNameExpected
     ) {
-        PhpClass classCurrent = classObject;
-
-        while (classCurrent != null) {
-            final Iterable<PhpUse> classTraits = getTraitsDeclared(classCurrent);
+        return RecursionResolver.resolve(classObject, resolver -> {
+            final PhpClass         classCurrent = (PhpClass) resolver.getObject();
+            final Iterable<PhpUse> classTraits  = getTraitsDeclared(classCurrent);
 
             for (final PhpUse classTrait : classTraits) {
                 final PhpReference traitTargetReference = classTrait.getTargetReference();
@@ -81,7 +83,7 @@ public enum PhpClassUtil {
                     continue;
                 }
 
-                final ClassReference traitOfTrait = findTraitOfType(traitResolved, traitNameExpected);
+                final ClassReference traitOfTrait = (ClassReference) resolver.resolve(traitResolved);
 
                 if (traitOfTrait == null) {
                     continue;
@@ -90,10 +92,14 @@ public enum PhpClassUtil {
                 return traitOfTrait;
             }
 
-            classCurrent = getSuper(classCurrent);
-        }
+            final PhpClass classCurrentResolved = getSuper(classCurrent);
 
-        return null;
+            if (classCurrentResolved == null) {
+                return null;
+            }
+
+            return (ClassReference) resolver.resolve(classCurrentResolved);
+        });
     }
 
     @Nullable
@@ -135,10 +141,9 @@ public enum PhpClassUtil {
         final PhpClass classObject,
         final String propertyNameExpected
     ) {
-        PhpClass classCurrent = classObject;
-
-        while (classCurrent != null) {
-            final Collection<Field> classFields = classCurrent.getFields();
+        return RecursionResolver.resolve(classObject, resolver -> {
+            final PhpClass          classCurrent = (PhpClass) resolver.getObject();
+            final Collection<Field> classFields  = classCurrent.getFields();
 
             for (final Field classField : classFields) {
                 if (classField.getName().equals(propertyNameExpected)) {
@@ -156,17 +161,21 @@ public enum PhpClassUtil {
                     continue;
                 }
 
-                final Field traitDeclaration = findPropertyDeclaration(resolve, propertyNameExpected);
+                final Field traitDeclaration = (Field) resolver.resolve(resolve);
 
                 if (traitDeclaration != null) {
                     return traitDeclaration;
                 }
             }
 
-            classCurrent = getSuper(classCurrent);
-        }
+            final PhpClass classSuperResolved = getSuper(classCurrent);
 
-        return null;
+            if (classSuperResolved == null) {
+                return null;
+            }
+
+            return (Field) resolver.resolve(classSuperResolved);
+        });
     }
 
     @Nullable
@@ -174,9 +183,8 @@ public enum PhpClassUtil {
         final PhpClass classObject,
         final String methodNameExpected
     ) {
-        PhpClass classCurrent = classObject;
-
-        while (true) {
+        return RecursionResolver.resolve(classObject, resolver -> {
+            final PhpClass           classCurrent = (PhpClass) resolver.getObject();
             final Collection<Method> classMethods = classCurrent.getMethods();
 
             for (final Method classMethod : classMethods) {
@@ -188,7 +196,6 @@ public enum PhpClassUtil {
             for (final PhpTraitUseRule classTraitRule : classCurrent.getTraitUseRules()) {
                 if (Objects.equals(classTraitRule.getAlias(), methodNameExpected)) {
                     final MethodReference classTraitReference = classTraitRule.getOriginalReference();
-
                     assert classTraitReference != null;
 
                     return (Method) classTraitReference.resolve();
@@ -206,7 +213,7 @@ public enum PhpClassUtil {
                     continue;
                 }
 
-                final Method classTraitRuleMethod = findMethodDeclaration((PhpClass) classTraitRuleMethodClass, methodNameExpected);
+                final Method classTraitRuleMethod = (Method) resolver.resolve(classTraitRuleMethodClass);
 
                 if (classTraitRuleMethod == null) {
                     continue;
@@ -225,7 +232,7 @@ public enum PhpClassUtil {
                     continue;
                 }
 
-                final Method traitDeclaration = findMethodDeclaration(resolve, methodNameExpected);
+                final Method traitDeclaration = (Method) resolver.resolve(resolve);
 
                 if (traitDeclaration != null) {
                     return traitDeclaration;
@@ -238,7 +245,7 @@ public enum PhpClassUtil {
                 return null;
             }
 
-            classCurrent = classSuperResolved;
-        }
+            return (Method) resolver.resolve(classSuperResolved);
+        });
     }
 }

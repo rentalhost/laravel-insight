@@ -158,6 +158,10 @@ public class PhpClassUtilTest extends FixtureSuite {
         Assert.assertNull(PhpClassUtil.findPropertyDeclaration(classFirstClass, "propertyFromSecondTrait"));
         Assert.assertEquals(traitSecondTrait, valueOf(PhpClassUtil.findPropertyDeclaration(classSecondClass, "propertyFromSecondTrait")).getContainingClass());
         Assert.assertEquals(traitSecondTrait, valueOf(PhpClassUtil.findPropertyDeclaration(classThirdClass, "propertyFromSecondTrait")).getContainingClass());
+
+        final PhpClass classCyclicClassA = (PhpClass) getElementByName(fileSample, "CyclicClassA");
+
+        Assert.assertNull(PhpClassUtil.findPropertyDeclaration(classCyclicClassA, "inexistentProperty"));
     }
 
     public void testFindMethodDeclaration() {
@@ -207,6 +211,10 @@ public class PhpClassUtilTest extends FixtureSuite {
         Assert.assertEquals(traitSecondTrait, valueOf(PhpClassUtil.findMethodDeclaration(classTraitMethodWithInsteadofClass, "secondMethodFromBothTraits")).getContainingClass());
         Assert.assertEquals(traitFirstTrait, valueOf(PhpClassUtil.findMethodDeclaration(classTraitMethodWithInsteadofClass, "recoveredMethodFromBothTraits")).getContainingClass());
         Assert.assertNull(PhpClassUtil.findMethodDeclaration(classTraitMethodWithInsteadofClass, "CC_unresolvedReference"));
+
+        final PhpClass classCyclicClassA = (PhpClass) getElementByName(fileSample, "CyclicClassA");
+
+        Assert.assertNull(PhpClassUtil.findMethodDeclaration(classCyclicClassA, "inexistentMethod"));
     }
 
     public void testGetTraitContainingClass() {
