@@ -1,12 +1,13 @@
 package net.rentalhost.idea.laravelInsight.annotation;
 
 import com.google.common.base.CaseFormat;
+import com.intellij.codeInspection.LocalQuickFix;
+import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.*;
 import com.jetbrains.php.PhpIndex;
 import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocComment;
 import com.jetbrains.php.lang.inspections.PhpInspection;
@@ -18,6 +19,7 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
 
+import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
 import net.rentalhost.idea.api.*;
@@ -31,12 +33,14 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
 
         static void registerPropertyUndefined(
             final ProblemsHolder problemsHolder,
+            final PhpClass primaryClass,
             final PsiElement hashKey,
             final String hashKeyContents
         ) {
             problemsHolder.registerProblem(hashKey,
                                            String.format(messagePropertyUndefined, hashKeyContents),
-                                           ProblemHighlightType.WEAK_WARNING);
+                                           ProblemHighlightType.WEAK_WARNING,
+                                           new InspectionQuickFix(primaryClass, hashKeyContents));
         }
 
         static void validatePropertyAnnotation(
@@ -62,7 +66,7 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
             }
 
             if (isNotAnnotated) {
-                registerPropertyUndefined(problemsHolder, issueReference, propertyName);
+                registerPropertyUndefined(problemsHolder, phpClass, issueReference, propertyName);
             }
         }
 
@@ -361,5 +365,40 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
                 }
             }
         };
+    }
+
+    static class InspectionQuickFix implements LocalQuickFix {
+        private final SmartPsiElementPointer<PhpClass> primaryClassPointer;
+        private final String                           propertyName;
+        private final String                           familyName;
+
+        InspectionQuickFix(
+            final PhpClass primaryClass,
+            final String propertyName
+        ) {
+            final SmartPointerManager pointerManager = SmartPointerManager.getInstance(primaryClass.getProject());
+
+            primaryClassPointer = pointerManager.createSmartPsiElementPointer(primaryClass);
+            this.propertyName = propertyName;
+            familyName = String.format("Create property $%s on %s class", propertyName, primaryClass.getName());
+        }
+
+        @Nls
+        @NotNull
+        @Override
+        public String getFamilyName() {
+            return familyName;
+        }
+
+        @Override
+        public void applyFix(
+            @NotNull final Project project,
+            @NotNull final ProblemDescriptor descriptor
+        ) {
+            final PhpClass primaryClass = primaryClassPointer.getElement();
+            assert primaryClass != null;
+
+            PhpDocCommentUtil.createTag(primaryClass, "@property", '$' + propertyName);
+        }
     }
 }
