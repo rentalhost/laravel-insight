@@ -1,0 +1,3 @@
+<?php
+
+$referenceVariable = (((((((1)))))));
