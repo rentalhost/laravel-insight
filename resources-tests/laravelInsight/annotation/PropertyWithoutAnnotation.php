@@ -293,3 +293,5 @@ $externalReference = ExternalReference::getModel();
 $externalReference-><weak_warning descr="@property $from_external_reference was not annotated">from_external_reference</weak_warning>;
 
 (new EloquentCasts_WithoutCastsField)-><weak_warning descr="@property $from_new_model_instance was not annotated">from_new_model_instance</weak_warning>;
+
+EloquentCasts_WithoutCastsField::$this_should_not_be_accepted;

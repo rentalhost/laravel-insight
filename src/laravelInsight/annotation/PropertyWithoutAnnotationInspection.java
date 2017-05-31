@@ -202,6 +202,10 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
 
         @Override
         public void visitPhpFieldReference(final FieldReference fieldReference) {
+            if (fieldReference.isStatic()) {
+                return;
+            }
+
             final ASTNode fieldNameNode = fieldReference.getNameNode();
 
             if (fieldNameNode == null) {
