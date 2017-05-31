@@ -22,7 +22,7 @@ trait NotAnySoftDeletesTrait
 }
 
 /**
- * @property $someProperty
+ * @property mixed $someProperty
  */
 class EloquentCasts_WithoutPhpdoc extends Model
 {
@@ -32,7 +32,7 @@ class EloquentCasts_WithoutPhpdoc extends Model
 }
 
 /** Class
- * @property $someProperty
+ * @property mixed $someProperty
  */
 class EloquentCasts_WithPhpdoc_WithoutParam extends Model
 {
@@ -42,8 +42,8 @@ class EloquentCasts_WithPhpdoc_WithoutParam extends Model
 }
 
 /**
- * @property $anotherProperty
- * @property $someProperty
+ * @property mixed $anotherProperty
+ * @property mixed $someProperty
  */
 class EloquentCasts_WithPhpdoc_WithParam_WithoutSomePropertyParam extends Model
 {
@@ -53,7 +53,7 @@ class EloquentCasts_WithPhpdoc_WithParam_WithoutSomePropertyParam extends Model
 }
 
 /**
- * @property $someProperty
+ * @property mixed $someProperty
  */
 class EloquentCasts_WithPhpdoc_WithParam_WithSomePropertyParam extends Model
 {
@@ -98,7 +98,7 @@ class CC_EloquentCasts_CastsIsNotArray extends Model
 }
 
 /**
- * @property $from_new_model_instance
+ * @property mixed $from_new_model_instance
  */
 class EloquentCasts_WithoutCastsField extends Model
 {
@@ -119,8 +119,8 @@ class CC_NoEloquentModel_WithCastsField
 }
 
 /**
- * @property $created_at
- * @property $updated_at
+ * @property mixed $created_at
+ * @property mixed $updated_at
  */
 class EloquentDates_CreatedAndUpdatedAt extends Model
 {
@@ -131,8 +131,8 @@ class EloquentDates_CreatedAndUpdatedAt extends Model
 }
 
 /**
- * @property $created_at
- * @property $updated_at
+ * @property mixed $created_at
+ * @property mixed $updated_at
  */
 class EloquentDates_CreatedAndUpdatedAt_WithConstants extends Model
 {
@@ -148,14 +148,14 @@ class EloquentDates_CreatedAndUpdatedAt_WithConstants extends Model
 }
 
 /**
- * @property $created_at
+ * @property mixed $created_at
  */
 class EloquentBaseProperties extends Model
 {
 }
 
 /**
- * @property $updated_at
+ * @property mixed $updated_at
  */
 class EloquentChild_ShouldConsiderParentProperties extends EloquentBaseProperties
 {
@@ -166,7 +166,7 @@ class EloquentChild_ShouldConsiderParentProperties extends EloquentBasePropertie
 }
 
 /**
- * @property $deleted_at
+ * @property mixed $deleted_at
  */
 class Eloquent_TraitSoftDeletes_DirectUsageOfSoftDeletesTrait_ShouldDeclareDeletedAtProperty extends Model
 {
@@ -175,7 +175,7 @@ class Eloquent_TraitSoftDeletes_DirectUsageOfSoftDeletesTrait_ShouldDeclareDelet
 }
 
 /**
- * @property $deleted_at
+ * @property mixed $deleted_at
  */
 class Eloquent_TraitSoftDeletes_ShouldDeclareDeletedAtProperty extends Model
 {
@@ -184,7 +184,7 @@ class Eloquent_TraitSoftDeletes_ShouldDeclareDeletedAtProperty extends Model
 }
 
 /**
- * @property $deleted_at
+ * @property mixed $deleted_at
  */
 class Eloquent_TraitSoftDeletes_ShouldConsiderDeclarationOnClass extends Model
 {
@@ -198,8 +198,8 @@ class Eloquent_ShouldCheckIfIsTheRightSoftDeletesTrait extends Model
 }
 
 /**
- * @property $created_at
- * @property $updated_at
+ * @property mixed $created_at
+ * @property mixed $updated_at
  */
 class EloquentTimestamps_SimulatingTheEloquentModelProperty extends Model
 {
@@ -207,8 +207,8 @@ class EloquentTimestamps_SimulatingTheEloquentModelProperty extends Model
 }
 
 /**
- * @property $created_at
- * @property $updated_at
+ * @property mixed $created_at
+ * @property mixed $updated_at
  */
 class EloquentTimestamps_SimulatingTheEloquentModelProperty_Child
     extends EloquentTimestamps_SimulatingTheEloquentModelProperty
@@ -216,7 +216,7 @@ class EloquentTimestamps_SimulatingTheEloquentModelProperty_Child
 }
 
 /**
- * @property $id
+ * @property mixed $id
  */
 class EloquentPrimaryKey_SimulatingTheEloquentModelProperty extends Model
 {
@@ -224,7 +224,7 @@ class EloquentPrimaryKey_SimulatingTheEloquentModelProperty extends Model
 }
 
 /**
- * @property $id
+ * @property mixed $id
  */
 class EloquentPrimaryKey_SimulatingTheEloquentModelProperty_Child
     extends EloquentPrimaryKey_SimulatingTheEloquentModelProperty
@@ -237,15 +237,15 @@ class CC_EloquentPrimaryKey_PrimaryKeyWithoutDefaultValue extends Model
 }
 
 /**
- * @property $has_one
- * @property $has_many
- * @property $has_many_through
- * @property $morph_to
- * @property $morph_one
- * @property $morph_many
- * @property $morph_to_many
- * @property $belongs_to
- * @property $belongs_to_many
+ * @property mixed $has_one
+ * @property mixed $has_many
+ * @property mixed $has_many_through
+ * @property mixed $morph_to
+ * @property mixed $morph_one
+ * @property mixed $morph_many
+ * @property mixed $morph_to_many
+ * @property mixed $belongs_to
+ * @property mixed $belongs_to_many
  */
 class EloquentRelationship_SimulatingTheEloquentModelMethods extends Model
 {
@@ -296,16 +296,16 @@ class EloquentRelationship_SimulatingTheEloquentModelMethods extends Model
 }
 
 /**
- * @property $has_one_property
- * @property $has_many_property
- * @property $has_many_through_property
- * @property $morph_to_property
- * @property $morph_one_property
- * @property $morph_many_property
- * @property $morph_to_many_property
- * @property $belongs_to_property
- * @property $belongs_to_many_property
- * @property $some_property
+ * @property mixed $has_one_property
+ * @property mixed $has_many_property
+ * @property mixed $has_many_through_property
+ * @property mixed $morph_to_property
+ * @property mixed $morph_one_property
+ * @property mixed $morph_many_property
+ * @property mixed $morph_to_many_property
+ * @property mixed $belongs_to_property
+ * @property mixed $belongs_to_many_property
+ * @property mixed $some_property
  */
 class EloquentRelationship_HasOne extends EloquentRelationship_SimulatingTheEloquentModelMethods
 {
@@ -364,8 +364,8 @@ class EloquentRelationship_HasOne extends EloquentRelationship_SimulatingTheEloq
 }
 
 /**
- * @property $some_property
- * @property $repeated_property
+ * @property mixed $some_property
+ * @property mixed $repeated_property
  */
 class EloquentModel_MagicGetterAndSetter extends Model
 {
