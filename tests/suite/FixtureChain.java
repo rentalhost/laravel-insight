@@ -1,5 +1,6 @@
 package net.rentalhost.suite;
 
+import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.testFramework.fixtures.CodeInsightTestFixture;
 
@@ -28,7 +29,22 @@ public class FixtureChain {
         return this;
     }
 
-    public void highlightTest() {
+    public FixtureChain highlightTest() {
         fixture.testHighlighting(true, false, true);
+
+        return this;
+    }
+
+    public void quickFixesTest(final String testFile) {
+        for (final IntentionAction quickFix : fixture.getAllQuickFixes()) {
+            fixture.launchAction(quickFix);
+        }
+
+        fixture.setTestDataPath(".");
+
+        final String testFilePath  = "resources-tests/" + testFile;
+        final String fixedFilePath = testFilePath.substring(0, testFilePath.length() - 4) + ".fixed.php";
+
+        fixture.checkResultByFile(fixedFilePath);
     }
 }
