@@ -16,6 +16,7 @@ import com.jetbrains.php.lang.psi.visitors.PhpElementVisitor;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -222,7 +223,9 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
                 return;
             }
 
-            for (final String fieldClassType : fieldClassReference.getType().getTypes()) {
+            final Set<String> fieldClassReferenceTypes = fieldClassReference.getType().global(problemsHolder.getProject()).getTypes();
+
+            for (final String fieldClassType : fieldClassReferenceTypes) {
                 final Collection<PhpClass> fieldClasses = PhpIndex.getInstance(problemsHolder.getProject()).getAnyByFQN(fieldClassType);
 
                 if (fieldClasses.isEmpty()) {
