@@ -153,6 +153,15 @@ class Eloquent_TraitSoftDeletes_ShouldDeclareDeletedAtProperty extends Model
         ShouldNotReportsThat;
 }
 
+/**
+ * @property $deleted_at
+ */
+class Eloquent_TraitSoftDeletes_ShouldConsiderDeclarationOnClass extends Model
+{
+    use SoftDeletesWrapper,
+        ShouldNotReportsThat;
+}
+
 trait NotAnySoftDeletesTrait
 {
 }
