@@ -84,3 +84,11 @@ class TraitMethodWithInsteadof
         CC_UnresolvedReferenceClass::CC_ignoredMethodReference insteadof CC_IgnoredClassReference;
     }
 }
+
+class CyclicClassA extends CyclicClassB
+{
+}
+
+class CyclicClassB extends CyclicClassA
+{
+}
