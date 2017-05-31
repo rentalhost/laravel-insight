@@ -263,7 +263,7 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
                         return;
                     }
 
-                    InspectionHelper.validatePropertyAnnotation(problemsHolder, traitResolvedClass, expression, "deleted_at");
+                    InspectionHelper.validatePropertyAnnotation(problemsHolder, traitContainingClass, expression, "deleted_at");
                 }
             }
 
