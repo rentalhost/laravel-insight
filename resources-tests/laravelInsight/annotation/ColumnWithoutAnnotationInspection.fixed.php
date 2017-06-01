@@ -143,8 +143,8 @@ class CC_NoEloquentModel_WithCastsField
 
 /**
  * @property int $id
- * @property mixed $created_at
- * @property mixed $updated_at
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
  */
 class EloquentDates_CreatedAndUpdatedAt extends Model
 {
@@ -156,8 +156,8 @@ class EloquentDates_CreatedAndUpdatedAt extends Model
 
 /**
  * @property int $id
- * @property mixed $created_at
- * @property mixed $updated_at
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
  */
 class EloquentDates_CreatedAndUpdatedAt_WithConstants extends Model
 {
@@ -182,7 +182,7 @@ class EloquentBaseProperties extends Model
 
 /**
  * @property int $id
- * @property mixed $updated_at
+ * @property \Carbon\Carbon $updated_at
  */
 class EloquentChild_ShouldConsiderParentProperties extends EloquentBaseProperties
 {
@@ -194,7 +194,7 @@ class EloquentChild_ShouldConsiderParentProperties extends EloquentBasePropertie
 
 /**
  * @property int $id
- * @property mixed $deleted_at
+ * @property \Carbon\Carbon $deleted_at
  */
 class Eloquent_TraitSoftDeletes_DirectUsageOfSoftDeletesTrait_ShouldDeclareDeletedAtProperty extends Model
 {
@@ -204,7 +204,7 @@ class Eloquent_TraitSoftDeletes_DirectUsageOfSoftDeletesTrait_ShouldDeclareDelet
 
 /**
  * @property int $id
- * @property mixed $deleted_at
+ * @property \Carbon\Carbon $deleted_at
  */
 class Eloquent_TraitSoftDeletes_ShouldDeclareDeletedAtProperty extends Model
 {
@@ -232,8 +232,8 @@ class Eloquent_ShouldCheckIfIsTheRightSoftDeletesTrait extends Model
 
 /**
  * @property int $id
- * @property mixed $created_at
- * @property mixed $updated_at
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
  */
 class EloquentTimestamps_SimulatingTheEloquentModelProperty extends Model
 {
@@ -241,9 +241,9 @@ class EloquentTimestamps_SimulatingTheEloquentModelProperty extends Model
 }
 
 /**
- * @property mixed $created_at
+ * @property \Carbon\Carbon $created_at
  * @property int $id
- * @property mixed $updated_at
+ * @property \Carbon\Carbon $updated_at
  */
 class EloquentTimestamps_SimulatingTheEloquentModelProperty_Child
     extends EloquentTimestamps_SimulatingTheEloquentModelProperty
@@ -463,8 +463,8 @@ class EloquentModel_PrimaryKeyColumnFromConstant extends Model {
 
 /**
  * @property int $id
- * @property mixed $created_at
- * @property mixed $updated_at
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
  */
 class EloquentModel_TimestampColumnFromConstant extends Model {
     const TIMESTAMPS_TRUE = true;

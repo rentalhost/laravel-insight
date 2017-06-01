@@ -78,6 +78,20 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
             }
         }
 
+        static void validatePropertyAnnotation(
+            @NotNull final ProblemsHolder problemsHolder,
+            final PhpClass phpClass,
+            final PsiElement issueReference,
+            final String propertyName
+        ) {
+            if (propertyName.endsWith("_at")) {
+                validatePropertyAnnotation(problemsHolder, phpClass, issueReference, propertyName, "\\Carbon\\Carbon");
+                return;
+            }
+
+            validatePropertyAnnotation(problemsHolder, phpClass, issueReference, propertyName, "mixed");
+        }
+
         static void reportTimestamps(
             @NotNull final ProblemsHolder problemsHolder,
             final PhpClass phpClass
@@ -106,8 +120,8 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
 
             final PsiElement issueReceptor = getReportableElement(phpClass, fieldTimestamps);
 
-            validatePropertyAnnotation(problemsHolder, phpClass, issueReceptor, "created_at", "mixed");
-            validatePropertyAnnotation(problemsHolder, phpClass, issueReceptor, "updated_at", "mixed");
+            validatePropertyAnnotation(problemsHolder, phpClass, issueReceptor, "created_at");
+            validatePropertyAnnotation(problemsHolder, phpClass, issueReceptor, "updated_at");
         }
 
         static void reportPrimaryKey(
@@ -288,7 +302,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
 
                     final String hashKeyContents = ((StringLiteralExpression) hashKeyResolvedValue).getContents();
 
-                    InspectionHelper.validatePropertyAnnotation(problemsHolder, fieldClass, hashKey, hashKeyContents, "mixed");
+                    InspectionHelper.validatePropertyAnnotation(problemsHolder, fieldClass, hashKey, hashKeyContents);
                 }
             }
 
@@ -306,7 +320,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                     }
 
                     if (Objects.equals(traitReferenceClass.getFQN(), LaravelClasses.ELOQUENT_SOFTDELETES_TRAIT.toString())) {
-                        InspectionHelper.validatePropertyAnnotation(problemsHolder, traitContainingClass, expression, "deleted_at", "mixed");
+                        InspectionHelper.validatePropertyAnnotation(problemsHolder, traitContainingClass, expression, "deleted_at");
                         return;
                     }
 
@@ -320,7 +334,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                         return;
                     }
 
-                    InspectionHelper.validatePropertyAnnotation(problemsHolder, traitContainingClass, expression, "deleted_at", "mixed");
+                    InspectionHelper.validatePropertyAnnotation(problemsHolder, traitContainingClass, expression, "deleted_at");
                 }
             }
 
@@ -399,7 +413,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                         continue;
                     }
 
-                    InspectionHelper.validatePropertyAnnotation(problemsHolder, fieldClass, fieldNameNode.getPsi(), fieldNameText, "mixed");
+                    InspectionHelper.validatePropertyAnnotation(problemsHolder, fieldClass, fieldNameNode.getPsi(), fieldNameText);
                     break;
                 }
             }
