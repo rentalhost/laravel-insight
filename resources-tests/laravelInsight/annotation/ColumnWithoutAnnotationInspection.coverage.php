@@ -12,7 +12,7 @@ class NotAEloquentModel
 $notAEloquentInstance = new NotAEloquentModel;
 $notAEloquentInstance->not_a_property_of_a_eloquent_model;
 
-class EloquentModel extends Model
+class <weak_warning descr="@property $id was not annotated">EloquentModel</weak_warning> extends Model
 {
     public $not_a_column_because_is_public;
 }

@@ -13,5 +13,10 @@ public class ColumnWithoutAnnotationInspectionTest extends FixtureSuite {
         inspectTool(ColumnWithoutAnnotationInspection.class)
             .addTestFile("laravelInsight/annotation/ColumnWithoutAnnotationInspection.coverage.php")
             .highlightTest();
+
+        inspectTool(ColumnWithoutAnnotationInspection.class)
+            .addTestFile("laravelInsight/annotation/ColumnWithoutAnnotationInspection.matchTypes.php")
+            .highlightTest()
+            .quickFixesTest("laravelInsight/annotation/ColumnWithoutAnnotationInspection.matchTypes.php");
     }
 }

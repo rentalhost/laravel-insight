@@ -21,7 +21,7 @@ trait NotAnySoftDeletesTrait
 {
 }
 
-class EloquentCasts_WithoutPhpdoc extends Model
+class <weak_warning descr="@property $id was not annotated">EloquentCasts_WithoutPhpdoc</weak_warning> extends Model
 {
     protected $casts = [
         <weak_warning descr="@property $someProperty was not annotated">'someProperty'</weak_warning> => 'int'
@@ -29,7 +29,7 @@ class EloquentCasts_WithoutPhpdoc extends Model
 }
 
 /** Class */
-class EloquentCasts_WithPhpdoc_WithoutParam extends Model
+class <weak_warning descr="@property $id was not annotated">EloquentCasts_WithPhpdoc_WithoutParam</weak_warning> extends Model
 {
     protected $casts = [
         <weak_warning descr="@property $someProperty was not annotated">'someProperty'</weak_warning> => 'int'
@@ -39,7 +39,7 @@ class EloquentCasts_WithPhpdoc_WithoutParam extends Model
 /**
  * @property mixed $anotherProperty
  */
-class EloquentCasts_WithPhpdoc_WithParam_WithoutSomePropertyParam extends Model
+class <weak_warning descr="@property $id was not annotated">EloquentCasts_WithPhpdoc_WithParam_WithoutSomePropertyParam</weak_warning> extends Model
 {
     protected $casts = [
         <weak_warning descr="@property $someProperty was not annotated">'someProperty'</weak_warning> => 'int'
@@ -49,19 +49,19 @@ class EloquentCasts_WithPhpdoc_WithParam_WithoutSomePropertyParam extends Model
 /**
  * @property mixed $someProperty
  */
-class EloquentCasts_WithPhpdoc_WithParam_WithSomePropertyParam extends Model
+class <weak_warning descr="@property $id was not annotated">EloquentCasts_WithPhpdoc_WithParam_WithSomePropertyParam</weak_warning> extends Model
 {
     protected $casts = [
         'someProperty' => 'int'
     ];
 }
 
-class EloquentCasts_WithInvalidType extends Model
+class <weak_warning descr="@property $id was not annotated">EloquentCasts_WithInvalidType</weak_warning> extends Model
 {
     protected $casts = 123;
 }
 
-class EloquentCasts_WithInvalidHashKeys extends Model
+class <weak_warning descr="@property $id was not annotated">EloquentCasts_WithInvalidHashKeys</weak_warning> extends Model
 {
     protected $casts = [
         123 => 'int',
@@ -69,14 +69,14 @@ class EloquentCasts_WithInvalidHashKeys extends Model
     ];
 }
 
-class EloquentCasts_ShouldIgnoresNonStringValues extends Model
+class <weak_warning descr="@property $id was not annotated">EloquentCasts_ShouldIgnoresNonStringValues</weak_warning> extends Model
 {
     protected $casts = [
         'shouldBeIgnored' => 123
     ];
 }
 
-class EloquentCasts_ShouldIgnoresMultidimensionalKeys extends Model
+class <weak_warning descr="@property $id was not annotated">EloquentCasts_ShouldIgnoresMultidimensionalKeys</weak_warning> extends Model
 {
     protected $casts = [
         'multidimensionalArray' => [
@@ -85,17 +85,17 @@ class EloquentCasts_ShouldIgnoresMultidimensionalKeys extends Model
     ];
 }
 
-class CC_EloquentCasts_CastsIsNotArray extends Model
+class <weak_warning descr="@property $id was not annotated">CC_EloquentCasts_CastsIsNotArray</weak_warning> extends Model
 {
     /** @type array */
     protected $casts = 123;
 }
 
-class EloquentCasts_WithoutCastsField extends Model
+class <weak_warning descr="@property $id was not annotated">EloquentCasts_WithoutCastsField</weak_warning> extends Model
 {
 }
 
-class CC_EloquentCasts_WithOtherFields extends Model
+class <weak_warning descr="@property $id was not annotated">CC_EloquentCasts_WithOtherFields</weak_warning> extends Model
 {
     protected $CC_otherField;
 }
@@ -109,7 +109,7 @@ class CC_NoEloquentModel_WithCastsField
     protected $casts = ['CC'];
 }
 
-class EloquentDates_CreatedAndUpdatedAt extends Model
+class <weak_warning descr="@property $id was not annotated">EloquentDates_CreatedAndUpdatedAt</weak_warning> extends Model
 {
     protected $dates = [
         <weak_warning descr="@property $created_at was not annotated">'created_at'</weak_warning> => 'DateTime',
@@ -117,7 +117,7 @@ class EloquentDates_CreatedAndUpdatedAt extends Model
     ];
 }
 
-class EloquentDates_CreatedAndUpdatedAt_WithConstants extends Model
+class <weak_warning descr="@property $id was not annotated">EloquentDates_CreatedAndUpdatedAt_WithConstants</weak_warning> extends Model
 {
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
@@ -133,11 +133,11 @@ class EloquentDates_CreatedAndUpdatedAt_WithConstants extends Model
 /**
  * @property mixed $created_at
  */
-class EloquentBaseProperties extends Model
+class <weak_warning descr="@property $id was not annotated">EloquentBaseProperties</weak_warning> extends Model
 {
 }
 
-class EloquentChild_ShouldConsiderParentProperties extends EloquentBaseProperties
+class <weak_warning descr="@property $id was not annotated">EloquentChild_ShouldConsiderParentProperties</weak_warning> extends EloquentBaseProperties
 {
     protected $dates = [
         'created_at' => 'DateTime',
@@ -145,13 +145,13 @@ class EloquentChild_ShouldConsiderParentProperties extends EloquentBasePropertie
     ];
 }
 
-class Eloquent_TraitSoftDeletes_DirectUsageOfSoftDeletesTrait_ShouldDeclareDeletedAtProperty extends Model
+class <weak_warning descr="@property $id was not annotated">Eloquent_TraitSoftDeletes_DirectUsageOfSoftDeletesTrait_ShouldDeclareDeletedAtProperty</weak_warning> extends Model
 {
     use <weak_warning descr="@property $deleted_at was not annotated">SoftDeletes</weak_warning>,
         ShouldNotReportsThat;
 }
 
-class Eloquent_TraitSoftDeletes_ShouldDeclareDeletedAtProperty extends Model
+class <weak_warning descr="@property $id was not annotated">Eloquent_TraitSoftDeletes_ShouldDeclareDeletedAtProperty</weak_warning> extends Model
 {
     use <weak_warning descr="@property $deleted_at was not annotated">SoftDeletesWrapper</weak_warning>,
         ShouldNotReportsThat;
@@ -160,23 +160,23 @@ class Eloquent_TraitSoftDeletes_ShouldDeclareDeletedAtProperty extends Model
 /**
  * @property mixed $deleted_at
  */
-class Eloquent_TraitSoftDeletes_ShouldConsiderDeclarationOnClass extends Model
+class <weak_warning descr="@property $id was not annotated">Eloquent_TraitSoftDeletes_ShouldConsiderDeclarationOnClass</weak_warning> extends Model
 {
     use SoftDeletesWrapper,
         ShouldNotReportsThat;
 }
 
-class Eloquent_ShouldCheckIfIsTheRightSoftDeletesTrait extends Model
+class <weak_warning descr="@property $id was not annotated">Eloquent_ShouldCheckIfIsTheRightSoftDeletesTrait</weak_warning> extends Model
 {
     use NotAnySoftDeletesTrait;
 }
 
-class EloquentTimestamps_SimulatingTheEloquentModelProperty extends Model
+class <weak_warning descr="@property $id was not annotated">EloquentTimestamps_SimulatingTheEloquentModelProperty</weak_warning> extends Model
 {
     protected <weak_warning descr="@property $created_at was not annotated"><weak_warning descr="@property $updated_at was not annotated">$timestamps</weak_warning></weak_warning> = true;
 }
 
-class <weak_warning descr="@property $created_at was not annotated"><weak_warning descr="@property $updated_at was not annotated">EloquentTimestamps_SimulatingTheEloquentModelProperty_Child</weak_warning></weak_warning>
+class <weak_warning descr="@property $created_at was not annotated"><weak_warning descr="@property $id was not annotated"><weak_warning descr="@property $updated_at was not annotated">EloquentTimestamps_SimulatingTheEloquentModelProperty_Child</weak_warning></weak_warning></weak_warning>
     extends EloquentTimestamps_SimulatingTheEloquentModelProperty
 {
 }
@@ -196,7 +196,7 @@ class CC_EloquentPrimaryKey_PrimaryKeyWithoutDefaultValue extends Model
     protected $primaryKey;
 }
 
-class EloquentRelationship_SimulatingTheEloquentModelMethods extends Model
+class <weak_warning descr="@property $id was not annotated">EloquentRelationship_SimulatingTheEloquentModelMethods</weak_warning> extends Model
 {
     /** @return HasOne */
     public function <weak_warning descr="@property $has_one was not annotated">hasOne</weak_warning>()
@@ -244,7 +244,7 @@ class EloquentRelationship_SimulatingTheEloquentModelMethods extends Model
     }
 }
 
-class EloquentRelationship_HasOne extends EloquentRelationship_SimulatingTheEloquentModelMethods
+class <weak_warning descr="@property $id was not annotated">EloquentRelationship_HasOne</weak_warning> extends EloquentRelationship_SimulatingTheEloquentModelMethods
 {
     public function <weak_warning descr="@property $has_one_property was not annotated">hasOneProperty</weak_warning>()
     {
@@ -300,7 +300,7 @@ class EloquentRelationship_HasOne extends EloquentRelationship_SimulatingTheEloq
     }
 }
 
-class EloquentModel_MagicGetterAndSetter extends Model
+class <weak_warning descr="@property $id was not annotated">EloquentModel_MagicGetterAndSetter</weak_warning> extends Model
 {
     public $shouldBeIgnored_isAPublicProperty;
     protected $should_be_accepted;
@@ -330,11 +330,11 @@ $shouldNotifyOnlyTheFirst = new EloquentModel_MagicGetterAndSetter;
 $shouldNotifyOnlyTheFirst-><weak_warning descr="@property $repeated_property was not annotated">repeated_property</weak_warning> = 5;
 $shouldNotifyOnlyTheFirst-><weak_warning descr="@property $repeated_property was not annotated">repeated_property</weak_warning> = 5;
 
-class CC_EloquentModel_WithoutTimestamps_ShouldNotBeReportedForTimestampsColumns extends Model {
+class <weak_warning descr="@property $id was not annotated">CC_EloquentModel_WithoutTimestamps_ShouldNotBeReportedForTimestampsColumns</weak_warning> extends Model {
     protected $timestamps = false;
 }
 
-class CC_EloquentModel_WithANotConstantTimestampsValue extends Model {
+class <weak_warning descr="@property $id was not annotated">CC_EloquentModel_WithANotConstantTimestampsValue</weak_warning> extends Model {
     protected $timestamps = 123;
 }
 
@@ -347,12 +347,12 @@ class EloquentModel_PrimaryKeyColumnFromConstant extends Model {
     protected <weak_warning descr="@property $id was not annotated">$primaryKey</weak_warning> = self::PRIMARY_KEY;
 }
 
-class EloquentModel_TimestampColumnFromConstant extends Model {
+class <weak_warning descr="@property $id was not annotated">EloquentModel_TimestampColumnFromConstant</weak_warning> extends Model {
     const TIMESTAMPS_TRUE = true;
     protected <weak_warning descr="@property $created_at was not annotated"><weak_warning descr="@property $updated_at was not annotated">$timestamps</weak_warning></weak_warning> = self::TIMESTAMPS_TRUE;
 }
 
-class CC_EloquentModel_TimestampsUndefined extends Model {
+class <weak_warning descr="@property $id was not annotated">CC_EloquentModel_TimestampsUndefined</weak_warning> extends Model {
     protected $timestamps;
 }
 
@@ -360,7 +360,7 @@ class CC_EloquentModel_TimestampsUndefined extends Model {
  * @property-read mixed $property_read
  * @property-write mixed $property_write
  */
-class EloquentModel_PropertyReadAndWriteShouldBeAllowed extends Model
+class <weak_warning descr="@property $id was not annotated">EloquentModel_PropertyReadAndWriteShouldBeAllowed</weak_warning> extends Model
 {
     public function propertyWrite()
     {

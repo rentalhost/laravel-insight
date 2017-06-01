@@ -22,6 +22,7 @@ trait NotAnySoftDeletesTrait
 }
 
 /**
+ * @property int $id
  * @property mixed $someProperty
  */
 class EloquentCasts_WithoutPhpdoc extends Model
@@ -32,6 +33,7 @@ class EloquentCasts_WithoutPhpdoc extends Model
 }
 
 /** Class
+ * @property int $id
  * @property mixed $someProperty
  */
 class EloquentCasts_WithPhpdoc_WithoutParam extends Model
@@ -43,6 +45,7 @@ class EloquentCasts_WithPhpdoc_WithoutParam extends Model
 
 /**
  * @property mixed $anotherProperty
+ * @property int $id
  * @property mixed $someProperty
  */
 class EloquentCasts_WithPhpdoc_WithParam_WithoutSomePropertyParam extends Model
@@ -54,6 +57,7 @@ class EloquentCasts_WithPhpdoc_WithParam_WithoutSomePropertyParam extends Model
 
 /**
  * @property mixed $someProperty
+ * @property int $id
  */
 class EloquentCasts_WithPhpdoc_WithParam_WithSomePropertyParam extends Model
 {
@@ -62,11 +66,17 @@ class EloquentCasts_WithPhpdoc_WithParam_WithSomePropertyParam extends Model
     ];
 }
 
+/**
+ * @property int $id
+ */
 class EloquentCasts_WithInvalidType extends Model
 {
     protected $casts = 123;
 }
 
+/**
+ * @property int $id
+ */
 class EloquentCasts_WithInvalidHashKeys extends Model
 {
     protected $casts = [
@@ -75,6 +85,9 @@ class EloquentCasts_WithInvalidHashKeys extends Model
     ];
 }
 
+/**
+ * @property int $id
+ */
 class EloquentCasts_ShouldIgnoresNonStringValues extends Model
 {
     protected $casts = [
@@ -82,6 +95,9 @@ class EloquentCasts_ShouldIgnoresNonStringValues extends Model
     ];
 }
 
+/**
+ * @property int $id
+ */
 class EloquentCasts_ShouldIgnoresMultidimensionalKeys extends Model
 {
     protected $casts = [
@@ -91,6 +107,9 @@ class EloquentCasts_ShouldIgnoresMultidimensionalKeys extends Model
     ];
 }
 
+/**
+ * @property int $id
+ */
 class CC_EloquentCasts_CastsIsNotArray extends Model
 {
     /** @type array */
@@ -98,12 +117,16 @@ class CC_EloquentCasts_CastsIsNotArray extends Model
 }
 
 /**
+ * @property int $id
  * @property mixed $from_new_model_instance
  */
 class EloquentCasts_WithoutCastsField extends Model
 {
 }
 
+/**
+ * @property int $id
+ */
 class CC_EloquentCasts_WithOtherFields extends Model
 {
     protected $CC_otherField;
@@ -119,6 +142,7 @@ class CC_NoEloquentModel_WithCastsField
 }
 
 /**
+ * @property int $id
  * @property mixed $created_at
  * @property mixed $updated_at
  */
@@ -131,6 +155,7 @@ class EloquentDates_CreatedAndUpdatedAt extends Model
 }
 
 /**
+ * @property int $id
  * @property mixed $created_at
  * @property mixed $updated_at
  */
@@ -149,12 +174,14 @@ class EloquentDates_CreatedAndUpdatedAt_WithConstants extends Model
 
 /**
  * @property mixed $created_at
+ * @property int $id
  */
 class EloquentBaseProperties extends Model
 {
 }
 
 /**
+ * @property int $id
  * @property mixed $updated_at
  */
 class EloquentChild_ShouldConsiderParentProperties extends EloquentBaseProperties
@@ -166,6 +193,7 @@ class EloquentChild_ShouldConsiderParentProperties extends EloquentBasePropertie
 }
 
 /**
+ * @property int $id
  * @property mixed $deleted_at
  */
 class Eloquent_TraitSoftDeletes_DirectUsageOfSoftDeletesTrait_ShouldDeclareDeletedAtProperty extends Model
@@ -175,6 +203,7 @@ class Eloquent_TraitSoftDeletes_DirectUsageOfSoftDeletesTrait_ShouldDeclareDelet
 }
 
 /**
+ * @property int $id
  * @property mixed $deleted_at
  */
 class Eloquent_TraitSoftDeletes_ShouldDeclareDeletedAtProperty extends Model
@@ -185,6 +214,7 @@ class Eloquent_TraitSoftDeletes_ShouldDeclareDeletedAtProperty extends Model
 
 /**
  * @property mixed $deleted_at
+ * @property int $id
  */
 class Eloquent_TraitSoftDeletes_ShouldConsiderDeclarationOnClass extends Model
 {
@@ -192,12 +222,16 @@ class Eloquent_TraitSoftDeletes_ShouldConsiderDeclarationOnClass extends Model
         ShouldNotReportsThat;
 }
 
+/**
+ * @property int $id
+ */
 class Eloquent_ShouldCheckIfIsTheRightSoftDeletesTrait extends Model
 {
     use NotAnySoftDeletesTrait;
 }
 
 /**
+ * @property int $id
  * @property mixed $created_at
  * @property mixed $updated_at
  */
@@ -208,6 +242,7 @@ class EloquentTimestamps_SimulatingTheEloquentModelProperty extends Model
 
 /**
  * @property mixed $created_at
+ * @property int $id
  * @property mixed $updated_at
  */
 class EloquentTimestamps_SimulatingTheEloquentModelProperty_Child
@@ -216,7 +251,7 @@ class EloquentTimestamps_SimulatingTheEloquentModelProperty_Child
 }
 
 /**
- * @property mixed $id
+ * @property int $id
  */
 class EloquentPrimaryKey_SimulatingTheEloquentModelProperty extends Model
 {
@@ -224,7 +259,7 @@ class EloquentPrimaryKey_SimulatingTheEloquentModelProperty extends Model
 }
 
 /**
- * @property mixed $id
+ * @property int $id
  */
 class EloquentPrimaryKey_SimulatingTheEloquentModelProperty_Child
     extends EloquentPrimaryKey_SimulatingTheEloquentModelProperty
@@ -237,6 +272,7 @@ class CC_EloquentPrimaryKey_PrimaryKeyWithoutDefaultValue extends Model
 }
 
 /**
+ * @property int $id
  * @property mixed $has_one
  * @property mixed $has_many
  * @property mixed $has_many_through
@@ -296,6 +332,7 @@ class EloquentRelationship_SimulatingTheEloquentModelMethods extends Model
 }
 
 /**
+ * @property int $id
  * @property mixed $has_one_property
  * @property mixed $has_many_property
  * @property mixed $has_many_through_property
@@ -364,6 +401,7 @@ class EloquentRelationship_HasOne extends EloquentRelationship_SimulatingTheEloq
 }
 
 /**
+ * @property int $id
  * @property mixed $some_property
  * @property mixed $repeated_property
  */
@@ -397,10 +435,16 @@ $shouldNotifyOnlyTheFirst = new EloquentModel_MagicGetterAndSetter;
 $shouldNotifyOnlyTheFirst->repeated_property = 5;
 $shouldNotifyOnlyTheFirst->repeated_property = 5;
 
+/**
+ * @property int $id
+ */
 class CC_EloquentModel_WithoutTimestamps_ShouldNotBeReportedForTimestampsColumns extends Model {
     protected $timestamps = false;
 }
 
+/**
+ * @property int $id
+ */
 class CC_EloquentModel_WithANotConstantTimestampsValue extends Model {
     protected $timestamps = 123;
 }
@@ -410,7 +454,7 @@ class CC_EloquentModel_WithANotStringPrimaryKey extends Model {
 }
 
 /**
- * @property mixed $id
+ * @property int $id
  */
 class EloquentModel_PrimaryKeyColumnFromConstant extends Model {
     const PRIMARY_KEY = 'id';
@@ -418,6 +462,7 @@ class EloquentModel_PrimaryKeyColumnFromConstant extends Model {
 }
 
 /**
+ * @property int $id
  * @property mixed $created_at
  * @property mixed $updated_at
  */
@@ -426,6 +471,9 @@ class EloquentModel_TimestampColumnFromConstant extends Model {
     protected $timestamps = self::TIMESTAMPS_TRUE;
 }
 
+/**
+ * @property int $id
+ */
 class CC_EloquentModel_TimestampsUndefined extends Model {
     protected $timestamps;
 }
@@ -433,6 +481,7 @@ class CC_EloquentModel_TimestampsUndefined extends Model {
 /**
  * @property-read mixed $property_read
  * @property-write mixed $property_write
+ * @property int $id
  */
 class EloquentModel_PropertyReadAndWriteShouldBeAllowed extends Model
 {

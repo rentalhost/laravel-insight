@@ -114,27 +114,47 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
             @NotNull final ProblemsHolder problemsHolder,
             final PhpClass phpClass
         ) {
-            final Field fieldPrimaryKey = PhpClassUtil.findPropertyDeclaration(phpClass, "primaryKey");
+            final PsiElement issueReceptor;
+            final Field      fieldPrimaryKey              = PhpClassUtil.findPropertyDeclaration(phpClass, "primaryKey");
+            String           fieldPrimaryKeyResolvedValue = "id";
 
-            if (fieldPrimaryKey == null) {
-                return;
+            if (fieldPrimaryKey != null) {
+                final PsiElement fieldPrimaryKeyValue = fieldPrimaryKey.getDefaultValue();
+
+                if (!(fieldPrimaryKeyValue instanceof PhpExpression)) {
+                    return;
+                }
+
+                final PhpExpression fieldPrimaryKeyResolved = PhpExpressionUtil.from((PhpExpression) fieldPrimaryKeyValue);
+
+                if (!(fieldPrimaryKeyResolved instanceof StringLiteralExpression)) {
+                    return;
+                }
+
+                fieldPrimaryKeyResolvedValue = ((StringLiteralExpression) fieldPrimaryKeyResolved).getContents();
+                issueReceptor = getReportableElement(phpClass, fieldPrimaryKey);
+            }
+            else {
+                issueReceptor = phpClass.getNameIdentifier();
+                assert issueReceptor != null;
             }
 
-            final PsiElement fieldPrimaryKeyValue = fieldPrimaryKey.getDefaultValue();
+            final Field fieldKeyType = PhpClassUtil.findPropertyDeclaration(phpClass, "keyType");
+            String      fieldType    = "int";
 
-            if (!(fieldPrimaryKeyValue instanceof PhpExpression)) {
-                return;
+            if (fieldKeyType != null) {
+                final PhpExpression fieldKeyTypeValueRaw = (PhpExpression) fieldKeyType.getDefaultValue();
+
+                if (fieldKeyTypeValueRaw != null) {
+                    final PsiElement fieldKeyTypeValue = PhpExpressionUtil.from(fieldKeyTypeValueRaw);
+
+                    if (fieldKeyTypeValue instanceof StringLiteralExpression) {
+                        fieldType = ((StringLiteralExpression) fieldKeyTypeValue).getContents();
+                    }
+                }
             }
 
-            final PhpExpression fieldPrimaryKeyValueResolved = PhpExpressionUtil.from((PhpExpression) fieldPrimaryKeyValue);
-
-            if (!(fieldPrimaryKeyValueResolved instanceof StringLiteralExpression)) {
-                return;
-            }
-
-            final PsiElement issueReceptor = getReportableElement(phpClass, fieldPrimaryKey);
-
-            validatePropertyAnnotation(problemsHolder, phpClass, issueReceptor, ((StringLiteralExpression) fieldPrimaryKeyValueResolved).getContents(), "mixed");
+            validatePropertyAnnotation(problemsHolder, phpClass, issueReceptor, fieldPrimaryKeyResolvedValue, fieldType);
         }
 
         static void reportAccessorOrMutator(
