@@ -355,10 +355,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                         continue;
                     }
 
-                    final String fieldName = fieldReference.getName();
-                    assert fieldName != null;
-
-                    final Field fieldDeclaration = PhpClassUtil.findPropertyDeclaration(fieldClass, fieldName);
+                    final Field fieldDeclaration = PhpClassUtil.findPropertyDeclaration(fieldClass, fieldNameText);
 
                     if ((fieldDeclaration != null) &&
                         fieldDeclaration.getModifier().isPublic()) {
