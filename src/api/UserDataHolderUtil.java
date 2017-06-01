@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 
 import org.jetbrains.annotations.NotNull;
 
-public enum UserDataHolderUtil {
+enum UserDataHolderUtil {
     ;
 
     @NotNull

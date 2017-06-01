@@ -2,6 +2,7 @@ package net.rentalhost.idea.api;
 
 import com.intellij.psi.PsiElement;
 import com.jetbrains.php.lang.psi.elements.ParenthesizedExpression;
+import com.jetbrains.php.lang.psi.elements.PhpPsiElement;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -14,7 +15,11 @@ public enum PsiElementUtil {
             final PsiElement element = (PsiElement) resolver.getObject();
 
             if (element instanceof ParenthesizedExpression) {
-                return (T) resolver.resolve(((ParenthesizedExpression) element).getArgument());
+                final PhpPsiElement elementArgument = ((ParenthesizedExpression) element).getArgument();
+
+                if (elementArgument != null) {
+                    return (T) resolver.resolve(elementArgument);
+                }
             }
 
             return (T) element;
