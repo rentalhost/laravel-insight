@@ -5,12 +5,17 @@ import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
+import com.intellij.ide.util.PsiNavigationSupport;
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.pom.Navigatable;
 import com.intellij.psi.*;
 import com.jetbrains.php.PhpIndex;
 import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocComment;
 import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocProperty;
+import com.jetbrains.php.lang.documentation.phpdoc.psi.tags.PhpDocTag;
 import com.jetbrains.php.lang.inspections.PhpInspection;
 import com.jetbrains.php.lang.psi.elements.*;
 import com.jetbrains.php.lang.psi.resolve.types.PhpType;
@@ -408,7 +413,22 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
                 }
             }
 
-            PhpDocCommentUtil.createTag(primaryClass, "@property", '$' + propertyName);
+            final PhpDocTag  docCommentNewTag    = PhpDocCommentUtil.createTag(primaryClass, "@property", "mixed $" + propertyName);
+            final PsiElement docCommentReference = docCommentNewTag.getParent();
+
+            final Navigatable navigator = PsiNavigationSupport.getInstance().getDescriptor(docCommentReference.getNavigationElement());
+            if (navigator != null) {
+                navigator.navigate(true);
+
+                final Editor selectedTextEditor = FileEditorManager.getInstance(project).getSelectedTextEditor();
+                if (selectedTextEditor != null) {
+                    final int startOffset = docCommentNewTag.getTextOffset() + 10;
+                    final int endOffset   = startOffset + 5;
+
+                    selectedTextEditor.getSelectionModel().setSelection(startOffset, endOffset);
+                    selectedTextEditor.getCaretModel().moveToOffset(endOffset);
+                }
+            }
         }
     }
 }

@@ -37,7 +37,7 @@ class EloquentCasts_WithPhpdoc_WithoutParam extends Model
 }
 
 /**
- * @property $anotherProperty
+ * @property mixed $anotherProperty
  */
 class EloquentCasts_WithPhpdoc_WithParam_WithoutSomePropertyParam extends Model
 {
@@ -47,7 +47,7 @@ class EloquentCasts_WithPhpdoc_WithParam_WithoutSomePropertyParam extends Model
 }
 
 /**
- * @property $someProperty
+ * @property mixed $someProperty
  */
 class EloquentCasts_WithPhpdoc_WithParam_WithSomePropertyParam extends Model
 {
@@ -131,7 +131,7 @@ class EloquentDates_CreatedAndUpdatedAt_WithConstants extends Model
 }
 
 /**
- * @property $created_at
+ * @property mixed $created_at
  */
 class EloquentBaseProperties extends Model
 {
@@ -158,7 +158,7 @@ class Eloquent_TraitSoftDeletes_ShouldDeclareDeletedAtProperty extends Model
 }
 
 /**
- * @property $deleted_at
+ * @property mixed $deleted_at
  */
 class Eloquent_TraitSoftDeletes_ShouldConsiderDeclarationOnClass extends Model
 {
