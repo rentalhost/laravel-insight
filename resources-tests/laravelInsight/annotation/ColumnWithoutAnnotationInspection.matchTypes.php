@@ -28,3 +28,12 @@ class <weak_warning descr="@property $id was not annotated">Eloquent_IdSuffix</w
 }
 
 (new Eloquent_IdSuffix)-><weak_warning descr="@property $user_id was not annotated">user_id</weak_warning>;
+
+class <weak_warning descr="@property $id was not annotated">Eloquent_IdentifyAccessorReturnType</weak_warning> extends EloquentSimulation
+{
+    public function <weak_warning descr="@property $identify_as_string was not annotated">getIdentifyAsStringAttribute</weak_warning>(): string {
+    }
+}
+
+(new Eloquent_IdentifyAccessorReturnType)-><weak_warning descr="@property $identify_as_string was not annotated">identify_as_string</weak_warning>;
+

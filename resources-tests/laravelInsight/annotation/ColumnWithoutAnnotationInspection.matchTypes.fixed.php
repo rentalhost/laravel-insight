@@ -44,3 +44,16 @@ class Eloquent_IdSuffix extends EloquentSimulation
 }
 
 (new Eloquent_IdSuffix)->user_id;
+
+/**
+ * @property int $id
+ * @property string $identify_as_string
+ */
+class Eloquent_IdentifyAccessorReturnType extends EloquentSimulation
+{
+    public function getIdentifyAsStringAttribute(): string {
+    }
+}
+
+(new Eloquent_IdentifyAccessorReturnType)->identify_as_string;
+

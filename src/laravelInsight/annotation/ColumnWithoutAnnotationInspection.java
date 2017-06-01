@@ -183,15 +183,23 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
             final String methodName
         ) {
             if (methodName.endsWith("Attribute")) {
-                if (methodName.startsWith("get") ||
+                final boolean isAccessor = methodName.startsWith("get");
+
+                if (isAccessor ||
                     methodName.startsWith("set")) {
                     final PsiElement methodIdentifier = method.getNameIdentifier();
                     assert methodIdentifier != null;
 
+                    String methodReturnType = "mixed";
+
+                    if (isAccessor) {
+                        methodReturnType = PhpFunctionUtil.getReturnType((Function) method).toString();
+                    }
+
                     final String methodPropertyPart = methodName.substring(3, methodName.length() - 9);
 
                     validatePropertyAnnotation(problemsHolder, methodClass, methodIdentifier,
-                                               CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, methodPropertyPart), "mixed");
+                                               CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, methodPropertyPart), methodReturnType);
                 }
             }
         }
