@@ -1,7 +1,6 @@
 package net.rentalhost.idea.api;
 
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.jetbrains.php.lang.psi.elements.*;
 import com.jetbrains.php.lang.psi.elements.impl.PhpUseImpl;
@@ -151,23 +150,6 @@ public enum PhpClassUtil {
                 }
             }
 
-            for (final PhpUse classTrait : getTraitsDeclared(classCurrent)) {
-                final PhpReference traitReference = classTrait.getTargetReference();
-                assert traitReference != null;
-
-                final PhpClass resolve = (PhpClass) traitReference.resolve();
-
-                if (resolve == null) {
-                    continue;
-                }
-
-                final Field traitDeclaration = (Field) resolver.resolve(resolve);
-
-                if (traitDeclaration != null) {
-                    return traitDeclaration;
-                }
-            }
-
             final PhpClass classSuperResolved = getSuper(classCurrent);
 
             if (classSuperResolved == null) {
@@ -190,52 +172,6 @@ public enum PhpClassUtil {
             for (final Method classMethod : classMethods) {
                 if (classMethod.getName().equals(methodNameExpected)) {
                     return classMethod;
-                }
-            }
-
-            for (final PhpTraitUseRule classTraitRule : classCurrent.getTraitUseRules()) {
-                if (Objects.equals(classTraitRule.getAlias(), methodNameExpected)) {
-                    final MethodReference classTraitReference = classTraitRule.getOriginalReference();
-                    assert classTraitReference != null;
-
-                    return (Method) classTraitReference.resolve();
-                }
-
-                final MethodReference classTraitRuleMethodScopedReference = (MethodReference) classTraitRule.getFirstPsiChild();
-                assert classTraitRuleMethodScopedReference != null;
-
-                final PsiReference classTraitRuleMethodClassReference = (PsiReference) classTraitRuleMethodScopedReference.getFirstPsiChild();
-                assert classTraitRuleMethodClassReference != null;
-
-                final PsiElement classTraitRuleMethodClass = classTraitRuleMethodClassReference.resolve();
-
-                if (classTraitRuleMethodClass == null) {
-                    continue;
-                }
-
-                final Method classTraitRuleMethod = (Method) resolver.resolve(classTraitRuleMethodClass);
-
-                if (classTraitRuleMethod == null) {
-                    continue;
-                }
-
-                return classTraitRuleMethod;
-            }
-
-            for (final PhpUse classTrait : getTraitsDeclared(classCurrent)) {
-                final PhpReference traitReference = classTrait.getTargetReference();
-                assert traitReference != null;
-
-                final PhpClass resolve = (PhpClass) traitReference.resolve();
-
-                if (resolve == null) {
-                    continue;
-                }
-
-                final Method traitDeclaration = (Method) resolver.resolve(resolve);
-
-                if (traitDeclaration != null) {
-                    return traitDeclaration;
                 }
             }
 

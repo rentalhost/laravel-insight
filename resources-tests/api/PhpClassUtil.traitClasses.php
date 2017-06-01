@@ -1,5 +1,7 @@
 <?php
 
+use CC_NotIsATrait_APIConsiderTooAsUse;
+
 trait FirstTrait
 {
 }
@@ -16,4 +18,9 @@ class FirstClass
 class SecondClass extends FirstClass
 {
     use SecondTrait;
+}
+
+class CC_UnresolvableTraitClass
+{
+    use UnresolvableTrait;
 }

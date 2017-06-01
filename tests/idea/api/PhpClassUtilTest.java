@@ -56,10 +56,11 @@ public class PhpClassUtilTest extends FixtureSuite {
     public void testFindTraitOfType() {
         final PsiFile fileSample = getResourceFile("api/PhpClassUtil.traitClasses.php");
 
-        final PhpClass traitFirstTrait  = (PhpClass) getElementByName(fileSample, "FirstTrait");
-        final PhpClass traitSecondTrait = (PhpClass) getElementByName(fileSample, "SecondTrait");
-        final PhpClass classFirstClass  = (PhpClass) getElementByName(fileSample, "FirstClass");
-        final PhpClass classSecondClass = (PhpClass) getElementByName(fileSample, "SecondClass");
+        final PhpClass traitFirstTrait               = (PhpClass) getElementByName(fileSample, "FirstTrait");
+        final PhpClass traitSecondTrait              = (PhpClass) getElementByName(fileSample, "SecondTrait");
+        final PhpClass classFirstClass               = (PhpClass) getElementByName(fileSample, "FirstClass");
+        final PhpClass classSecondClass              = (PhpClass) getElementByName(fileSample, "SecondClass");
+        final PhpClass classCCUnresolvableTraitClass = (PhpClass) getElementByName(fileSample, "CC_UnresolvableTraitClass");
 
         Assert.assertNull(PhpClassUtil.findTraitOfType(traitFirstTrait, "\\ThisTraitDoesntExists"));
         Assert.assertNull(PhpClassUtil.findTraitOfType(traitSecondTrait, "\\ThisTraitDoesntExists"));
@@ -72,6 +73,9 @@ public class PhpClassUtilTest extends FixtureSuite {
         // SecondClass have FirstTrait and SecondTrait.
         Assert.assertSame(traitFirstTrait, valueOf(PhpClassUtil.findTraitOfType(classSecondClass, "\\FirstTrait")).resolve());
         Assert.assertSame(traitSecondTrait, valueOf(PhpClassUtil.findTraitOfType(classSecondClass, "\\SecondTrait")).resolve());
+
+        // Code-coverage.
+        Assert.assertNull(PhpClassUtil.findTraitOfType(classCCUnresolvableTraitClass, "\\Anything"));
 
         final PsiFile              fileSample2  = getResourceFile("api/PhpClassUtil.traitOfTrait.php");
         final Collection<PhpClass> fileClasses2 = new ArrayList<>(PsiTreeUtil.findChildrenOfType(fileSample2, PhpClass.class));
@@ -162,6 +166,13 @@ public class PhpClassUtilTest extends FixtureSuite {
         final PhpClass classCyclicClassA = (PhpClass) getElementByName(fileSample, "CyclicClassA");
 
         Assert.assertNull(PhpClassUtil.findPropertyDeclaration(classCyclicClassA, "inexistentProperty"));
+
+        // Code-coverage:
+        final PhpClass classCCPropertyFromTraitClass = (PhpClass) getElementByName(fileSample, "CC_PropertyFromTraitClass");
+        final PhpClass traitCCPropertyFromTrait      = (PhpClass) getElementByName(fileSample, "CC_PropertyFromTrait");
+
+        Assert.assertEquals(traitCCPropertyFromTrait,
+                            valueOf(PhpClassUtil.findPropertyDeclaration(classCCPropertyFromTraitClass, "propertyFromTrait")).getContainingClass());
     }
 
     public void testFindMethodDeclaration() {
@@ -218,10 +229,15 @@ public class PhpClassUtilTest extends FixtureSuite {
     }
 
     public void testGetTraitContainingClass() {
-        final PsiFile    fileSample         = getResourceFile("api/PhpClassUtil.traitClasses.php");
+        final PsiFile fileSample = getResourceFile("api/PhpClassUtil.traitClasses.php");
+
         final PsiElement classFirstClass    = getElementByName(fileSample, "FirstClass");
         final PhpUse     firstClassTraitUse = valueOf(PsiTreeUtil.findChildOfType(classFirstClass, PhpUse.class));
 
         Assert.assertNotNull(PhpClassUtil.getTraitContainingClass(firstClassTraitUse));
+
+        final PhpUse useImport = (PhpUse) valueOf(getElementByName(fileSample, "CC_NotIsATrait_APIConsiderTooAsUse"));
+
+        Assert.assertNull(PhpClassUtil.getTraitContainingClass(useImport));
     }
 }

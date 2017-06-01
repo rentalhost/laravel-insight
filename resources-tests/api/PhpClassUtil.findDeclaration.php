@@ -34,6 +34,11 @@ trait SecondPropertyOnTrait
     }
 }
 
+trait CC_PropertyFromTrait
+{
+    public $propertyFromTrait;
+}
+
 class FirstPropertyDeclarationClass
 {
     use FirstPropertyOnTrait;
@@ -91,4 +96,9 @@ class CyclicClassA extends CyclicClassB
 
 class CyclicClassB extends CyclicClassA
 {
+}
+
+class CC_PropertyFromTraitClass
+{
+    use CC_PropertyFromTrait;
 }
