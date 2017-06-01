@@ -91,5 +91,7 @@ public class PhpFunctionUtilTest extends FixtureSuite {
 
         Assert.assertTrue(hasOnlyTypes(fileSample, "avoidInfinityLoopingA_mixedType", PhpType.MIXED));
         Assert.assertTrue(hasOnlyTypes(fileSample, "avoidInfinityLoopingA_respectPhpdoc", PhpType.STRING));
+
+        Assert.assertTrue(hasOnlyTypes(fileSample, "respectComplexReturnType", typeChainSimulator));
     }
 }

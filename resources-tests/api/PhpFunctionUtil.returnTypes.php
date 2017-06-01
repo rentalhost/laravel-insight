@@ -186,3 +186,9 @@ function avoidInfinityLoopingC_respectPhpdoc()
 {
     return avoidInfinityLoopingA_respectPhpdoc();
 }
+
+function respectComplexReturnType()
+{
+    $complexType = (new ChainSimulator)->chain();
+    return $complexType;
+}

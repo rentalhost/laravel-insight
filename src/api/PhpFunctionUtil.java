@@ -72,7 +72,7 @@ public enum PhpFunctionUtil {
                             functionReturnTypes.add(PhpType.MIXED);
                         }
                         else if (phpInstructionArgument instanceof PhpTypedElement) {
-                            final PhpType phpInstructionType = ((PhpTypedElement) phpInstructionArgument).getType();
+                            final PhpType phpInstructionType = ((PhpTypedElement) phpInstructionArgument).getType().globalLocationAware(function);
 
                             if (phpInstructionType.isEmpty()) {
                                 functionReturnTypes.add(PhpType.MIXED);
