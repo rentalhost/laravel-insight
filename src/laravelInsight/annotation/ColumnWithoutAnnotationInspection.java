@@ -343,8 +343,9 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                 assert fieldClassReferenceRaw != null;
 
                 final PsiElement fieldClassReference = PsiElementUtil.skipParentheses(fieldClassReferenceRaw);
+                assert fieldClassReference != null;
 
-                if (!(fieldClassReference instanceof PhpTypedElement)) {
+                if (fieldClassReference instanceof ParenthesizedExpression) {
                     return;
                 }
 
