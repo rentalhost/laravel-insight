@@ -23,7 +23,7 @@ trait NotAnySoftDeletesTrait
 
 /**
  * @property int $id
- * @property mixed $someProperty
+ * @property int $someProperty
  */
 class EloquentCasts_WithoutPhpdoc extends Model
 {
@@ -34,7 +34,7 @@ class EloquentCasts_WithoutPhpdoc extends Model
 
 /** Class
  * @property int $id
- * @property mixed $someProperty
+ * @property int $someProperty
  */
 class EloquentCasts_WithPhpdoc_WithoutParam extends Model
 {
@@ -46,7 +46,7 @@ class EloquentCasts_WithPhpdoc_WithoutParam extends Model
 /**
  * @property mixed $anotherProperty
  * @property int $id
- * @property mixed $someProperty
+ * @property int $someProperty
  */
 class EloquentCasts_WithPhpdoc_WithParam_WithoutSomePropertyParam extends Model
 {

@@ -51,3 +51,24 @@ class <weak_warning descr="@property $id was not annotated">Eloquent_IdentifyMut
 
 (new Eloquent_IdentifyMutatorReturnType_GetFromAcessor)-><weak_warning descr="@property $identify_as_int was not annotated">identify_as_int</weak_warning>;
 
+class <weak_warning descr="@property $id was not annotated">Eloquent_IdentifyCastType</weak_warning> extends EloquentSimulation
+{
+    protected $casts = [
+        <weak_warning descr="@property $property_int was not annotated">'property_int'</weak_warning> => 'int',
+        <weak_warning descr="@property $property_integer was not annotated">'property_integer'</weak_warning> => 'integer',
+        <weak_warning descr="@property $property_real was not annotated">'property_real'</weak_warning> => 'real',
+        <weak_warning descr="@property $property_float was not annotated">'property_float'</weak_warning> => 'float',
+        <weak_warning descr="@property $property_double was not annotated">'property_double'</weak_warning> => 'double',
+        <weak_warning descr="@property $property_string was not annotated">'property_string'</weak_warning> => 'string',
+        <weak_warning descr="@property $property_bool was not annotated">'property_bool'</weak_warning> => 'bool',
+        <weak_warning descr="@property $property_boolean was not annotated">'property_boolean'</weak_warning> => 'boolean',
+        <weak_warning descr="@property $property_object was not annotated">'property_object'</weak_warning> => 'object',
+        <weak_warning descr="@property $property_array was not annotated">'property_array'</weak_warning> => 'array',
+        <weak_warning descr="@property $property_json was not annotated">'property_json'</weak_warning> => 'json',
+        <weak_warning descr="@property $property_collection was not annotated">'property_collection'</weak_warning> => 'collection',
+        <weak_warning descr="@property $property_date was not annotated">'property_date'</weak_warning> => 'date',
+        <weak_warning descr="@property $property_datetime was not annotated">'property_datetime'</weak_warning> => 'datetime',
+        <weak_warning descr="@property $property_timestamp was not annotated">'property_timestamp'</weak_warning> => 'timestamp',
+        <weak_warning descr="@property $property_mixed was not annotated">'property_mixed'</weak_warning> => 'anything_else',
+    ];
+}

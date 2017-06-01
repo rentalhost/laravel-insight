@@ -79,3 +79,43 @@ class Eloquent_IdentifyMutatorReturnType_GetFromAcessor extends EloquentSimulati
 
 (new Eloquent_IdentifyMutatorReturnType_GetFromAcessor)->identify_as_int;
 
+/**
+ * @property int $id
+ * @property int $property_int
+ * @property int $property_integer
+ * @property float $property_real
+ * @property float $property_float
+ * @property float $property_double
+ * @property string $property_string
+ * @property bool $property_bool
+ * @property bool $property_boolean
+ * @property object $property_object
+ * @property array $property_array
+ * @property array $property_json
+ * @property \Illuminate\Support\Collection $property_collection
+ * @property \Carbon\Carbon $property_date
+ * @property \Carbon\Carbon $property_datetime
+ * @property \Carbon\Carbon $property_timestamp
+ * @property mixed $property_mixed
+ */
+class Eloquent_IdentifyCastType extends EloquentSimulation
+{
+    protected $casts = [
+        'property_int' => 'int',
+        'property_integer' => 'integer',
+        'property_real' => 'real',
+        'property_float' => 'float',
+        'property_double' => 'double',
+        'property_string' => 'string',
+        'property_bool' => 'bool',
+        'property_boolean' => 'boolean',
+        'property_object' => 'object',
+        'property_array' => 'array',
+        'property_json' => 'json',
+        'property_collection' => 'collection',
+        'property_date' => 'date',
+        'property_datetime' => 'datetime',
+        'property_timestamp' => 'timestamp',
+        'property_mixed' => 'anything_else',
+    ];
+}

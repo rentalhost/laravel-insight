@@ -21,9 +21,7 @@ import com.jetbrains.php.lang.psi.elements.*;
 import com.jetbrains.php.lang.psi.resolve.types.PhpType;
 import com.jetbrains.php.lang.psi.visitors.PhpElementVisitor;
 
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -37,6 +35,26 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
 
     private enum InspectionHelper {
         ;
+
+        static final Map<String, String> CAST_TYPES = new HashMap<>();
+
+        static {
+            CAST_TYPES.put("int", "int");
+            CAST_TYPES.put("integer", "int");
+            CAST_TYPES.put("real", "float");
+            CAST_TYPES.put("float", "float");
+            CAST_TYPES.put("double", "float");
+            CAST_TYPES.put("string", "string");
+            CAST_TYPES.put("bool", "bool");
+            CAST_TYPES.put("boolean", "bool");
+            CAST_TYPES.put("object", "object");
+            CAST_TYPES.put("array", "array");
+            CAST_TYPES.put("json", "array");
+            CAST_TYPES.put("collection", LaravelClasses.ELOQUENT_COLLECTION.toString());
+            CAST_TYPES.put("date", CarbonClasses.CARBON.toString());
+            CAST_TYPES.put("datetime", CarbonClasses.CARBON.toString());
+            CAST_TYPES.put("timestamp", CarbonClasses.CARBON.toString());
+        }
 
         static void registerPropertyUndefined(
             @NotNull final ProblemsHolder problemsHolder,
@@ -251,6 +269,15 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
             return issueReceptor;
         }
 
+        @NotNull
+        static String getCastType(final String castKey) {
+            if (CAST_TYPES.containsKey(castKey)) {
+                return CAST_TYPES.get(castKey);
+            }
+
+            return "mixed";
+        }
+
         private static boolean isRelationship(final Collection<String> functionTypes) {
             return functionTypes.contains(LaravelClasses.ELOQUENT_RELATIONSHIP_HASONE.toString()) ||
                    functionTypes.contains(LaravelClasses.ELOQUENT_RELATIONSHIP_HASMANY.toString()) ||
@@ -280,8 +307,9 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
             @Override
             public void visitPhpField(final Field field) {
                 final String  fieldName      = field.getName();
+                final boolean isCastProperty = Objects.equals(fieldName, "casts");
 
-                if (!Objects.equals(fieldName, "casts") &&
+                if (!isCastProperty &&
                     !Objects.equals(fieldName, "dates")) {
                     return;
                 }
@@ -325,6 +353,14 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                     }
 
                     final String hashKeyContents = ((StringLiteralExpression) hashKeyResolvedValue).getContents();
+
+                    if (isCastProperty) {
+                        final String fieldHashResolvedValueText = ((StringLiteralExpression) fieldHashResolvedValue).getContents().toLowerCase();
+                        final String fieldHashResolvedCastType  = InspectionHelper.getCastType(fieldHashResolvedValueText);
+
+                        InspectionHelper.validatePropertyAnnotation(problemsHolder, fieldClass, hashKey, hashKeyContents, fieldHashResolvedCastType);
+                        continue;
+                    }
 
                     InspectionHelper.validatePropertyAnnotation(problemsHolder, fieldClass, hashKey, hashKeyContents);
                 }
