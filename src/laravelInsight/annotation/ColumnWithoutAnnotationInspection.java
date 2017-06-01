@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import net.rentalhost.idea.api.*;
 import net.rentalhost.idea.laravelInsight.resources.LaravelClasses;
 
-public class PropertyWithoutAnnotationInspection extends PhpInspection {
+public class ColumnWithoutAnnotationInspection extends PhpInspection {
     private static final String messagePropertyUndefined = "@property $%s was not annotated";
 
     private enum InspectionHelper {
@@ -181,7 +181,7 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
     @NotNull
     @Override
     public String getShortName() {
-        return "PropertyWithoutAnnotationInspection";
+        return "ColumnWithoutAnnotationInspection";
     }
 
     @NotNull
@@ -385,7 +385,7 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
 
             primaryClassPointer = pointerManager.createSmartPsiElementPointer(primaryClass);
             this.propertyName = propertyName;
-            familyName = String.format("Create property $%s on %s class", propertyName, primaryClass.getName());
+            familyName = String.format("Declare @property $%s on %s class", propertyName, primaryClass.getName());
         }
 
         @Nls

@@ -22,10 +22,10 @@
         <localInspection language="PHP"
                          groupPath="PHP,Laravel Insight"
                          groupName="Annotation"
-                         displayName="Property is referenced but is not annotated"
+                         displayName="Columns need to be annotated"
                          enabledByDefault="true"
                          level="WEAK WARNING"
-                         shortName="PropertyWithoutAnnotationInspection"
-                         implementationClass="net.rentalhost.idea.laravelInsight.annotation.PropertyWithoutAnnotationInspection" />
+                         shortName="ColumnWithoutAnnotationInspection"
+                         implementationClass="net.rentalhost.idea.laravelInsight.annotation.ColumnWithoutAnnotationInspection"/>
     </extensions>
 </idea-plugin>

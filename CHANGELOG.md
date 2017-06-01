@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+* **Inspection**: *property without annotation* renamed to *column without annotation*;
+
 ## 0.1.0 [[Monogon Release](https://github.com/rentalhost/laravel-insight/releases/tag/0.1.0)] - 2017-05-31
 
 ### Added
