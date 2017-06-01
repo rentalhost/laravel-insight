@@ -84,6 +84,11 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
             final PsiElement issueReference,
             final String propertyName
         ) {
+            if (propertyName.endsWith("_id")) {
+                validatePropertyAnnotation(problemsHolder, phpClass, issueReference, propertyName, "int");
+                return;
+            }
+
             if (propertyName.endsWith("_at")) {
                 validatePropertyAnnotation(problemsHolder, phpClass, issueReference, propertyName, "\\Carbon\\Carbon");
                 return;

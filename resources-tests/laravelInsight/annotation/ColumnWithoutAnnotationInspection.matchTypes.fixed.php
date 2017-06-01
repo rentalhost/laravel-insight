@@ -34,3 +34,13 @@ class Eloquent_IdString extends EloquentSimulation
 
 (new Eloquent_IdInt)->id;
 (new Eloquent_IdString)->id;
+
+/**
+ * @property int $id
+ * @property int $user_id
+ */
+class Eloquent_IdSuffix extends EloquentSimulation
+{
+}
+
+(new Eloquent_IdSuffix)->user_id;

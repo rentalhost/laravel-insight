@@ -22,3 +22,9 @@ class <weak_warning descr="@property $id was not annotated">Eloquent_IdString</w
 
 (new Eloquent_IdInt)-><weak_warning descr="@property $id was not annotated">id</weak_warning>;
 (new Eloquent_IdString)-><weak_warning descr="@property $id was not annotated">id</weak_warning>;
+
+class <weak_warning descr="@property $id was not annotated">Eloquent_IdSuffix</weak_warning> extends EloquentSimulation
+{
+}
+
+(new Eloquent_IdSuffix)-><weak_warning descr="@property $user_id was not annotated">user_id</weak_warning>;
