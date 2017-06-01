@@ -11,16 +11,17 @@ public enum LaravelClasses {
     ELOQUENT_RELATIONSHIP_MORPHMANY("\\Illuminate\\Database\\Eloquent\\Relations\\MorphMany"),
     ELOQUENT_RELATIONSHIP_MORPHTOMANY("\\Illuminate\\Database\\Eloquent\\Relations\\MorphToMany"),
     ELOQUENT_RELATIONSHIP_BELONGSTO("\\Illuminate\\Database\\Eloquent\\Relations\\BelongsTo"),
-    ELOQUENT_RELATIONSHIP_BELONGSTOMANY("\\Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany");
+    ELOQUENT_RELATIONSHIP_BELONGSTOMANY("\\Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany"),
+    ELOQUENT_COLLECTION("\\Illuminate\\Support\\Collection");
 
-    private final String text;
+    private final String classname;
 
-    LaravelClasses(final String text) {
-        this.text = text;
+    LaravelClasses(final String classname) {
+        this.classname = classname;
     }
 
     @Override
     public String toString() {
-        return text;
+        return classname;
     }
 }

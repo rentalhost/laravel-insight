@@ -29,6 +29,7 @@ import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
 import net.rentalhost.idea.api.*;
+import net.rentalhost.idea.laravelInsight.resources.CarbonClasses;
 import net.rentalhost.idea.laravelInsight.resources.LaravelClasses;
 
 public class ColumnWithoutAnnotationInspection extends PhpInspection {
@@ -90,7 +91,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
             }
 
             if (propertyName.endsWith("_at")) {
-                validatePropertyAnnotation(problemsHolder, phpClass, issueReference, propertyName, "\\Carbon\\Carbon");
+                validatePropertyAnnotation(problemsHolder, phpClass, issueReference, propertyName, CarbonClasses.CARBON.toString());
                 return;
             }
 
@@ -278,7 +279,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
         return new PhpElementVisitor() {
             @Override
             public void visitPhpField(final Field field) {
-                final String fieldName = field.getName();
+                final String  fieldName      = field.getName();
 
                 if (!Objects.equals(fieldName, "casts") &&
                     !Objects.equals(fieldName, "dates")) {
