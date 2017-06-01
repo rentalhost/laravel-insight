@@ -38,7 +38,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
         ;
 
         static void registerPropertyUndefined(
-            final ProblemsHolder problemsHolder,
+            @NotNull final ProblemsHolder problemsHolder,
             final PhpClass primaryClass,
             final PsiElement hashKey,
             final String hashKeyContents
@@ -50,7 +50,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
         }
 
         static void validatePropertyAnnotation(
-            final ProblemsHolder problemsHolder,
+            @NotNull final ProblemsHolder problemsHolder,
             final PhpClass phpClass,
             final PsiElement issueReference,
             final String propertyName
@@ -77,7 +77,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
         }
 
         static void reportTimestamps(
-            final ProblemsHolder problemsHolder,
+            @NotNull final ProblemsHolder problemsHolder,
             final PhpClass phpClass
         ) {
             final Field fieldTimestamps = PhpClassUtil.findPropertyDeclaration(phpClass, "timestamps");
@@ -103,7 +103,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
         }
 
         static void reportPrimaryKey(
-            final ProblemsHolder problemsHolder,
+            @NotNull final ProblemsHolder problemsHolder,
             final PhpClass phpClass
         ) {
             final Field fieldPrimaryKey = PhpClassUtil.findPropertyDeclaration(phpClass, "primaryKey");
@@ -129,8 +129,28 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
             validatePropertyAnnotation(problemsHolder, phpClass, issueReceptor, ((StringLiteralExpression) fieldPrimaryKeyValueResolved).getContents());
         }
 
+        static void reportAccessorOrMutator(
+            @NotNull final ProblemsHolder problemsHolder,
+            final PsiNameIdentifierOwner method,
+            final PhpClass methodClass,
+            final String methodName
+        ) {
+            if (methodName.endsWith("Attribute")) {
+                if (methodName.startsWith("get") ||
+                    methodName.startsWith("set")) {
+                    final PsiElement methodIdentifier = method.getNameIdentifier();
+                    assert methodIdentifier != null;
+
+                    final String methodPropertyPart = methodName.substring(3, methodName.length() - 9);
+
+                    validatePropertyAnnotation(problemsHolder, methodClass, methodIdentifier,
+                                               CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, methodPropertyPart));
+                }
+            }
+        }
+
         static void reportRelationship(
-            final ProblemsHolder problemsHolder,
+            @NotNull final ProblemsHolder problemsHolder,
             final Function method,
             final PhpClass methodClass
         ) {
@@ -297,19 +317,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
 
                 final String methodName = method.getName();
 
-                if (methodName.endsWith("Attribute")) {
-                    if (methodName.startsWith("get") ||
-                        methodName.startsWith("set")) {
-                        final PsiElement methodIdentifier = method.getNameIdentifier();
-                        assert methodIdentifier != null;
-
-                        final String methodPropertyPart = methodName.substring(3, methodName.length() - 9);
-
-                        InspectionHelper.validatePropertyAnnotation(problemsHolder, methodClass, methodIdentifier,
-                                                                    CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, methodPropertyPart));
-                    }
-                }
-
+                InspectionHelper.reportAccessorOrMutator(problemsHolder, method, methodClass, methodName);
                 InspectionHelper.reportRelationship(problemsHolder, method, methodClass);
             }
 
