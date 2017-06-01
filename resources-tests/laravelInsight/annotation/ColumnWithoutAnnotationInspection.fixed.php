@@ -429,3 +429,19 @@ class EloquentModel_TimestampColumnFromConstant extends Model {
 class CC_EloquentModel_TimestampsUndefined extends Model {
     protected $timestamps;
 }
+
+/**
+ * @property-read mixed $property_read
+ * @property-write mixed $property_write
+ */
+class EloquentModel_PropertyReadAndWriteShouldBeAllowed extends Model
+{
+    public function propertyWrite()
+    {
+        $propertyReadAndWrite->property_write;
+    }
+}
+
+$propertyReadAndWrite = new EloquentModel_PropertyReadAndWriteShouldBeAllowed;
+$propertyReadAndWrite->property_read;
+$propertyReadAndWrite->property_read; // twice
