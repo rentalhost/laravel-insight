@@ -88,11 +88,17 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
 
             final PsiElement fieldTimestampsDefaultValue = fieldTimestamps.getDefaultValue();
 
-            if (!(fieldTimestampsDefaultValue instanceof ConstantReference)) {
+            if (!(fieldTimestampsDefaultValue instanceof PhpExpression)) {
                 return;
             }
 
-            if (!"true".equals(fieldTimestampsDefaultValue.getText())) {
+            final PsiElement fieldTimestampsDefaultValueResolved = PhpExpressionUtil.from((PhpExpression) fieldTimestampsDefaultValue);
+
+            if (!(fieldTimestampsDefaultValueResolved instanceof ConstantReference)) {
+                return;
+            }
+
+            if (!"true".equals(fieldTimestampsDefaultValueResolved.getText())) {
                 return;
             }
 

@@ -341,3 +341,17 @@ class CC_EloquentModel_WithANotConstantTimestampsValue extends Model {
 class CC_EloquentModel_WithANotStringPrimaryKey extends Model {
     protected $primaryKey = 123;
 }
+
+class EloquentModel_PrimaryKeyColumnFromConstant extends Model {
+    const PRIMARY_KEY = 'id';
+    protected <weak_warning descr="@property $id was not annotated">$primaryKey</weak_warning> = self::PRIMARY_KEY;
+}
+
+class EloquentModel_TimestampColumnFromConstant extends Model {
+    const TIMESTAMPS_TRUE = true;
+    protected <weak_warning descr="@property $created_at was not annotated"><weak_warning descr="@property $updated_at was not annotated">$timestamps</weak_warning></weak_warning> = self::TIMESTAMPS_TRUE;
+}
+
+class CC_EloquentModel_TimestampsUndefined extends Model {
+    protected $timestamps;
+}

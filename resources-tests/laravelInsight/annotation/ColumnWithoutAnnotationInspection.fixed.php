@@ -408,3 +408,24 @@ class CC_EloquentModel_WithANotConstantTimestampsValue extends Model {
 class CC_EloquentModel_WithANotStringPrimaryKey extends Model {
     protected $primaryKey = 123;
 }
+
+/**
+ * @property mixed $id
+ */
+class EloquentModel_PrimaryKeyColumnFromConstant extends Model {
+    const PRIMARY_KEY = 'id';
+    protected $primaryKey = self::PRIMARY_KEY;
+}
+
+/**
+ * @property mixed $created_at
+ * @property mixed $updated_at
+ */
+class EloquentModel_TimestampColumnFromConstant extends Model {
+    const TIMESTAMPS_TRUE = true;
+    protected $timestamps = self::TIMESTAMPS_TRUE;
+}
+
+class CC_EloquentModel_TimestampsUndefined extends Model {
+    protected $timestamps;
+}
