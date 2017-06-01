@@ -184,16 +184,26 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
         ) {
             if (methodName.endsWith("Attribute")) {
                 final boolean isAccessor = methodName.startsWith("get");
+                final boolean isMutator  = !isAccessor && methodName.startsWith("set");
 
-                if (isAccessor ||
-                    methodName.startsWith("set")) {
+                if (isAccessor || isMutator) {
                     final PsiElement methodIdentifier = method.getNameIdentifier();
                     assert methodIdentifier != null;
 
+                    Function methodReference = (Function) method;
+
+                    if (isMutator) {
+                        final Method methodAccessor = PhpClassUtil.findMethodDeclaration(methodClass, "get" + methodName.substring(3));
+
+                        if (methodAccessor != null) {
+                            methodReference = methodAccessor;
+                        }
+                    }
+
                     String methodReturnType = "mixed";
 
-                    if (isAccessor) {
-                        methodReturnType = PhpFunctionUtil.getReturnType((Function) method).toString();
+                    if (isAccessor || !Objects.equals(methodReference, method)) {
+                        methodReturnType = PhpFunctionUtil.getReturnType(methodReference).toString();
                     }
 
                     final String methodPropertyPart = methodName.substring(3, methodName.length() - 9);

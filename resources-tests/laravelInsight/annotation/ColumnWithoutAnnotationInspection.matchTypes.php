@@ -37,3 +37,17 @@ class <weak_warning descr="@property $id was not annotated">Eloquent_IdentifyAcc
 
 (new Eloquent_IdentifyAccessorReturnType)-><weak_warning descr="@property $identify_as_string was not annotated">identify_as_string</weak_warning>;
 
+class <weak_warning descr="@property $id was not annotated">Eloquent_IdentifyMutatorReturnType_NoAccessor</weak_warning> extends EloquentSimulation
+{
+}
+
+(new Eloquent_IdentifyMutatorReturnType_NoAccessor)-><weak_warning descr="@property $identify_as_mixed was not annotated">identify_as_mixed</weak_warning>;
+
+class <weak_warning descr="@property $id was not annotated">Eloquent_IdentifyMutatorReturnType_GetFromAcessor</weak_warning> extends EloquentSimulation
+{
+    public function <weak_warning descr="@property $identify_as_int was not annotated">getIdentifyAsIntAttribute</weak_warning>(): int {
+    }
+}
+
+(new Eloquent_IdentifyMutatorReturnType_GetFromAcessor)-><weak_warning descr="@property $identify_as_int was not annotated">identify_as_int</weak_warning>;
+

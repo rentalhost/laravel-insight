@@ -57,3 +57,25 @@ class Eloquent_IdentifyAccessorReturnType extends EloquentSimulation
 
 (new Eloquent_IdentifyAccessorReturnType)->identify_as_string;
 
+/**
+ * @property int $id
+ * @property mixed $identify_as_mixed
+ */
+class Eloquent_IdentifyMutatorReturnType_NoAccessor extends EloquentSimulation
+{
+}
+
+(new Eloquent_IdentifyMutatorReturnType_NoAccessor)->identify_as_mixed;
+
+/**
+ * @property int $id
+ * @property int $identify_as_int
+ */
+class Eloquent_IdentifyMutatorReturnType_GetFromAcessor extends EloquentSimulation
+{
+    public function getIdentifyAsIntAttribute(): int {
+    }
+}
+
+(new Eloquent_IdentifyMutatorReturnType_GetFromAcessor)->identify_as_int;
+
