@@ -40,20 +40,22 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
         static void registerPropertyUndefined(
             @NotNull final ProblemsHolder problemsHolder,
             final PhpClass primaryClass,
-            final PsiElement hashKey,
-            final String hashKeyContents
+            final PsiElement issuedElement,
+            final String propertyName,
+            final String propertyType
         ) {
-            problemsHolder.registerProblem(hashKey,
-                                           String.format(messagePropertyUndefined, hashKeyContents),
+            problemsHolder.registerProblem(issuedElement,
+                                           String.format(messagePropertyUndefined, propertyName),
                                            ProblemHighlightType.WEAK_WARNING,
-                                           new InspectionQuickFix(primaryClass, hashKeyContents));
+                                           new InspectionQuickFix(primaryClass, propertyName, propertyType));
         }
 
         static void validatePropertyAnnotation(
             @NotNull final ProblemsHolder problemsHolder,
             final PhpClass phpClass,
             final PsiElement issueReference,
-            final String propertyName
+            final String propertyName,
+            final String propertyType
         ) {
             PhpClass fieldClassCurrent = phpClass;
             boolean  isNotAnnotated    = true;
@@ -72,7 +74,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
             }
 
             if (isNotAnnotated) {
-                registerPropertyUndefined(problemsHolder, phpClass, issueReference, propertyName);
+                registerPropertyUndefined(problemsHolder, phpClass, issueReference, propertyName, propertyType);
             }
         }
 
@@ -104,8 +106,8 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
 
             final PsiElement issueReceptor = getReportableElement(phpClass, fieldTimestamps);
 
-            validatePropertyAnnotation(problemsHolder, phpClass, issueReceptor, "created_at");
-            validatePropertyAnnotation(problemsHolder, phpClass, issueReceptor, "updated_at");
+            validatePropertyAnnotation(problemsHolder, phpClass, issueReceptor, "created_at", "mixed");
+            validatePropertyAnnotation(problemsHolder, phpClass, issueReceptor, "updated_at", "mixed");
         }
 
         static void reportPrimaryKey(
@@ -132,7 +134,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
 
             final PsiElement issueReceptor = getReportableElement(phpClass, fieldPrimaryKey);
 
-            validatePropertyAnnotation(problemsHolder, phpClass, issueReceptor, ((StringLiteralExpression) fieldPrimaryKeyValueResolved).getContents());
+            validatePropertyAnnotation(problemsHolder, phpClass, issueReceptor, ((StringLiteralExpression) fieldPrimaryKeyValueResolved).getContents(), "mixed");
         }
 
         static void reportAccessorOrMutator(
@@ -150,7 +152,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                     final String methodPropertyPart = methodName.substring(3, methodName.length() - 9);
 
                     validatePropertyAnnotation(problemsHolder, methodClass, methodIdentifier,
-                                               CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, methodPropertyPart));
+                                               CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, methodPropertyPart), "mixed");
                 }
             }
         }
@@ -169,7 +171,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
             final PsiElement methodIdentifier = method.getNameIdentifier();
             assert methodIdentifier != null;
 
-            validatePropertyAnnotation(problemsHolder, methodClass, methodIdentifier, CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, method.getName()));
+            validatePropertyAnnotation(problemsHolder, methodClass, methodIdentifier, CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, method.getName()), "mixed");
         }
 
         @NotNull
@@ -266,7 +268,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
 
                     final String hashKeyContents = ((StringLiteralExpression) hashKeyResolvedValue).getContents();
 
-                    InspectionHelper.validatePropertyAnnotation(problemsHolder, fieldClass, hashKey, hashKeyContents);
+                    InspectionHelper.validatePropertyAnnotation(problemsHolder, fieldClass, hashKey, hashKeyContents, "mixed");
                 }
             }
 
@@ -284,7 +286,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                     }
 
                     if (Objects.equals(traitReferenceClass.getFQN(), LaravelClasses.ELOQUENT_SOFTDELETES_TRAIT.toString())) {
-                        InspectionHelper.validatePropertyAnnotation(problemsHolder, traitContainingClass, expression, "deleted_at");
+                        InspectionHelper.validatePropertyAnnotation(problemsHolder, traitContainingClass, expression, "deleted_at", "mixed");
                         return;
                     }
 
@@ -298,7 +300,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                         return;
                     }
 
-                    InspectionHelper.validatePropertyAnnotation(problemsHolder, traitContainingClass, expression, "deleted_at");
+                    InspectionHelper.validatePropertyAnnotation(problemsHolder, traitContainingClass, expression, "deleted_at", "mixed");
                 }
             }
 
@@ -377,7 +379,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                         continue;
                     }
 
-                    InspectionHelper.validatePropertyAnnotation(problemsHolder, fieldClass, fieldNameNode.getPsi(), fieldNameText);
+                    InspectionHelper.validatePropertyAnnotation(problemsHolder, fieldClass, fieldNameNode.getPsi(), fieldNameText, "mixed");
                     break;
                 }
             }
@@ -387,16 +389,19 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
     static class InspectionQuickFix implements LocalQuickFix {
         private final SmartPsiElementPointer<PhpClass> primaryClassPointer;
         private final String                           propertyName;
+        private final String                           propertyType;
         private final String                           familyName;
 
         InspectionQuickFix(
             final PhpClass primaryClass,
-            final String propertyName
+            final String propertyName,
+            final String propertyType
         ) {
             final SmartPointerManager pointerManager = SmartPointerManager.getInstance(primaryClass.getProject());
 
             primaryClassPointer = pointerManager.createSmartPsiElementPointer(primaryClass);
             this.propertyName = propertyName;
+            this.propertyType = propertyType;
             familyName = String.format("Declare @property $%s on %s class", propertyName, primaryClass.getName());
         }
 
@@ -425,7 +430,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                 }
             }
 
-            final PhpDocTag  docCommentNewTag    = PhpDocCommentUtil.createTag(primaryClass, "@property", "mixed $" + propertyName);
+            final PhpDocTag  docCommentNewTag    = PhpDocCommentUtil.createTag(primaryClass, "@property", propertyType + " $" + propertyName);
             final PsiElement docCommentReference = docCommentNewTag.getParent();
 
             final Navigatable navigator = PsiNavigationSupport.getInstance().getDescriptor(docCommentReference.getNavigationElement());
@@ -435,7 +440,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                 final Editor selectedTextEditor = FileEditorManager.getInstance(project).getSelectedTextEditor();
                 if (selectedTextEditor != null) {
                     final int startOffset = docCommentNewTag.getTextOffset() + 10;
-                    final int endOffset   = startOffset + 5;
+                    final int endOffset   = startOffset + propertyType.length();
 
                     selectedTextEditor.getSelectionModel().setSelection(startOffset, endOffset);
                     selectedTextEditor.getCaretModel().moveToOffset(endOffset);
