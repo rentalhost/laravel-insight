@@ -2,9 +2,7 @@ package net.rentalhost.idea.api;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.jetbrains.php.lang.psi.elements.AssignmentExpression;
-import com.jetbrains.php.lang.psi.elements.PhpExpression;
-import com.jetbrains.php.lang.psi.elements.StringLiteralExpression;
+import com.jetbrains.php.lang.psi.elements.*;
 import org.junit.Assert;
 
 import org.jetbrains.annotations.NotNull;
@@ -47,6 +45,16 @@ public class PhpExpressionUtilTest extends FixtureSuite {
 
         Assert.assertEquals("indirectClassValue", valueOf(classIndirectLiteral).getContents());
         Assert.assertEquals("indirectClassValue", valueOf(classWarpingLiteral).getContents());
+
+        final ConstantReference classResolvingFromProperty =
+            (ConstantReference) PhpExpressionUtil.from(valueOf((PhpExpression) ((Field) getElementByName(fileSample, "resolvingFromProperty")).getDefaultValue()));
+
+        Assert.assertEquals("TRUE", valueOf(classResolvingFromProperty).getText());
+
+        final ConstantReference classResolvingDirectlyFromProperty =
+            (ConstantReference) PhpExpressionUtil.from(valueOf((PhpExpression) ((Field) getElementByName(fileSample, "resolvingDirectlyFromProperty")).getDefaultValue()));
+
+        Assert.assertEquals("null", valueOf(classResolvingDirectlyFromProperty).getText());
 
         // Avoiding complex loopings.
         final PhpExpression shouldAvoidCyclicLoopingsWithConstants  = (PhpExpression) getElementByName(fileSample, "shouldAvoidCyclicLoopingsWithConstants");

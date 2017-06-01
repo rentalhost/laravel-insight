@@ -18,6 +18,11 @@ class ResolvingInsideClass
     const INDIRECT_LITERAL = self::DIRECT_LITERAL;
     const WARPING_LITERAL = self::INDIRECT_LITERAL;
 
+    const RESOLVING_PRIMARY_CONTANTS = TRUE;
+    protected $resolvingFromProperty = self::RESOLVING_PRIMARY_CONTANTS;
+
+    protected $resolvingDirectlyFromProperty = null;
+
     public function __construct()
     {
         $classIndirectLiteral = self::INDIRECT_LITERAL;
