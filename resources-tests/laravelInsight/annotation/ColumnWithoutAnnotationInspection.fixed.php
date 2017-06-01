@@ -396,3 +396,15 @@ EloquentCasts_WithoutCastsField::$this_should_not_be_accepted;
 $shouldNotifyOnlyTheFirst = new EloquentModel_MagicGetterAndSetter;
 $shouldNotifyOnlyTheFirst->repeated_property = 5;
 $shouldNotifyOnlyTheFirst->repeated_property = 5;
+
+class CC_EloquentModel_WithoutTimestamps_ShouldNotBeReportedForTimestampsColumns extends Model {
+    protected $timestamps = false;
+}
+
+class CC_EloquentModel_WithANotConstantTimestampsValue extends Model {
+    protected $timestamps = 123;
+}
+
+class CC_EloquentModel_WithANotStringPrimaryKey extends Model {
+    protected $primaryKey = 123;
+}

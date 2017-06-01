@@ -9,5 +9,9 @@ public class ColumnWithoutAnnotationInspectionTest extends FixtureSuite {
             .addTestFile("laravelInsight/annotation/ColumnWithoutAnnotationInspection.php")
             .highlightTest()
             .quickFixesTest("laravelInsight/annotation/ColumnWithoutAnnotationInspection.php");
+
+        inspectTool(ColumnWithoutAnnotationInspection.class)
+            .addTestFile("laravelInsight/annotation/ColumnWithoutAnnotationInspection.coverage.php")
+            .highlightTest();
     }
 }
