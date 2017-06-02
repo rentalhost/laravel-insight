@@ -119,3 +119,26 @@ class Eloquent_IdentifyCastType extends EloquentSimulation
         'property_mixed' => 'anything_else',
     ];
 }
+
+/**
+ * @property \Carbon\Carbon $already_exists
+ * @property int $id
+ * @property \Carbon\Carbon $my_date
+ * @property \Carbon\Carbon $another_date
+ * @property \Carbon\Carbon $from_constant
+ */
+class Eloquent_MatchAnyDatesValueAsCarbon extends EloquentSimulation
+{
+    const FROM_CONSTANT = 'from_constant';
+
+    protected $dates = [
+        'already_exists',
+        'my_date',
+        'another_date',
+        self::FROM_CONSTANT,
+
+        'multidimensional' => [
+            'shouldBeIgnored'
+        ]
+    ];
+}

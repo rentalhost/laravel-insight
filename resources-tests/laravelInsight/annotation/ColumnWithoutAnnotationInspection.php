@@ -139,7 +139,7 @@ class <weak_warning descr="@property $id was not annotated">EloquentBaseProperti
 
 class <weak_warning descr="@property $id was not annotated">EloquentChild_ShouldConsiderParentProperties</weak_warning> extends EloquentBaseProperties
 {
-    protected $dates = [
+    protected $casts = [
         'created_at' => 'DateTime',
         <weak_warning descr="@property $updated_at was not annotated">'updated_at'</weak_warning> => 'DateTime',
     ];

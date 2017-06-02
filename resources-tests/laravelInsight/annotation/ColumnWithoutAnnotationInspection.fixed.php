@@ -186,7 +186,7 @@ class EloquentBaseProperties extends Model
  */
 class EloquentChild_ShouldConsiderParentProperties extends EloquentBaseProperties
 {
-    protected $dates = [
+    protected $casts = [
         'created_at' => 'DateTime',
         'updated_at' => 'DateTime',
     ];

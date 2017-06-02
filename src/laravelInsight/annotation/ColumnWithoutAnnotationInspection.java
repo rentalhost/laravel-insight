@@ -16,6 +16,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.SmartPointerManager;
 import com.intellij.psi.SmartPsiElementPointer;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.jetbrains.php.PhpIndex;
 import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocComment;
 import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocProperty;
@@ -181,38 +182,64 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                     return;
                 }
 
-                final Iterable<ArrayHashElement> fieldHashes = ((ArrayCreationExpression) fieldValue).getHashElements();
+                final PhpPsiElement[] fieldElements = PsiTreeUtil.getChildrenOfType(fieldValue, PhpPsiElement.class);
 
-                for (final ArrayHashElement fieldHash : fieldHashes) {
-                    final PhpPsiElement fieldHashValue = fieldHash.getValue();
-                    assert fieldHashValue != null;
+                if (fieldElements == null) {
+                    return;
+                }
 
-                    final PhpExpression fieldHashResolvedValue = PhpExpressionUtil.from((PhpExpression) fieldHashValue);
-
-                    if (!(fieldHashResolvedValue instanceof StringLiteralExpression)) {
+                for (final PhpPsiElement element : fieldElements) {
+                    if (isCastProperty != (element instanceof ArrayHashElement)) {
                         continue;
                     }
 
-                    final PhpPsiElement hashKey = fieldHash.getKey();
-                    assert hashKey != null;
+                    PsiElement elementIssued = element;
+                    String     elementName   = null;
+                    String     elementType   = null;
 
-                    final PhpExpression hashKeyResolvedValue = PhpExpressionUtil.from((PhpExpression) hashKey);
+                    if (element instanceof ArrayHashElement) {
+                        // Eg. [ 'column' => 'type' ], needly from $casts property.
+                        final PhpPsiElement elementHashKey = ((ArrayHashElement) element).getKey();
+                        assert elementHashKey != null;
 
-                    if (!(hashKeyResolvedValue instanceof StringLiteralExpression)) {
-                        continue;
-                    }
+                        final PhpExpression elementHashKeyValue = PhpExpressionUtil.from((PhpExpression) elementHashKey);
 
-                    final String hashKeyContents = ((StringLiteralExpression) hashKeyResolvedValue).getContents();
+                        if (!(elementHashKeyValue instanceof StringLiteralExpression)) {
+                            continue;
+                        }
 
-                    if (isCastProperty) {
+                        elementName = ((StringLiteralExpression) elementHashKeyValue).getContents();
+                        elementIssued = elementHashKey;
+
+                        final PhpPsiElement fieldHashValue = ((ArrayHashElement) element).getValue();
+                        assert fieldHashValue != null;
+
+                        final PhpExpression fieldHashResolvedValue = PhpExpressionUtil.from((PhpExpression) fieldHashValue);
+
+                        if (!(fieldHashResolvedValue instanceof StringLiteralExpression)) {
+                            continue;
+                        }
+
                         final String fieldHashResolvedValueText = ((StringLiteralExpression) fieldHashResolvedValue).getContents().toLowerCase();
-                        final String fieldHashResolvedCastType  = InspectionHelper.getCastType(fieldHashResolvedValueText);
 
-                        InspectionHelper.validatePropertyAnnotation(problemsHolder, fieldClass, hashKey, hashKeyContents, fieldHashResolvedCastType);
-                        continue;
+                        elementType = InspectionHelper.getCastType(fieldHashResolvedValueText);
+                    }
+                    else {
+                        // Eg. [ 'column' ], needly from $dates property.
+                        final PhpPsiElement elementChild = element.getFirstPsiChild();
+                        assert elementChild != null;
+
+                        final PhpPsiElement elementChildResolved = PhpExpressionUtil.from((PhpExpression) elementChild);
+
+                        if (!(elementChildResolved instanceof StringLiteralExpression)) {
+                            continue;
+                        }
+
+                        elementName = ((StringLiteralExpression) elementChildResolved).getContents();
+                        elementType = CarbonClasses.CARBON.toString();
                     }
 
-                    InspectionHelper.validatePropertyAnnotation(problemsHolder, fieldClass, hashKey, hashKeyContents, null);
+                    InspectionHelper.validatePropertyAnnotation(problemsHolder, fieldClass, elementIssued, elementName, elementType);
                 }
             }
 

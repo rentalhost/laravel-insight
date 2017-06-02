@@ -72,3 +72,22 @@ class <weak_warning descr="@property $id was not annotated">Eloquent_IdentifyCas
         <weak_warning descr="@property $property_mixed was not annotated">'property_mixed'</weak_warning> => 'anything_else',
     ];
 }
+
+/**
+ * @property \Carbon\Carbon $already_exists
+ */
+class <weak_warning descr="@property $id was not annotated">Eloquent_MatchAnyDatesValueAsCarbon</weak_warning> extends EloquentSimulation
+{
+    const FROM_CONSTANT = 'from_constant';
+
+    protected $dates = [
+        'already_exists',
+        <weak_warning descr="@property $my_date was not annotated">'my_date'</weak_warning>,
+        <weak_warning descr="@property $another_date was not annotated">'another_date'</weak_warning>,
+        <weak_warning descr="@property $from_constant was not annotated">self::FROM_CONSTANT</weak_warning>,
+
+        'multidimensional' => [
+            'shouldBeIgnored'
+        ]
+    ];
+}
