@@ -5,7 +5,6 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.jetbrains.php.lang.psi.elements.*;
 import com.jetbrains.php.lang.psi.elements.impl.PhpUseImpl;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Stack;
@@ -143,13 +142,11 @@ public enum PhpClassUtil {
         @NotNull final String propertyNameExpected
     ) {
         return RecursionResolver.resolve(classObject, resolver -> {
-            final PhpClass          classCurrent = (PhpClass) resolver.getObject();
-            final Collection<Field> classFields  = classCurrent.getFields();
+            final PhpClass classCurrent   = (PhpClass) resolver.getObject();
+            final Field    classComponent = findClassComponentByName(propertyNameExpected, classCurrent.getFields());
 
-            for (final Field classField : classFields) {
-                if (classField.getName().equals(propertyNameExpected)) {
-                    return classField;
-                }
+            if (classComponent != null) {
+                return classComponent;
             }
 
             final PhpClass classSuperResolved = getSuper(classCurrent);
@@ -163,18 +160,30 @@ public enum PhpClassUtil {
     }
 
     @Nullable
+    private static <ComponentType extends PhpNamedElement> ComponentType findClassComponentByName(
+        @NotNull final String propertyNameExpected,
+        @NotNull final Iterable<ComponentType> classComponents
+    ) {
+        for (final ComponentType classField : classComponents) {
+            if (classField.getName().equals(propertyNameExpected)) {
+                return classField;
+            }
+        }
+
+        return null;
+    }
+
+    @Nullable
     public static Method findMethodDeclaration(
         @NotNull final PhpClass classObject,
         @NotNull final String methodNameExpected
     ) {
         return RecursionResolver.resolve(classObject, resolver -> {
-            final PhpClass           classCurrent = (PhpClass) resolver.getObject();
-            final Collection<Method> classMethods = classCurrent.getMethods();
+            final PhpClass classCurrent   = (PhpClass) resolver.getObject();
+            final Method   classComponent = findClassComponentByName(methodNameExpected, classCurrent.getMethods());
 
-            for (final Method classMethod : classMethods) {
-                if (classMethod.getName().equals(methodNameExpected)) {
-                    return classMethod;
-                }
+            if (classComponent != null) {
+                return classComponent;
             }
 
             final PhpClass classSuperResolved = getSuper(classCurrent);
