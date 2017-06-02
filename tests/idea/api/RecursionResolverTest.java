@@ -50,8 +50,8 @@ public class RecursionResolverTest extends FixtureSuite {
     }
 
     static class TestObject {
-        private final int        objectValue;
-        private       TestObject objectChild;
+        private final     int        objectValue;
+        @Nullable private TestObject objectChild;
 
         TestObject(
             final int objectValue,
@@ -66,7 +66,7 @@ public class RecursionResolverTest extends FixtureSuite {
             return objectChild;
         }
 
-        void setObjectChild(final TestObject objectChild) {
+        void setObjectChild(@NotNull final TestObject objectChild) {
             this.objectChild = objectChild;
         }
 

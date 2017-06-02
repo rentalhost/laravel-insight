@@ -31,12 +31,12 @@ import net.rentalhost.idea.laravelInsight.resources.CarbonClasses;
 import net.rentalhost.idea.laravelInsight.resources.LaravelClasses;
 
 public class ColumnWithoutAnnotationInspection extends PhpInspection {
-    private static final String messagePropertyUndefined = "@property $%s was not annotated";
+    @NotNull private static final String messagePropertyUndefined = "@property $%s was not annotated";
 
     private enum InspectionHelper {
         ;
 
-        static final Map<String, String> CAST_TYPES = new HashMap<>();
+        @NotNull static final Map<String, String> CAST_TYPES = new HashMap<>();
 
         static {
             CAST_TYPES.put("int", "int");
@@ -58,10 +58,10 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
 
         static void registerPropertyUndefined(
             @NotNull final ProblemsHolder problemsHolder,
-            final PhpClass primaryClass,
-            final PsiElement issuedElement,
-            final String propertyName,
-            final String propertyType
+            @NotNull final PhpClass primaryClass,
+            @NotNull final PsiElement issuedElement,
+            @NotNull final String propertyName,
+            @NotNull final String propertyType
         ) {
             problemsHolder.registerProblem(issuedElement,
                                            String.format(messagePropertyUndefined, propertyName),
@@ -71,10 +71,10 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
 
         static void validatePropertyAnnotation(
             @NotNull final ProblemsHolder problemsHolder,
-            final PhpClass phpClass,
-            final PsiElement issueReference,
-            final String propertyName,
-            final String propertyType
+            @NotNull final PhpClass phpClass,
+            @NotNull final PsiElement issueReference,
+            @NotNull final String propertyName,
+            @NotNull final String propertyType
         ) {
             PhpClass fieldClassCurrent = phpClass;
             boolean  isNotAnnotated    = true;
@@ -99,9 +99,9 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
 
         static void validatePropertyAnnotation(
             @NotNull final ProblemsHolder problemsHolder,
-            final PhpClass phpClass,
-            final PsiElement issueReference,
-            final String propertyName
+            @NotNull final PhpClass phpClass,
+            @NotNull final PsiElement issueReference,
+            @NotNull final String propertyName
         ) {
             if (propertyName.endsWith("_id")) {
                 validatePropertyAnnotation(problemsHolder, phpClass, issueReference, propertyName, "int");
@@ -118,7 +118,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
 
         static void reportTimestamps(
             @NotNull final ProblemsHolder problemsHolder,
-            final PhpClass phpClass
+            @NotNull final PhpClass phpClass
         ) {
             final Field fieldTimestamps = PhpClassUtil.findPropertyDeclaration(phpClass, "timestamps");
 
@@ -150,7 +150,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
 
         static void reportPrimaryKey(
             @NotNull final ProblemsHolder problemsHolder,
-            final PhpClass phpClass
+            @NotNull final PhpClass phpClass
         ) {
             final PsiElement issueReceptor;
             final Field      fieldPrimaryKey              = PhpClassUtil.findPropertyDeclaration(phpClass, "primaryKey");
@@ -197,9 +197,9 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
 
         static void reportAccessorOrMutator(
             @NotNull final ProblemsHolder problemsHolder,
-            final PsiNameIdentifierOwner method,
-            final PhpClass methodClass,
-            final String methodName
+            @NotNull final PsiNameIdentifierOwner method,
+            @NotNull final PhpClass methodClass,
+            @NotNull final String methodName
         ) {
             if (methodName.endsWith("Attribute")) {
                 final boolean isAccessor = methodName.startsWith("get");
@@ -235,8 +235,8 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
 
         static void reportRelationship(
             @NotNull final ProblemsHolder problemsHolder,
-            final Function method,
-            final PhpClass methodClass
+            @NotNull final Function method,
+            @NotNull final PhpClass methodClass
         ) {
             final PhpType methodReturnType = PhpFunctionUtil.getReturnType(method);
 
@@ -252,8 +252,8 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
 
         @NotNull
         private static PsiElement getReportableElement(
-            final PsiNameIdentifierOwner phpClass,
-            final PhpClassMember fieldPrimaryKey
+            @NotNull final PsiNameIdentifierOwner phpClass,
+            @NotNull final PhpClassMember fieldPrimaryKey
         ) {
             final PsiElement issueReceptor;
 
@@ -278,7 +278,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
             return "mixed";
         }
 
-        private static boolean isRelationship(final Collection<String> functionTypes) {
+        private static boolean isRelationship(@NotNull final Collection<String> functionTypes) {
             return functionTypes.contains(LaravelClasses.ELOQUENT_RELATIONSHIP_HASONE.toString()) ||
                    functionTypes.contains(LaravelClasses.ELOQUENT_RELATIONSHIP_HASMANY.toString()) ||
                    functionTypes.contains(LaravelClasses.ELOQUENT_RELATIONSHIP_HASMANYTHROUGHT.toString()) ||
@@ -305,7 +305,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
     ) {
         return new PhpElementVisitor() {
             @Override
-            public void visitPhpField(final Field field) {
+            public void visitPhpField(@NotNull final Field field) {
                 final String  fieldName      = field.getName();
                 final boolean isCastProperty = Objects.equals(fieldName, "casts");
 
@@ -367,7 +367,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
             }
 
             @Override
-            public void visitPhpUse(final PhpUse expression) {
+            public void visitPhpUse(@NotNull final PhpUse expression) {
                 if (expression.isTraitImport()) {
                     final PhpReference traitReferenceClass = expression.getTargetReference();
                     assert traitReferenceClass != null;
@@ -399,7 +399,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
             }
 
             @Override
-            public void visitPhpClass(final PhpClass phpClass) {
+            public void visitPhpClass(@NotNull final PhpClass phpClass) {
                 if (PhpClassUtil.findSuperOfType(phpClass, LaravelClasses.ELOQUENT_MODEL.toString()) == null) {
                     return;
                 }
@@ -409,7 +409,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
             }
 
             @Override
-            public void visitPhpMethod(final Method method) {
+            public void visitPhpMethod(@NotNull final Method method) {
                 final PhpClass methodClass = method.getContainingClass();
                 assert methodClass != null;
 
@@ -424,7 +424,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
             }
 
             @Override
-            public void visitPhpFieldReference(final FieldReference fieldReference) {
+            public void visitPhpFieldReference(@NotNull final FieldReference fieldReference) {
                 if (fieldReference.isStatic()) {
                     return;
                 }
@@ -481,15 +481,15 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
     }
 
     static class InspectionQuickFix implements LocalQuickFix {
-        private final SmartPsiElementPointer<PhpClass> primaryClassPointer;
-        private final String                           propertyName;
-        private final String                           propertyType;
-        private final String                           familyName;
+        @NotNull private final SmartPsiElementPointer<PhpClass> primaryClassPointer;
+        @NotNull private final String                           propertyName;
+        @NotNull private final String                           propertyType;
+        @NotNull private final String                           familyName;
 
         InspectionQuickFix(
-            final PhpClass primaryClass,
-            final String propertyName,
-            final String propertyType
+            @NotNull final PhpClass primaryClass,
+            @NotNull final String propertyName,
+            @NotNull final String propertyType
         ) {
             final SmartPointerManager pointerManager = SmartPointerManager.getInstance(primaryClass.getProject());
 

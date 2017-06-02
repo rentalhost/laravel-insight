@@ -10,12 +10,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Stack;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public enum PhpClassUtil {
     ;
 
-    public static Iterable<PhpUse> getTraitsDeclared(final PsiElement classObject) {
+    @NotNull
+    public static Iterable<PhpUse> getTraitsDeclared(@NotNull final PsiElement classObject) {
         assert classObject instanceof PhpClass;
 
         final List<PhpUseList> usesLists = PsiTreeUtil.getChildrenOfTypeAsList(classObject, PhpUseList.class);
@@ -34,8 +36,8 @@ public enum PhpClassUtil {
 
     @Nullable
     public static ClassReference findSuperOfType(
-        final PhpClass classObject,
-        final String superNameExpected
+        @NotNull final PhpClass classObject,
+        @NotNull final String superNameExpected
     ) {
         return RecursionResolver.resolve(classObject, resolver -> {
             final PhpClass       classCurrent        = (PhpClass) resolver.getObject();
@@ -61,8 +63,8 @@ public enum PhpClassUtil {
 
     @Nullable
     public static ClassReference findTraitOfType(
-        final PhpClass classObject,
-        final String traitNameExpected
+        @NotNull final PhpClass classObject,
+        @NotNull final String traitNameExpected
     ) {
         return RecursionResolver.resolve(classObject, resolver -> {
             final PhpClass         classCurrent = (PhpClass) resolver.getObject();
@@ -102,7 +104,7 @@ public enum PhpClassUtil {
     }
 
     @Nullable
-    public static ClassReference getSuperReference(final PhpClass phpClass) {
+    public static ClassReference getSuperReference(@NotNull final PhpClass phpClass) {
         final List<ClassReference> classExtendsList = phpClass.getExtendsList().getReferenceElements();
 
         if (classExtendsList.isEmpty()) {
@@ -113,7 +115,7 @@ public enum PhpClassUtil {
     }
 
     @Nullable
-    public static PhpClass getSuper(final PhpClass phpClass) {
+    public static PhpClass getSuper(@NotNull final PhpClass phpClass) {
         final ClassReference superReference = getSuperReference(phpClass);
 
         if (superReference == null) {
@@ -124,7 +126,7 @@ public enum PhpClassUtil {
     }
 
     @Nullable
-    public static PhpClass getTraitContainingClass(final PhpUse trait) {
+    public static PhpClass getTraitContainingClass(@NotNull final PhpUse trait) {
         if (trait.isTraitImport()) {
             final PhpUseList useList = PhpUseImpl.getUseList(trait);
             assert useList != null;
@@ -137,8 +139,8 @@ public enum PhpClassUtil {
 
     @Nullable
     public static Field findPropertyDeclaration(
-        final PhpClass classObject,
-        final String propertyNameExpected
+        @NotNull final PhpClass classObject,
+        @NotNull final String propertyNameExpected
     ) {
         return RecursionResolver.resolve(classObject, resolver -> {
             final PhpClass          classCurrent = (PhpClass) resolver.getObject();
@@ -162,8 +164,8 @@ public enum PhpClassUtil {
 
     @Nullable
     public static Method findMethodDeclaration(
-        final PhpClass classObject,
-        final String methodNameExpected
+        @NotNull final PhpClass classObject,
+        @NotNull final String methodNameExpected
     ) {
         return RecursionResolver.resolve(classObject, resolver -> {
             final PhpClass           classCurrent = (PhpClass) resolver.getObject();

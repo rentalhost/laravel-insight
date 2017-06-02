@@ -9,20 +9,23 @@ import org.junit.Assert;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.jetbrains.annotations.NotNull;
+
 import net.rentalhost.suite.FixtureSuite;
 
 public class PhpFunctionUtilTest extends FixtureSuite {
+    @NotNull
     private static Function getFunction(
-        final PsiElement fileSample,
-        final String functionName
+        @NotNull   final PsiElement fileSample,
+        @NotNull   final String functionName
     ) {
         return (Function) getElementByName(fileSample, functionName);
     }
 
     private static boolean hasOnlyTypes(
-        final PsiElement fileSample,
-        final String functionName,
-        final PhpType... expectedTypesList
+        @NotNull  final PsiElement fileSample,
+        @NotNull    final String functionName,
+        @NotNull   final PhpType... expectedTypesList
     ) {
         final Collection<String> returnTypes = new ArrayList<>(valueOf(PhpFunctionUtil.getReturnType(getFunction(fileSample, functionName))).getTypes());
 

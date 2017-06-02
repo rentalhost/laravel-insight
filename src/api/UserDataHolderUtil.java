@@ -12,9 +12,9 @@ enum UserDataHolderUtil {
 
     @NotNull
     public static <OutputType, SupplierType> OutputType from(
-        final PsiElement element,
+        @NotNull final PsiElement element,
         @NotNull final Key key,
-        final Supplier<SupplierType> keySupplier
+        @NotNull final Supplier<SupplierType> keySupplier
     ) {
         final OutputType elementData = (OutputType) element.getUserData(key);
 

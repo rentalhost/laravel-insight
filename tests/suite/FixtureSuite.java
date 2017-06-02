@@ -41,7 +41,8 @@ public class FixtureSuite extends CodeInsightFixtureTestCase {
         return valueOf(null);
     }
 
-    protected FixtureChain inspectTool(final Class<? extends LocalInspectionTool> inspectionTool) {
+    @NotNull
+    protected FixtureChain inspectTool(@NotNull final Class<? extends LocalInspectionTool> inspectionTool) {
         return new FixtureChain(myFixture).addInspectionTool(inspectionTool);
     }
 
@@ -51,7 +52,7 @@ public class FixtureSuite extends CodeInsightFixtureTestCase {
     }
 
     @Nullable
-    protected <T> T runWriteAction(final Supplier<T> supplier) {
+    protected <T> T runWriteAction(@NotNull final Supplier<T> supplier) {
         final AtomicReference<T> supplierResponse = new AtomicReference<>();
 
         new WriteCommandAction.Simple(myFixture.getProject()) {

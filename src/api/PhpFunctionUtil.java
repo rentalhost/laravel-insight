@@ -20,7 +20,7 @@ public enum PhpFunctionUtil {
     ;
 
     @NotNull
-    public static PhpType getReturnType(final Function functionInitial) {
+    public static PhpType getReturnType(@NotNull final Function functionInitial) {
         final PhpType typeResolved = RecursionResolver.resolve(functionInitial, resolver -> {
             final Function   function           = (Function) resolver.getObject();
             final PsiElement functionReturnType = function.getReturnType();
@@ -112,8 +112,8 @@ public enum PhpFunctionUtil {
     }
 
     private static void mergeTypes(
-        final PhpType.PhpTypeBuilder typeBuilder,
-        final PhpType typeList
+        @NotNull final PhpType.PhpTypeBuilder typeBuilder,
+        @NotNull final PhpType typeList
     ) {
         final Set<String> phpInstructionTypes = typeList.getTypes();
 

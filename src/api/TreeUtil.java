@@ -4,6 +4,7 @@ import com.intellij.psi.PsiElement;
 
 import java.util.function.Function;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 enum TreeUtil {
@@ -11,9 +12,9 @@ enum TreeUtil {
 
     @Nullable
     public static <T extends PsiElement> T getPrevMatch(
-        final PsiElement element,
-        final Function<T, Boolean> filterBy,
-        final Function<T, Boolean> stopBy
+        @NotNull final PsiElement element,
+        @NotNull final Function<T, Boolean> filterBy,
+        @NotNull final Function<T, Boolean> stopBy
     ) {
         PsiElement elementCurrent = element;
 

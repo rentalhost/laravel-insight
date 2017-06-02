@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public enum PhpDocCommentUtil {
@@ -22,8 +23,8 @@ public enum PhpDocCommentUtil {
 
     @Nullable
     public static PhpDocProperty findProperty(
-        final PhpDocComment docComment,
-        final String propertyName
+        @NotNull final PhpDocComment docComment,
+        @NotNull final String propertyName
     ) {
         final List<PhpDocPropertyTag> classPropertyTags = docComment.getPropertyTags();
 
@@ -39,8 +40,8 @@ public enum PhpDocCommentUtil {
     }
 
     public static PhpDocTag createTag(
-        final PhpNamedElement element,
-        final String tagName,
+        @NotNull final PhpNamedElement element,
+        @NotNull final String tagName,
         @Nullable final String tagContents
     ) {
         final PhpDocComment docComment            = element.getDocComment();
@@ -85,11 +86,12 @@ public enum PhpDocCommentUtil {
         return appendPhpDogTag(element, docComment, docCommentTail, docCommentLastTag);
     }
 
+    @NotNull
     private static PhpDocTag appendPhpDogTag(
-        final PsiElement element,
-        final PhpDocComment docComment,
-        final String docCommentTail,
-        final PsiElement docCommentLastTag
+        @NotNull final PsiElement element,
+        @NotNull final PhpDocComment docComment,
+        @NotNull final String docCommentTail,
+        @NotNull final PsiElement docCommentLastTag
     ) {
         final String    docCommentContents = "/**\n*" + docCommentTail;
         final PhpDocTag docCommentNewTag   = PhpPsiElementFactory.createFromText(element.getProject(), PhpDocTag.class, docCommentContents);
@@ -101,9 +103,10 @@ public enum PhpDocCommentUtil {
         return (PhpDocTag) docComment.addAfter(docCommentNewTag, docAsteriskNew);
     }
 
+    @NotNull
     public static PhpDocTag createTag(
-        final PhpNamedElement element,
-        final String tagName
+        @NotNull final PhpNamedElement element,
+        @NotNull final String tagName
     ) {
         return createTag(element, tagName, null);
     }

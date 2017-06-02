@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 public enum PhpExpressionUtil {
     ;
 
-    private static final Collection<String> primaryConstants = new ArrayList<>();
+    @NotNull private static final Collection<String> primaryConstants = new ArrayList<>();
 
     static {
         primaryConstants.add("null");
@@ -22,7 +22,7 @@ public enum PhpExpressionUtil {
     }
 
     @Nullable
-    static PhpExpression recursionResolver(final RecursionResolver.Resolver<PhpReference, PhpExpression> resolver) {
+    static PhpExpression recursionResolver(@NotNull final RecursionResolver.Resolver<PhpReference, PhpExpression> resolver) {
         final PsiElement elementResolved = resolver.getObject().resolve();
 
         if (elementResolved == null) {
@@ -49,7 +49,7 @@ public enum PhpExpressionUtil {
         return resolver.resolve((PhpReference) referencedValue);
     }
 
-    private static boolean isPrimaryConstant(final PsiElement element) {
+    private static boolean isPrimaryConstant(@NotNull final PsiElement element) {
         return primaryConstants.contains(element.getText().toLowerCase());
     }
 
