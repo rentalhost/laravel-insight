@@ -11,27 +11,243 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.pom.Navigatable;
-import com.intellij.psi.*;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.SmartPointerManager;
+import com.intellij.psi.SmartPsiElementPointer;
 import com.jetbrains.php.PhpIndex;
 import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocComment;
 import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocProperty;
 import com.jetbrains.php.lang.documentation.phpdoc.psi.tags.PhpDocTag;
 import com.jetbrains.php.lang.inspections.PhpInspection;
-import com.jetbrains.php.lang.psi.elements.*;
+import com.jetbrains.php.lang.psi.elements.ArrayCreationExpression;
+import com.jetbrains.php.lang.psi.elements.ArrayHashElement;
+import com.jetbrains.php.lang.psi.elements.ConstantReference;
+import com.jetbrains.php.lang.psi.elements.Field;
+import com.jetbrains.php.lang.psi.elements.FieldReference;
+import com.jetbrains.php.lang.psi.elements.Function;
+import com.jetbrains.php.lang.psi.elements.Method;
+import com.jetbrains.php.lang.psi.elements.ParenthesizedExpression;
+import com.jetbrains.php.lang.psi.elements.PhpClass;
+import com.jetbrains.php.lang.psi.elements.PhpClassMember;
+import com.jetbrains.php.lang.psi.elements.PhpExpression;
+import com.jetbrains.php.lang.psi.elements.PhpPsiElement;
+import com.jetbrains.php.lang.psi.elements.PhpReference;
+import com.jetbrains.php.lang.psi.elements.PhpTypedElement;
+import com.jetbrains.php.lang.psi.elements.PhpUse;
+import com.jetbrains.php.lang.psi.elements.StringLiteralExpression;
 import com.jetbrains.php.lang.psi.resolve.types.PhpType;
 import com.jetbrains.php.lang.psi.visitors.PhpElementVisitor;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
-import net.rentalhost.idea.api.*;
+import net.rentalhost.idea.api.PhpClassUtil;
+import net.rentalhost.idea.api.PhpDocCommentUtil;
+import net.rentalhost.idea.api.PhpExpressionUtil;
+import net.rentalhost.idea.api.PhpFunctionUtil;
+import net.rentalhost.idea.api.PsiElementUtil;
 import net.rentalhost.idea.laravelInsight.resources.CarbonClasses;
 import net.rentalhost.idea.laravelInsight.resources.LaravelClasses;
 
 public class ColumnWithoutAnnotationInspection extends PhpInspection {
     @NotNull private static final String messagePropertyUndefined = "@property $%s was not annotated";
+
+    @NotNull
+    @Override
+    public String getShortName() {
+        return "ColumnWithoutAnnotationInspection";
+    }
+
+    @NotNull
+    @Override
+    public PsiElementVisitor buildVisitor(
+        @NotNull final ProblemsHolder problemsHolder,
+        final boolean b
+    ) {
+        return new PhpElementVisitor() {
+            @Override
+            public void visitPhpClass(@NotNull final PhpClass phpClass) {
+                if (PhpClassUtil.findSuperOfType(phpClass, LaravelClasses.ELOQUENT_MODEL.toString()) == null) {
+                    return;
+                }
+
+                InspectionHelper.reportTimestamps(problemsHolder, phpClass);
+                InspectionHelper.reportPrimaryKey(problemsHolder, phpClass);
+            }
+
+            @Override
+            public void visitPhpMethod(@NotNull final Method method) {
+                final PhpClass methodClass = method.getContainingClass();
+                assert methodClass != null;
+
+                if (PhpClassUtil.findSuperOfType(methodClass, LaravelClasses.ELOQUENT_MODEL.toString()) == null) {
+                    return;
+                }
+
+                final String methodName = method.getName();
+
+                InspectionHelper.reportAccessorOrMutator(problemsHolder, method, methodClass, methodName);
+                InspectionHelper.reportRelationship(problemsHolder, method, methodClass);
+            }
+
+            @Override
+            public void visitPhpFieldReference(@NotNull final FieldReference fieldReference) {
+                if (fieldReference.isStatic()) {
+                    return;
+                }
+
+                final ASTNode fieldNameNode = fieldReference.getNameNode();
+
+                if (fieldNameNode == null) {
+                    return;
+                }
+
+                final String fieldNameText = fieldNameNode.getText();
+
+                if (!Objects.equals(fieldNameText, fieldNameText.toLowerCase())) {
+                    return;
+                }
+
+                final PsiElement fieldClassReferenceRaw = fieldReference.getClassReference();
+                assert fieldClassReferenceRaw != null;
+
+                final PsiElement fieldClassReference = PsiElementUtil.skipParentheses(fieldClassReferenceRaw);
+                assert fieldClassReference != null;
+
+                if (fieldClassReference instanceof ParenthesizedExpression) {
+                    return;
+                }
+
+                final Set<String> fieldClassReferenceTypes = ((PhpTypedElement) fieldClassReference).getType().global(problemsHolder.getProject()).getTypes();
+
+                for (final String fieldClassType : fieldClassReferenceTypes) {
+                    final Collection<PhpClass> fieldClasses = PhpIndex.getInstance(problemsHolder.getProject()).getAnyByFQN(fieldClassType);
+
+                    if (fieldClasses.isEmpty()) {
+                        continue;
+                    }
+
+                    final PhpClass fieldClass = fieldClasses.iterator().next();
+
+                    if (PhpClassUtil.findSuperOfType(fieldClass, LaravelClasses.ELOQUENT_MODEL.toString()) == null) {
+                        continue;
+                    }
+
+                    final Field fieldDeclaration = PhpClassUtil.findPropertyDeclaration(fieldClass, fieldNameText);
+
+                    if ((fieldDeclaration != null) &&
+                        fieldDeclaration.getModifier().isPublic()) {
+                        continue;
+                    }
+
+                    InspectionHelper.validatePropertyAnnotation(problemsHolder, fieldClass, fieldNameNode.getPsi(), fieldNameText);
+                    break;
+                }
+            }
+
+            @Override
+            public void visitPhpField(@NotNull final Field field) {
+                final String  fieldName      = field.getName();
+                final boolean isCastProperty = Objects.equals(fieldName, "casts");
+
+                if (!isCastProperty &&
+                    !Objects.equals(fieldName, "dates")) {
+                    return;
+                }
+
+                if (!PhpType.intersects(field.getType(), PhpType.ARRAY)) {
+                    return;
+                }
+
+                final PhpClass fieldClass = field.getContainingClass();
+                assert fieldClass != null;
+
+                if (PhpClassUtil.findSuperOfType(fieldClass, LaravelClasses.ELOQUENT_MODEL.toString()) == null) {
+                    return;
+                }
+
+                final PsiElement fieldValue = field.getDefaultValue();
+
+                if (!(fieldValue instanceof ArrayCreationExpression)) {
+                    return;
+                }
+
+                final Iterable<ArrayHashElement> fieldHashes = ((ArrayCreationExpression) fieldValue).getHashElements();
+
+                for (final ArrayHashElement fieldHash : fieldHashes) {
+                    final PhpPsiElement fieldHashValue = fieldHash.getValue();
+                    assert fieldHashValue != null;
+
+                    final PhpExpression fieldHashResolvedValue = PhpExpressionUtil.from((PhpExpression) fieldHashValue);
+
+                    if (!(fieldHashResolvedValue instanceof StringLiteralExpression)) {
+                        continue;
+                    }
+
+                    final PhpPsiElement hashKey = fieldHash.getKey();
+                    assert hashKey != null;
+
+                    final PhpExpression hashKeyResolvedValue = PhpExpressionUtil.from((PhpExpression) hashKey);
+
+                    if (!(hashKeyResolvedValue instanceof StringLiteralExpression)) {
+                        continue;
+                    }
+
+                    final String hashKeyContents = ((StringLiteralExpression) hashKeyResolvedValue).getContents();
+
+                    if (isCastProperty) {
+                        final String fieldHashResolvedValueText = ((StringLiteralExpression) fieldHashResolvedValue).getContents().toLowerCase();
+                        final String fieldHashResolvedCastType  = InspectionHelper.getCastType(fieldHashResolvedValueText);
+
+                        InspectionHelper.validatePropertyAnnotation(problemsHolder, fieldClass, hashKey, hashKeyContents, fieldHashResolvedCastType);
+                        continue;
+                    }
+
+                    InspectionHelper.validatePropertyAnnotation(problemsHolder, fieldClass, hashKey, hashKeyContents);
+                }
+            }
+
+            @Override
+            public void visitPhpUse(@NotNull final PhpUse expression) {
+                if (expression.isTraitImport()) {
+                    final PhpReference traitReferenceClass = expression.getTargetReference();
+                    assert traitReferenceClass != null;
+
+                    final PhpClass traitContainingClass = PhpClassUtil.getTraitContainingClass(expression);
+                    assert traitContainingClass != null;
+
+                    if (PhpClassUtil.findSuperOfType(traitContainingClass, LaravelClasses.ELOQUENT_MODEL.toString()) == null) {
+                        return;
+                    }
+
+                    if (Objects.equals(traitReferenceClass.getFQN(), LaravelClasses.ELOQUENT_SOFTDELETES_TRAIT.toString())) {
+                        InspectionHelper.validatePropertyAnnotation(problemsHolder, traitContainingClass, expression, "deleted_at");
+                        return;
+                    }
+
+                    final PhpClass traitResolvedClass = (PhpClass) traitReferenceClass.resolve();
+
+                    if (traitResolvedClass == null) {
+                        return;
+                    }
+
+                    if (PhpClassUtil.findTraitOfType(traitResolvedClass, LaravelClasses.ELOQUENT_SOFTDELETES_TRAIT.toString()) == null) {
+                        return;
+                    }
+
+                    InspectionHelper.validatePropertyAnnotation(problemsHolder, traitContainingClass, expression, "deleted_at");
+                }
+            }
+        };
+    }
 
     private enum InspectionHelper {
         ;
@@ -54,66 +270,6 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
             CAST_TYPES.put("date", CarbonClasses.CARBON.toString());
             CAST_TYPES.put("datetime", CarbonClasses.CARBON.toString());
             CAST_TYPES.put("timestamp", CarbonClasses.CARBON.toString());
-        }
-
-        static void registerPropertyUndefined(
-            @NotNull final ProblemsHolder problemsHolder,
-            @NotNull final PhpClass primaryClass,
-            @NotNull final PsiElement issuedElement,
-            @NotNull final String propertyName,
-            @NotNull final String propertyType
-        ) {
-            problemsHolder.registerProblem(issuedElement,
-                                           String.format(messagePropertyUndefined, propertyName),
-                                           ProblemHighlightType.WEAK_WARNING,
-                                           new InspectionQuickFix(primaryClass, propertyName, propertyType));
-        }
-
-        static void validatePropertyAnnotation(
-            @NotNull final ProblemsHolder problemsHolder,
-            @NotNull final PhpClass phpClass,
-            @NotNull final PsiElement issueReference,
-            @NotNull final String propertyName,
-            @NotNull final String propertyType
-        ) {
-            PhpClass fieldClassCurrent = phpClass;
-            boolean  isNotAnnotated    = true;
-
-            while (fieldClassCurrent != null) {
-                final PhpDocComment classDocComment = fieldClassCurrent.getDocComment();
-
-                if (classDocComment != null) {
-                    if (PhpDocCommentUtil.findProperty(classDocComment, propertyName) != null) {
-                        isNotAnnotated = false;
-                        break;
-                    }
-                }
-
-                fieldClassCurrent = PhpClassUtil.getSuper(fieldClassCurrent);
-            }
-
-            if (isNotAnnotated) {
-                registerPropertyUndefined(problemsHolder, phpClass, issueReference, propertyName, propertyType);
-            }
-        }
-
-        static void validatePropertyAnnotation(
-            @NotNull final ProblemsHolder problemsHolder,
-            @NotNull final PhpClass phpClass,
-            @NotNull final PsiElement issueReference,
-            @NotNull final String propertyName
-        ) {
-            if (propertyName.endsWith("_id")) {
-                validatePropertyAnnotation(problemsHolder, phpClass, issueReference, propertyName, "int");
-                return;
-            }
-
-            if (propertyName.endsWith("_at")) {
-                validatePropertyAnnotation(problemsHolder, phpClass, issueReference, propertyName, CarbonClasses.CARBON.toString());
-                return;
-            }
-
-            validatePropertyAnnotation(problemsHolder, phpClass, issueReference, propertyName, "mixed");
         }
 
         static void reportTimestamps(
@@ -146,6 +302,66 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
 
             validatePropertyAnnotation(problemsHolder, phpClass, issueReceptor, "created_at");
             validatePropertyAnnotation(problemsHolder, phpClass, issueReceptor, "updated_at");
+        }
+
+        static void validatePropertyAnnotation(
+            @NotNull final ProblemsHolder problemsHolder,
+            @NotNull final PhpClass phpClass,
+            @NotNull final PsiElement issueReference,
+            @NotNull final String propertyName
+        ) {
+            if (propertyName.endsWith("_id")) {
+                validatePropertyAnnotation(problemsHolder, phpClass, issueReference, propertyName, "int");
+                return;
+            }
+
+            if (propertyName.endsWith("_at")) {
+                validatePropertyAnnotation(problemsHolder, phpClass, issueReference, propertyName, CarbonClasses.CARBON.toString());
+                return;
+            }
+
+            validatePropertyAnnotation(problemsHolder, phpClass, issueReference, propertyName, "mixed");
+        }
+
+        static void validatePropertyAnnotation(
+            @NotNull final ProblemsHolder problemsHolder,
+            @NotNull final PhpClass phpClass,
+            @NotNull final PsiElement issueReference,
+            @NotNull final String propertyName,
+            @NotNull final String propertyType
+        ) {
+            PhpClass fieldClassCurrent = phpClass;
+            boolean  isNotAnnotated    = true;
+
+            while (fieldClassCurrent != null) {
+                final PhpDocComment classDocComment = fieldClassCurrent.getDocComment();
+
+                if (classDocComment != null) {
+                    if (PhpDocCommentUtil.findProperty(classDocComment, propertyName) != null) {
+                        isNotAnnotated = false;
+                        break;
+                    }
+                }
+
+                fieldClassCurrent = PhpClassUtil.getSuper(fieldClassCurrent);
+            }
+
+            if (isNotAnnotated) {
+                registerPropertyUndefined(problemsHolder, phpClass, issueReference, propertyName, propertyType);
+            }
+        }
+
+        static void registerPropertyUndefined(
+            @NotNull final ProblemsHolder problemsHolder,
+            @NotNull final PhpClass primaryClass,
+            @NotNull final PsiElement issuedElement,
+            @NotNull final String propertyName,
+            @NotNull final String propertyType
+        ) {
+            problemsHolder.registerProblem(issuedElement,
+                                           String.format(messagePropertyUndefined, propertyName),
+                                           ProblemHighlightType.WEAK_WARNING,
+                                           new InspectionQuickFix(primaryClass, propertyName, propertyType));
         }
 
         static void reportPrimaryKey(
@@ -251,6 +467,15 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
         }
 
         @NotNull
+        static String getCastType(final String castKey) {
+            if (CAST_TYPES.containsKey(castKey)) {
+                return CAST_TYPES.get(castKey);
+            }
+
+            return "mixed";
+        }
+
+        @NotNull
         private static PsiElement getReportableElement(
             @NotNull final PsiNameIdentifierOwner phpClass,
             @NotNull final PhpClassMember fieldPrimaryKey
@@ -269,15 +494,6 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
             return issueReceptor;
         }
 
-        @NotNull
-        static String getCastType(final String castKey) {
-            if (CAST_TYPES.containsKey(castKey)) {
-                return CAST_TYPES.get(castKey);
-            }
-
-            return "mixed";
-        }
-
         private static boolean isRelationship(@NotNull final Collection<String> functionTypes) {
             return functionTypes.contains(LaravelClasses.ELOQUENT_RELATIONSHIP_HASONE.toString()) ||
                    functionTypes.contains(LaravelClasses.ELOQUENT_RELATIONSHIP_HASMANY.toString()) ||
@@ -289,195 +505,6 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                    functionTypes.contains(LaravelClasses.ELOQUENT_RELATIONSHIP_BELONGSTO.toString()) ||
                    functionTypes.contains(LaravelClasses.ELOQUENT_RELATIONSHIP_BELONGSTOMANY.toString());
         }
-    }
-
-    @NotNull
-    @Override
-    public String getShortName() {
-        return "ColumnWithoutAnnotationInspection";
-    }
-
-    @NotNull
-    @Override
-    public PsiElementVisitor buildVisitor(
-        @NotNull final ProblemsHolder problemsHolder,
-        final boolean b
-    ) {
-        return new PhpElementVisitor() {
-            @Override
-            public void visitPhpField(@NotNull final Field field) {
-                final String  fieldName      = field.getName();
-                final boolean isCastProperty = Objects.equals(fieldName, "casts");
-
-                if (!isCastProperty &&
-                    !Objects.equals(fieldName, "dates")) {
-                    return;
-                }
-
-                if (!PhpType.intersects(field.getType(), PhpType.ARRAY)) {
-                    return;
-                }
-
-                final PhpClass fieldClass = field.getContainingClass();
-                assert fieldClass != null;
-
-                if (PhpClassUtil.findSuperOfType(fieldClass, LaravelClasses.ELOQUENT_MODEL.toString()) == null) {
-                    return;
-                }
-
-                final PsiElement fieldValue = field.getDefaultValue();
-
-                if (!(fieldValue instanceof ArrayCreationExpression)) {
-                    return;
-                }
-
-                final Iterable<ArrayHashElement> fieldHashes = ((ArrayCreationExpression) fieldValue).getHashElements();
-
-                for (final ArrayHashElement fieldHash : fieldHashes) {
-                    final PhpPsiElement fieldHashValue = fieldHash.getValue();
-                    assert fieldHashValue != null;
-
-                    final PhpExpression fieldHashResolvedValue = PhpExpressionUtil.from((PhpExpression) fieldHashValue);
-
-                    if (!(fieldHashResolvedValue instanceof StringLiteralExpression)) {
-                        continue;
-                    }
-
-                    final PhpPsiElement hashKey = fieldHash.getKey();
-                    assert hashKey != null;
-
-                    final PhpExpression hashKeyResolvedValue = PhpExpressionUtil.from((PhpExpression) hashKey);
-
-                    if (!(hashKeyResolvedValue instanceof StringLiteralExpression)) {
-                        continue;
-                    }
-
-                    final String hashKeyContents = ((StringLiteralExpression) hashKeyResolvedValue).getContents();
-
-                    if (isCastProperty) {
-                        final String fieldHashResolvedValueText = ((StringLiteralExpression) fieldHashResolvedValue).getContents().toLowerCase();
-                        final String fieldHashResolvedCastType  = InspectionHelper.getCastType(fieldHashResolvedValueText);
-
-                        InspectionHelper.validatePropertyAnnotation(problemsHolder, fieldClass, hashKey, hashKeyContents, fieldHashResolvedCastType);
-                        continue;
-                    }
-
-                    InspectionHelper.validatePropertyAnnotation(problemsHolder, fieldClass, hashKey, hashKeyContents);
-                }
-            }
-
-            @Override
-            public void visitPhpUse(@NotNull final PhpUse expression) {
-                if (expression.isTraitImport()) {
-                    final PhpReference traitReferenceClass = expression.getTargetReference();
-                    assert traitReferenceClass != null;
-
-                    final PhpClass traitContainingClass = PhpClassUtil.getTraitContainingClass(expression);
-                    assert traitContainingClass != null;
-
-                    if (PhpClassUtil.findSuperOfType(traitContainingClass, LaravelClasses.ELOQUENT_MODEL.toString()) == null) {
-                        return;
-                    }
-
-                    if (Objects.equals(traitReferenceClass.getFQN(), LaravelClasses.ELOQUENT_SOFTDELETES_TRAIT.toString())) {
-                        InspectionHelper.validatePropertyAnnotation(problemsHolder, traitContainingClass, expression, "deleted_at");
-                        return;
-                    }
-
-                    final PhpClass traitResolvedClass = (PhpClass) traitReferenceClass.resolve();
-
-                    if (traitResolvedClass == null) {
-                        return;
-                    }
-
-                    if (PhpClassUtil.findTraitOfType(traitResolvedClass, LaravelClasses.ELOQUENT_SOFTDELETES_TRAIT.toString()) == null) {
-                        return;
-                    }
-
-                    InspectionHelper.validatePropertyAnnotation(problemsHolder, traitContainingClass, expression, "deleted_at");
-                }
-            }
-
-            @Override
-            public void visitPhpClass(@NotNull final PhpClass phpClass) {
-                if (PhpClassUtil.findSuperOfType(phpClass, LaravelClasses.ELOQUENT_MODEL.toString()) == null) {
-                    return;
-                }
-
-                InspectionHelper.reportTimestamps(problemsHolder, phpClass);
-                InspectionHelper.reportPrimaryKey(problemsHolder, phpClass);
-            }
-
-            @Override
-            public void visitPhpMethod(@NotNull final Method method) {
-                final PhpClass methodClass = method.getContainingClass();
-                assert methodClass != null;
-
-                if (PhpClassUtil.findSuperOfType(methodClass, LaravelClasses.ELOQUENT_MODEL.toString()) == null) {
-                    return;
-                }
-
-                final String methodName = method.getName();
-
-                InspectionHelper.reportAccessorOrMutator(problemsHolder, method, methodClass, methodName);
-                InspectionHelper.reportRelationship(problemsHolder, method, methodClass);
-            }
-
-            @Override
-            public void visitPhpFieldReference(@NotNull final FieldReference fieldReference) {
-                if (fieldReference.isStatic()) {
-                    return;
-                }
-
-                final ASTNode fieldNameNode = fieldReference.getNameNode();
-
-                if (fieldNameNode == null) {
-                    return;
-                }
-
-                final String fieldNameText = fieldNameNode.getText();
-
-                if (!Objects.equals(fieldNameText, fieldNameText.toLowerCase())) {
-                    return;
-                }
-
-                final PsiElement fieldClassReferenceRaw = fieldReference.getClassReference();
-                assert fieldClassReferenceRaw != null;
-
-                final PsiElement fieldClassReference = PsiElementUtil.skipParentheses(fieldClassReferenceRaw);
-                assert fieldClassReference != null;
-
-                if (fieldClassReference instanceof ParenthesizedExpression) {
-                    return;
-                }
-
-                final Set<String> fieldClassReferenceTypes = ((PhpTypedElement) fieldClassReference).getType().global(problemsHolder.getProject()).getTypes();
-
-                for (final String fieldClassType : fieldClassReferenceTypes) {
-                    final Collection<PhpClass> fieldClasses = PhpIndex.getInstance(problemsHolder.getProject()).getAnyByFQN(fieldClassType);
-
-                    if (fieldClasses.isEmpty()) {
-                        continue;
-                    }
-
-                    final PhpClass fieldClass = fieldClasses.iterator().next();
-
-                    if (PhpClassUtil.findSuperOfType(fieldClass, LaravelClasses.ELOQUENT_MODEL.toString()) == null) {
-                        continue;
-                    }
-
-                    final Field fieldDeclaration = PhpClassUtil.findPropertyDeclaration(fieldClass, fieldNameText);
-
-                    if ((fieldDeclaration != null) &&
-                        fieldDeclaration.getModifier().isPublic()) {
-                        continue;
-                    }
-
-                    InspectionHelper.validatePropertyAnnotation(problemsHolder, fieldClass, fieldNameNode.getPsi(), fieldNameText);
-                    break;
-                }
-            }
-        };
     }
 
     static class InspectionQuickFix implements LocalQuickFix {

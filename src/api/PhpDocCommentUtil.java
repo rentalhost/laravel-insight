@@ -39,6 +39,14 @@ public enum PhpDocCommentUtil {
         return null;
     }
 
+    @NotNull
+    public static PhpDocTag createTag(
+        @NotNull final PhpNamedElement element,
+        @NotNull final String tagName
+    ) {
+        return createTag(element, tagName, null);
+    }
+
     public static PhpDocTag createTag(
         @NotNull final PhpNamedElement element,
         @NotNull final String tagName,
@@ -101,13 +109,5 @@ public enum PhpDocCommentUtil {
         final PsiElement docAsteriskNew     = docComment.addAfter(docCommentAsterisk, docCommentLastTag);
 
         return (PhpDocTag) docComment.addAfter(docCommentNewTag, docAsteriskNew);
-    }
-
-    @NotNull
-    public static PhpDocTag createTag(
-        @NotNull final PhpNamedElement element,
-        @NotNull final String tagName
-    ) {
-        return createTag(element, tagName, null);
     }
 }

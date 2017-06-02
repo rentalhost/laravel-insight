@@ -2,7 +2,14 @@ package net.rentalhost.idea.api;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.jetbrains.php.lang.psi.elements.*;
+import com.jetbrains.php.lang.psi.elements.ClassReference;
+import com.jetbrains.php.lang.psi.elements.Field;
+import com.jetbrains.php.lang.psi.elements.Method;
+import com.jetbrains.php.lang.psi.elements.PhpClass;
+import com.jetbrains.php.lang.psi.elements.PhpNamedElement;
+import com.jetbrains.php.lang.psi.elements.PhpReference;
+import com.jetbrains.php.lang.psi.elements.PhpUse;
+import com.jetbrains.php.lang.psi.elements.PhpUseList;
 import com.jetbrains.php.lang.psi.elements.impl.PhpUseImpl;
 
 import java.util.List;
@@ -14,24 +21,6 @@ import org.jetbrains.annotations.Nullable;
 
 public enum PhpClassUtil {
     ;
-
-    @NotNull
-    public static Iterable<PhpUse> getTraitsDeclared(@NotNull final PsiElement classObject) {
-        assert classObject instanceof PhpClass;
-
-        final List<PhpUseList> usesLists = PsiTreeUtil.getChildrenOfTypeAsList(classObject, PhpUseList.class);
-        final Stack<PhpUse>    result    = new Stack<>();
-
-        for (final PhpUseList useList : usesLists) {
-            for (final PhpUse useDeclaration : useList.getDeclarations()) {
-                if (useDeclaration.isTraitImport()) {
-                    result.push(useDeclaration);
-                }
-            }
-        }
-
-        return result;
-    }
 
     @Nullable
     public static ClassReference findSuperOfType(
@@ -58,6 +47,17 @@ public enum PhpClassUtil {
 
             return (ClassReference) resolver.resolve(classCurrentResolved);
         });
+    }
+
+    @Nullable
+    public static ClassReference getSuperReference(@NotNull final PhpClass phpClass) {
+        final List<ClassReference> classExtendsList = phpClass.getExtendsList().getReferenceElements();
+
+        if (classExtendsList.isEmpty()) {
+            return null;
+        }
+
+        return classExtendsList.get(0);
     }
 
     @Nullable
@@ -102,15 +102,22 @@ public enum PhpClassUtil {
         });
     }
 
-    @Nullable
-    public static ClassReference getSuperReference(@NotNull final PhpClass phpClass) {
-        final List<ClassReference> classExtendsList = phpClass.getExtendsList().getReferenceElements();
+    @NotNull
+    public static Iterable<PhpUse> getTraitsDeclared(@NotNull final PsiElement classObject) {
+        assert classObject instanceof PhpClass;
 
-        if (classExtendsList.isEmpty()) {
-            return null;
+        final List<PhpUseList> usesLists = PsiTreeUtil.getChildrenOfTypeAsList(classObject, PhpUseList.class);
+        final Stack<PhpUse>    result    = new Stack<>();
+
+        for (final PhpUseList useList : usesLists) {
+            for (final PhpUse useDeclaration : useList.getDeclarations()) {
+                if (useDeclaration.isTraitImport()) {
+                    result.push(useDeclaration);
+                }
+            }
         }
 
-        return classExtendsList.get(0);
+        return result;
     }
 
     @Nullable
@@ -160,20 +167,6 @@ public enum PhpClassUtil {
     }
 
     @Nullable
-    private static <ComponentType extends PhpNamedElement> ComponentType findClassComponentByName(
-        @NotNull final String propertyNameExpected,
-        @NotNull final Iterable<ComponentType> classComponents
-    ) {
-        for (final ComponentType classField : classComponents) {
-            if (classField.getName().equals(propertyNameExpected)) {
-                return classField;
-            }
-        }
-
-        return null;
-    }
-
-    @Nullable
     public static Method findMethodDeclaration(
         @NotNull final PhpClass classObject,
         @NotNull final String methodNameExpected
@@ -194,5 +187,19 @@ public enum PhpClassUtil {
 
             return (Method) resolver.resolve(classSuperResolved);
         });
+    }
+
+    @Nullable
+    private static <ComponentType extends PhpNamedElement> ComponentType findClassComponentByName(
+        @NotNull final String propertyNameExpected,
+        @NotNull final Iterable<ComponentType> classComponents
+    ) {
+        for (final ComponentType classField : classComponents) {
+            if (classField.getName().equals(propertyNameExpected)) {
+                return classField;
+            }
+        }
+
+        return null;
     }
 }

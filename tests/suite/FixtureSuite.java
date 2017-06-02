@@ -17,13 +17,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class FixtureSuite extends CodeInsightFixtureTestCase {
     @NotNull
-    protected static <T> T valueOf(@Nullable final T element) {
-        assert element != null;
-
-        return element;
-    }
-
-    @NotNull
     protected static PhpNamedElement getElementByName(
         @Nullable final PsiElement file,
         final String elementName
@@ -39,6 +32,13 @@ public class FixtureSuite extends CodeInsightFixtureTestCase {
         }
 
         return valueOf(null);
+    }
+
+    @NotNull
+    protected static <T> T valueOf(@Nullable final T element) {
+        assert element != null;
+
+        return element;
     }
 
     @NotNull

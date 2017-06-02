@@ -14,18 +14,10 @@ import org.jetbrains.annotations.NotNull;
 import net.rentalhost.suite.FixtureSuite;
 
 public class PhpFunctionUtilTest extends FixtureSuite {
-    @NotNull
-    private static Function getFunction(
-        @NotNull   final PsiElement fileSample,
-        @NotNull   final String functionName
-    ) {
-        return (Function) getElementByName(fileSample, functionName);
-    }
-
     private static boolean hasOnlyTypes(
-        @NotNull  final PsiElement fileSample,
-        @NotNull    final String functionName,
-        @NotNull   final PhpType... expectedTypesList
+        @NotNull final PsiElement fileSample,
+        @NotNull final String functionName,
+        @NotNull final PhpType... expectedTypesList
     ) {
         final Collection<String> returnTypes = new ArrayList<>(valueOf(PhpFunctionUtil.getReturnType(getFunction(fileSample, functionName))).getTypes());
 
@@ -40,6 +32,14 @@ public class PhpFunctionUtilTest extends FixtureSuite {
         }
 
         return returnTypes.isEmpty();
+    }
+
+    @NotNull
+    private static Function getFunction(
+        @NotNull final PsiElement fileSample,
+        @NotNull final String functionName
+    ) {
+        return (Function) getElementByName(fileSample, functionName);
     }
 
     public void testGetReturnType() {

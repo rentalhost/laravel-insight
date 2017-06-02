@@ -1,7 +1,13 @@
 package net.rentalhost.idea.api;
 
 import com.intellij.psi.PsiElement;
-import com.jetbrains.php.lang.psi.elements.*;
+import com.jetbrains.php.lang.psi.elements.AssignmentExpression;
+import com.jetbrains.php.lang.psi.elements.Constant;
+import com.jetbrains.php.lang.psi.elements.ConstantReference;
+import com.jetbrains.php.lang.psi.elements.Field;
+import com.jetbrains.php.lang.psi.elements.PhpExpression;
+import com.jetbrains.php.lang.psi.elements.PhpPsiElement;
+import com.jetbrains.php.lang.psi.elements.PhpReference;
 import com.jetbrains.php.lang.psi.elements.impl.ClassConstImpl;
 
 import java.util.ArrayList;
@@ -19,6 +25,35 @@ public enum PhpExpressionUtil {
         primaryConstants.add("null");
         primaryConstants.add("true");
         primaryConstants.add("false");
+    }
+
+    @Nullable
+    public static PhpExpression from(@NotNull final PhpExpression elementInitial) {
+        return RecursionResolver.resolve(elementInitial, resolver -> {
+            final PhpExpression element = (PhpExpression) resolver.getObject();
+
+            if ((element instanceof ConstantReference) &&
+                isPrimaryConstant(element)) {
+                return element;
+            }
+
+            if (element instanceof PhpReference) {
+                return RecursionResolver.resolve(element, PhpExpressionUtil::recursionResolver);
+            }
+
+            if (element instanceof AssignmentExpression) {
+                final PhpPsiElement elementValue = ((AssignmentExpression) element).getValue();
+                assert elementValue != null;
+
+                if (elementValue instanceof PhpReference) {
+                    return RecursionResolver.resolve(elementValue, PhpExpressionUtil::recursionResolver);
+                }
+
+                return (PhpExpression) resolver.resolve(elementValue);
+            }
+
+            return element;
+        });
     }
 
     @Nullable
@@ -51,34 +86,5 @@ public enum PhpExpressionUtil {
 
     private static boolean isPrimaryConstant(@NotNull final PsiElement element) {
         return primaryConstants.contains(element.getText().toLowerCase());
-    }
-
-    @Nullable
-    public static PhpExpression from(@NotNull final PhpExpression elementInitial) {
-        return RecursionResolver.resolve(elementInitial, resolver -> {
-            final PhpExpression element = (PhpExpression) resolver.getObject();
-
-            if ((element instanceof ConstantReference) &&
-                isPrimaryConstant(element)) {
-                return element;
-            }
-
-            if (element instanceof PhpReference) {
-                return RecursionResolver.resolve(element, PhpExpressionUtil::recursionResolver);
-            }
-
-            if (element instanceof AssignmentExpression) {
-                final PhpPsiElement elementValue = ((AssignmentExpression) element).getValue();
-                assert elementValue != null;
-
-                if (elementValue instanceof PhpReference) {
-                    return RecursionResolver.resolve(elementValue, PhpExpressionUtil::recursionResolver);
-                }
-
-                return (PhpExpression) resolver.resolve(elementValue);
-            }
-
-            return element;
-        });
     }
 }

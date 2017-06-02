@@ -32,7 +32,7 @@ public class TreeUtilTest extends FixtureSuite {
         Assert.assertNull(TreeUtil.getPrevMatch(
             referenceReturnType,
             filterBy -> (filterBy instanceof ASTNode) && filterBy.equals(PhpTokenTypes.opQUEST),
-            stopBy -> stopBy instanceof PhpDocComment
+            PhpDocComment.class::isInstance
         ));
 
         Assert.assertEquals(PhpTokenTypes.opQUEST,

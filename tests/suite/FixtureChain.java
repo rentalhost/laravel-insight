@@ -16,17 +16,6 @@ public class FixtureChain {
     }
 
     @NotNull
-    FixtureChain addInspectionTool(@NotNull final Class<? extends LocalInspectionTool> inspectionTool) {
-        try {
-            fixture.enableInspections(inspectionTool.getConstructor().newInstance());
-        }
-        catch (@NotNull InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ignored) {
-        }
-
-        return this;
-    }
-
-    @NotNull
     public FixtureChain addTestFile(@NotNull final String testFile) {
         fixture.configureByFile("resources-tests/" + testFile);
 
@@ -51,5 +40,16 @@ public class FixtureChain {
         final String fixedFilePath = testFilePath.substring(0, testFilePath.length() - 4) + ".fixed.php";
 
         fixture.checkResultByFile(fixedFilePath);
+    }
+
+    @NotNull
+    FixtureChain addInspectionTool(@NotNull final Class<? extends LocalInspectionTool> inspectionTool) {
+        try {
+            fixture.enableInspections(inspectionTool.getConstructor().newInstance());
+        }
+        catch (@NotNull InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ignored) {
+        }
+
+        return this;
     }
 }
