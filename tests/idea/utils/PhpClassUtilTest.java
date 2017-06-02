@@ -1,4 +1,4 @@
-package net.rentalhost.idea.api;
+package net.rentalhost.idea.utils;
 
 import com.google.common.collect.Lists;
 import com.intellij.psi.PsiElement;
@@ -15,7 +15,7 @@ import net.rentalhost.suite.FixtureSuite;
 
 public class PhpClassUtilTest extends FixtureSuite {
     public void testGetTraitsDeclared() {
-        final PsiFile fileSample = getResourceFile("api/PhpClassUtil.traitsDeclaration.php");
+        final PsiFile fileSample = getResourceFile("utils/PhpClassUtil.traitsDeclaration.php");
 
         final ArrayList<PhpUse> phpUses = Lists.newArrayList(PhpClassUtil.getTraitsDeclared(valueOf(getElementByName(fileSample, "ObjectClass"))));
 
@@ -27,7 +27,7 @@ public class PhpClassUtilTest extends FixtureSuite {
     }
 
     public void testFindSuperOfType() {
-        final PsiFile fileSample = getResourceFile("api/PhpClassUtil.superClasses.php");
+        final PsiFile fileSample = getResourceFile("utils/PhpClassUtil.superClasses.php");
 
         final PhpClass classFirstClass  = (PhpClass) getElementByName(fileSample, "FirstClass");
         final PhpClass classSecondClass = (PhpClass) getElementByName(fileSample, "SecondClass");
@@ -54,7 +54,7 @@ public class PhpClassUtilTest extends FixtureSuite {
     }
 
     public void testFindTraitOfType() {
-        final PsiFile fileSample = getResourceFile("api/PhpClassUtil.traitClasses.php");
+        final PsiFile fileSample = getResourceFile("utils/PhpClassUtil.traitClasses.php");
 
         final PhpClass traitFirstTrait               = (PhpClass) getElementByName(fileSample, "FirstTrait");
         final PhpClass traitSecondTrait              = (PhpClass) getElementByName(fileSample, "SecondTrait");
@@ -77,7 +77,7 @@ public class PhpClassUtilTest extends FixtureSuite {
         // Code-coverage.
         Assert.assertNull(PhpClassUtil.findTraitOfType(classCCUnresolvableTraitClass, "\\Anything"));
 
-        final PsiFile              fileSample2  = getResourceFile("api/PhpClassUtil.traitOfTrait.php");
+        final PsiFile              fileSample2  = getResourceFile("utils/PhpClassUtil.traitOfTrait.php");
         final Collection<PhpClass> fileClasses2 = new ArrayList<>(PsiTreeUtil.findChildrenOfType(fileSample2, PhpClass.class));
 
         Assert.assertEquals(3, fileClasses2.size());
@@ -90,7 +90,7 @@ public class PhpClassUtilTest extends FixtureSuite {
         Assert.assertSame(traitFirstTraitOfTrait, valueOf(PhpClassUtil.findTraitOfType(classFirstClassToTrait, "\\FirstTraitOfTrait")).resolve());
         Assert.assertSame(traitSecondTraitOfTrait, valueOf(PhpClassUtil.findTraitOfType(classFirstClassToTrait, "\\SecondTraitOfTrait")).resolve());
 
-        final PsiFile              fileSample3  = getResourceFile("api/PhpClassUtil.namespacedTrait.php");
+        final PsiFile              fileSample3  = getResourceFile("utils/PhpClassUtil.namespacedTrait.php");
         final Collection<PhpClass> fileClasses3 = new ArrayList<>(PsiTreeUtil.findChildrenOfType(fileSample3, PhpClass.class));
 
         Assert.assertEquals(1, fileClasses3.size());
@@ -102,7 +102,7 @@ public class PhpClassUtilTest extends FixtureSuite {
     }
 
     public void testGetSuperReference() {
-        final PsiFile fileSample = getResourceFile("api/PhpClassUtil.superClasses.php");
+        final PsiFile fileSample = getResourceFile("utils/PhpClassUtil.superClasses.php");
 
         // FirstClass have no super class.
         Assert.assertNull(PhpClassUtil.getSuperReference((PhpClass) getElementByName(fileSample, "FirstClass")));
@@ -113,7 +113,7 @@ public class PhpClassUtilTest extends FixtureSuite {
     }
 
     public void testGetSuper() {
-        final PsiFile fileSample = getResourceFile("api/PhpClassUtil.superClasses.php");
+        final PsiFile fileSample = getResourceFile("utils/PhpClassUtil.superClasses.php");
 
         final PhpClass classFirstClass  = (PhpClass) getElementByName(fileSample, "FirstClass");
         final PhpClass classSecondClass = (PhpClass) getElementByName(fileSample, "SecondClass");
@@ -127,7 +127,7 @@ public class PhpClassUtilTest extends FixtureSuite {
     }
 
     public void testFindPropertyDeclaration() {
-        final PsiFile fileSample = getResourceFile("api/PhpClassUtil.findDeclaration.php");
+        final PsiFile fileSample = getResourceFile("utils/PhpClassUtil.findDeclaration.php");
 
         final PhpClass classFirstClass  = (PhpClass) getElementByName(fileSample, "FirstPropertyDeclarationClass");
         final PhpClass classSecondClass = (PhpClass) getElementByName(fileSample, "SecondPropertyDeclarationClass");
@@ -176,7 +176,7 @@ public class PhpClassUtilTest extends FixtureSuite {
     }
 
     public void testFindMethodDeclaration() {
-        final PsiFile fileSample = getResourceFile("api/PhpClassUtil.findDeclaration.php");
+        final PsiFile fileSample = getResourceFile("utils/PhpClassUtil.findDeclaration.php");
 
         final PhpClass classFirstClass  = (PhpClass) getElementByName(fileSample, "FirstPropertyDeclarationClass");
         final PhpClass classSecondClass = (PhpClass) getElementByName(fileSample, "SecondPropertyDeclarationClass");
@@ -229,7 +229,7 @@ public class PhpClassUtilTest extends FixtureSuite {
     }
 
     public void testGetTraitContainingClass() {
-        final PsiFile fileSample = getResourceFile("api/PhpClassUtil.traitClasses.php");
+        final PsiFile fileSample = getResourceFile("utils/PhpClassUtil.traitClasses.php");
 
         final PsiElement classFirstClass    = getElementByName(fileSample, "FirstClass");
         final PhpUse     firstClassTraitUse = valueOf(PsiTreeUtil.findChildOfType(classFirstClass, PhpUse.class));

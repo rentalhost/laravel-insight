@@ -1,4 +1,4 @@
-package net.rentalhost.idea.api;
+package net.rentalhost.idea.utils;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -12,7 +12,7 @@ import net.rentalhost.suite.FixtureSuite;
 
 public class TreeUtilTest extends FixtureSuite {
     public void testGetPrevMatch() {
-        final PsiFile fileSample = getResourceFile("api/TreeUtil.elements.php");
+        final PsiFile fileSample = getResourceFile("utils/TreeUtil.elements.php");
 
         Assert.assertNull(TreeUtil.getPrevMatch(
             getElementByName(fileSample, "referenceVariable"),

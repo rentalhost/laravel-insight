@@ -1,4 +1,4 @@
-package net.rentalhost.idea.api;
+package net.rentalhost.idea.utils;
 
 import com.intellij.psi.PsiElement;
 import com.jetbrains.php.lang.psi.elements.ParenthesizedExpression;

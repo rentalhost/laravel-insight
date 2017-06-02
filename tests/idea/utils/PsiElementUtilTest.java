@@ -1,4 +1,4 @@
-package net.rentalhost.idea.api;
+package net.rentalhost.idea.utils;
 
 import com.intellij.psi.PsiFile;
 import com.jetbrains.php.lang.psi.elements.AssignmentExpression;
@@ -9,7 +9,7 @@ import net.rentalhost.suite.FixtureSuite;
 
 public class PsiElementUtilTest extends FixtureSuite {
     public void testSkipParentheses() {
-        final PsiFile fileSample = getResourceFile("api/PsiElementUtil.sample.php");
+        final PsiFile fileSample = getResourceFile("utils/PsiElementUtil.sample.php");
 
         final PhpNamedElement      referenceVariable   = valueOf(getElementByName(fileSample, "referenceVariable"));
         final AssignmentExpression referenceAssignment = (AssignmentExpression) referenceVariable.getParent();

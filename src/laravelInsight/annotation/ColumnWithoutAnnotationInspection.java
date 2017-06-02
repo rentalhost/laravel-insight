@@ -51,13 +51,13 @@ import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import net.rentalhost.idea.api.PhpClassUtil;
-import net.rentalhost.idea.api.PhpDocCommentUtil;
-import net.rentalhost.idea.api.PhpExpressionUtil;
-import net.rentalhost.idea.api.PhpFunctionUtil;
-import net.rentalhost.idea.api.PsiElementUtil;
 import net.rentalhost.idea.laravelInsight.resources.CarbonClasses;
 import net.rentalhost.idea.laravelInsight.resources.LaravelClasses;
+import net.rentalhost.idea.utils.PhpClassUtil;
+import net.rentalhost.idea.utils.PhpDocCommentUtil;
+import net.rentalhost.idea.utils.PhpExpressionUtil;
+import net.rentalhost.idea.utils.PhpFunctionUtil;
+import net.rentalhost.idea.utils.PsiElementUtil;
 
 public class ColumnWithoutAnnotationInspection extends PhpInspection {
     @NotNull private static final String messagePropertyUndefined = "@property $%s was not annotated";

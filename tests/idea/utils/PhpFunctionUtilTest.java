@@ -1,4 +1,4 @@
-package net.rentalhost.idea.api;
+package net.rentalhost.idea.utils;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -43,7 +43,7 @@ public class PhpFunctionUtilTest extends FixtureSuite {
     }
 
     public void testGetReturnType() {
-        final PsiFile fileSample = getResourceFile("api/PhpFunctionUtil.returnTypes.php");
+        final PsiFile fileSample = getResourceFile("utils/PhpFunctionUtil.returnTypes.php");
 
         // Bogus test...
         Assert.assertFalse(hasOnlyTypes(fileSample, "respectPhpdocReturnType_StringOnly", PhpType.STRING, PhpType.NULL));

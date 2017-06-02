@@ -1,4 +1,4 @@
-package net.rentalhost.idea.api;
+package net.rentalhost.idea.utils;
 
 import com.intellij.psi.PsiFile;
 import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocComment;
@@ -10,7 +10,7 @@ import net.rentalhost.suite.FixtureSuite;
 
 public class PhpDocCommentUtilTest extends FixtureSuite {
     public void testFindProperty() {
-        final PsiFile         fileSample      = getResourceFile("api/PhpDocCommentUtil.docProperties.php");
+        final PsiFile         fileSample      = getResourceFile("utils/PhpDocCommentUtil.docProperties.php");
         final PhpNamedElement fileReference   = getElementByName(fileSample, "reference");
         final PhpDocComment   fileDocComments = valueOf(fileReference.getDocComment());
 
@@ -25,7 +25,7 @@ public class PhpDocCommentUtilTest extends FixtureSuite {
     }
 
     public void testCreateTag() {
-        final PsiFile fileSample = getResourceFile("api/PhpDocCommentUtil.tagsCreation.php");
+        final PsiFile fileSample = getResourceFile("utils/PhpDocCommentUtil.tagsCreation.php");
 
         final PhpNamedElement classClassReference_WithoutAnyPhpDoc = getElementByName(fileSample, "ClassReference_WithoutAnyPhpDoc");
 

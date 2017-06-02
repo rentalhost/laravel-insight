@@ -1,4 +1,4 @@
-package net.rentalhost.idea.api;
+package net.rentalhost.idea.utils;
 
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiFile;
@@ -10,7 +10,7 @@ import net.rentalhost.suite.FixtureSuite;
 
 public class UserDataHolderUtilTest extends FixtureSuite {
     public void testFrom() {
-        final PsiFile           sampleFile = getResourceFile("api/DummyFile.php");
+        final PsiFile           sampleFile = getResourceFile("utils/DummyFile.php");
         final Key<List<String>> sampleKey  = new Key("SampleKey");
 
         final Object instanceOriginal    = UserDataHolderUtil.from(sampleFile, sampleKey, Object::new);

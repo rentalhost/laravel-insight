@@ -1,4 +1,4 @@
-package net.rentalhost.idea.api;
+package net.rentalhost.idea.utils;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;

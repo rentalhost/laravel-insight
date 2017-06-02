@@ -1,4 +1,4 @@
-package net.rentalhost.idea.api;
+package net.rentalhost.idea.utils;
 
 import com.intellij.psi.PsiElement;
 import com.jetbrains.php.lang.psi.elements.AssignmentExpression;
@@ -57,7 +57,7 @@ public enum PhpExpressionUtil {
     }
 
     @Nullable
-    static PhpExpression recursionResolver(@NotNull final RecursionResolver.Resolver<PhpReference, PhpExpression> resolver) {
+    static PhpExpression recursionResolver(@NotNull final net.rentalhost.idea.utils.RecursionResolver.Resolver<PhpReference, PhpExpression> resolver) {
         final PsiElement elementResolved = resolver.getObject().resolve();
 
         if (elementResolved == null) {

@@ -1,4 +1,4 @@
-package net.rentalhost.idea.api;
+package net.rentalhost.idea.utils;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -23,7 +23,7 @@ public class PhpExpressionUtilTest extends FixtureSuite {
     }
 
     public void testFrom() {
-        final PsiFile fileSample = getResourceFile("api/PhpExpressionUtil.warpingLiterals.php");
+        final PsiFile fileSample = getResourceFile("utils/PhpExpressionUtil.warpingLiterals.php");
 
         // Default const types.
         final StringLiteralExpression directLiteral     = (StringLiteralExpression) PhpExpressionUtil.from(getStringLiteral(fileSample, "directLiteral"));
