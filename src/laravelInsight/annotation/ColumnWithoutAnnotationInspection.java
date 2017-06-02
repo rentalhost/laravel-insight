@@ -48,6 +48,7 @@ import java.util.Set;
 
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import net.rentalhost.idea.api.PhpClassUtil;
 import net.rentalhost.idea.api.PhpDocCommentUtil;
@@ -148,7 +149,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                         continue;
                     }
 
-                    InspectionHelper.validatePropertyAnnotation(problemsHolder, fieldClass, fieldNameNode.getPsi(), fieldNameText);
+                    InspectionHelper.validatePropertyAnnotation(problemsHolder, fieldClass, fieldNameNode.getPsi(), fieldNameText, null);
                     break;
                 }
             }
@@ -211,7 +212,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                         continue;
                     }
 
-                    InspectionHelper.validatePropertyAnnotation(problemsHolder, fieldClass, hashKey, hashKeyContents);
+                    InspectionHelper.validatePropertyAnnotation(problemsHolder, fieldClass, hashKey, hashKeyContents, null);
                 }
             }
 
@@ -229,7 +230,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                     }
 
                     if (Objects.equals(traitReferenceClass.getFQN(), LaravelClasses.ELOQUENT_SOFTDELETES_TRAIT.toString())) {
-                        InspectionHelper.validatePropertyAnnotation(problemsHolder, traitContainingClass, expression, "deleted_at");
+                        InspectionHelper.validatePropertyAnnotation(problemsHolder, traitContainingClass, expression, "deleted_at", null);
                         return;
                     }
 
@@ -243,7 +244,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                         return;
                     }
 
-                    InspectionHelper.validatePropertyAnnotation(problemsHolder, traitContainingClass, expression, "deleted_at");
+                    InspectionHelper.validatePropertyAnnotation(problemsHolder, traitContainingClass, expression, "deleted_at", null);
                 }
             }
         };
@@ -300,27 +301,8 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
 
             final PsiElement issueReceptor = getReportableElement(phpClass, fieldTimestamps);
 
-            validatePropertyAnnotation(problemsHolder, phpClass, issueReceptor, "created_at");
-            validatePropertyAnnotation(problemsHolder, phpClass, issueReceptor, "updated_at");
-        }
-
-        static void validatePropertyAnnotation(
-            @NotNull final ProblemsHolder problemsHolder,
-            @NotNull final PhpClass phpClass,
-            @NotNull final PsiElement issueReference,
-            @NotNull final String propertyName
-        ) {
-            if (propertyName.endsWith("_id")) {
-                validatePropertyAnnotation(problemsHolder, phpClass, issueReference, propertyName, "int");
-                return;
-            }
-
-            if (propertyName.endsWith("_at")) {
-                validatePropertyAnnotation(problemsHolder, phpClass, issueReference, propertyName, CarbonClasses.CARBON.toString());
-                return;
-            }
-
-            validatePropertyAnnotation(problemsHolder, phpClass, issueReference, propertyName, "mixed");
+            validatePropertyAnnotation(problemsHolder, phpClass, issueReceptor, "created_at", null);
+            validatePropertyAnnotation(problemsHolder, phpClass, issueReceptor, "updated_at", null);
         }
 
         static void validatePropertyAnnotation(
@@ -328,7 +310,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
             @NotNull final PhpClass phpClass,
             @NotNull final PsiElement issueReference,
             @NotNull final String propertyName,
-            @NotNull final String propertyType
+            @Nullable final String propertyType
         ) {
             PhpClass fieldClassCurrent = phpClass;
             boolean  isNotAnnotated    = true;
@@ -347,7 +329,21 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
             }
 
             if (isNotAnnotated) {
-                registerPropertyUndefined(problemsHolder, phpClass, issueReference, propertyName, propertyType);
+                String propertyTypeIdentified = propertyType;
+
+                if (propertyTypeIdentified == null) {
+                    if (propertyName.endsWith("_id")) {
+                        propertyTypeIdentified = "int";
+                    }
+                    else if (propertyName.endsWith("_at")) {
+                        propertyTypeIdentified = CarbonClasses.CARBON.toString();
+                    }
+                    else {
+                        propertyTypeIdentified = "mixed";
+                    }
+                }
+
+                registerPropertyUndefined(problemsHolder, phpClass, issueReference, propertyName, propertyTypeIdentified);
             }
         }
 
