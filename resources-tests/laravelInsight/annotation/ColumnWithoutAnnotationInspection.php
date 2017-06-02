@@ -109,22 +109,22 @@ class CC_NoEloquentModel_WithCastsField
     protected $casts = ['CC'];
 }
 
-class <weak_warning descr="@property $id was not annotated">EloquentDates_CreatedAndUpdatedAt</weak_warning> extends Model
+class <weak_warning descr="@property $id was not annotated">EloquentCasts_CreatedAndUpdatedAt</weak_warning> extends Model
 {
-    protected $dates = [
+    protected $casts = [
         <weak_warning descr="@property $created_at was not annotated">'created_at'</weak_warning> => 'DateTime',
         <weak_warning descr="@property $updated_at was not annotated">'updated_at'</weak_warning> => 'DateTime',
     ];
 }
 
-class <weak_warning descr="@property $id was not annotated">EloquentDates_CreatedAndUpdatedAt_WithConstants</weak_warning> extends Model
+class <weak_warning descr="@property $id was not annotated">EloquentCasts_CreatedAndUpdatedAt_WithConstants</weak_warning> extends Model
 {
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
     const CC_DATETIME = 'DateTime';
 
-    protected $dates = [
+    protected $casts = [
         <weak_warning descr="@property $created_at was not annotated">self::CREATED_AT</weak_warning> => self::CC_DATETIME,
         <weak_warning descr="@property $updated_at was not annotated">self::UPDATED_AT</weak_warning> => self::CC_DATETIME,
     ];

@@ -146,9 +146,9 @@ class CC_NoEloquentModel_WithCastsField
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
-class EloquentDates_CreatedAndUpdatedAt extends Model
+class EloquentCasts_CreatedAndUpdatedAt extends Model
 {
-    protected $dates = [
+    protected $casts = [
         'created_at' => 'DateTime',
         'updated_at' => 'DateTime',
     ];
@@ -159,14 +159,14 @@ class EloquentDates_CreatedAndUpdatedAt extends Model
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
-class EloquentDates_CreatedAndUpdatedAt_WithConstants extends Model
+class EloquentCasts_CreatedAndUpdatedAt_WithConstants extends Model
 {
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
     const CC_DATETIME = 'DateTime';
 
-    protected $dates = [
+    protected $casts = [
         self::CREATED_AT => self::CC_DATETIME,
         self::UPDATED_AT => self::CC_DATETIME,
     ];
