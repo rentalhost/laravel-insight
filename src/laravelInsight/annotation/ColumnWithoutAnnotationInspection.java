@@ -193,9 +193,9 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                         continue;
                     }
 
-                    PsiElement elementIssued = element;
-                    String     elementName   = null;
-                    String     elementType   = null;
+                    final String elementName;
+                    final String elementType;
+                    PsiElement   elementIssued = element;
 
                     if (element instanceof ArrayHashElement) {
                         // Eg. [ 'column' => 'type' ], needly from $casts property.
@@ -339,6 +339,10 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
             @NotNull final String propertyName,
             @Nullable final String propertyType
         ) {
+            if (propertyName.isEmpty()) {
+                return;
+            }
+
             PhpClass fieldClassCurrent = phpClass;
             boolean  isNotAnnotated    = true;
 

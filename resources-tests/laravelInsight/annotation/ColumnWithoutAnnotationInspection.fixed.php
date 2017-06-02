@@ -494,3 +494,13 @@ class EloquentModel_PropertyReadAndWriteShouldBeAllowed extends Model
 $propertyReadAndWrite = new EloquentModel_PropertyReadAndWriteShouldBeAllowed;
 $propertyReadAndWrite->property_read;
 $propertyReadAndWrite->property_read; // twice
+
+/**
+ * @property int $id
+ */
+class EloquentCasts_ShouldIgnoresEmptyColumnName extends Model
+{
+    protected $casts = [
+        '' => 'int'
+    ];
+}

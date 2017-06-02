@@ -371,3 +371,10 @@ class <weak_warning descr="@property $id was not annotated">EloquentModel_Proper
 $propertyReadAndWrite = new EloquentModel_PropertyReadAndWriteShouldBeAllowed;
 $propertyReadAndWrite->property_read;
 $propertyReadAndWrite->property_read; // twice
+
+class <weak_warning descr="@property $id was not annotated">EloquentCasts_ShouldIgnoresEmptyColumnName</weak_warning> extends Model
+{
+    protected $casts = [
+        '' => 'int'
+    ];
+}

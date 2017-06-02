@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
-* **Inspection**: *column without annotation* now try to guess the column type (read the [doc](https://github.com/rentalhost/laravel-insight/wiki/Inspections#column-without-annotation) to more information);
+* [#8] **Inspection**: *column without annotation* now try to guess the column type (read the [doc](https://github.com/rentalhost/laravel-insight/wiki/Inspections#column-without-annotation) to more information);
 
 ## 0.1.1 - 2017-06-01
 
