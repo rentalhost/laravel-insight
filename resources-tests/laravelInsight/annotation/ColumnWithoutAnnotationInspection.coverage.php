@@ -28,3 +28,13 @@ $independentType = new IndepententType;
 $independentType->{'complex_name_not_supported'};
 
 (<error descr="Expected: expression">)</error>->is_a_error_but_shoud_be_analyzed;
+
+class <weak_warning descr="@property $id was not annotated">EloquentModel_EmptyCasts</weak_warning> extends Model
+{
+    protected $casts = [];
+}
+
+class <weak_warning descr="@property $id was not annotated">EloquentModel_DatesWithoutStringLiteral</weak_warning> extends Model
+{
+    protected $dates = [ 123 ];
+}
