@@ -64,4 +64,13 @@ public class FixtureSuite extends CodeInsightFixtureTestCase {
 
         return supplierResponse.get();
     }
+
+    protected void runWriteAction(@NotNull final Runnable consumer) {
+        new WriteCommandAction.Simple(myFixture.getProject()) {
+            @Override
+            protected void run() throws Throwable {
+                consumer.run();
+            }
+        }.execute();
+    }
 }
