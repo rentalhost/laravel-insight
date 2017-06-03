@@ -328,6 +328,10 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
 
             final PsiElement issueReceptor = getReportableElement(phpClass, fieldTimestamps);
 
+            if (issueReceptor == null) {
+                return;
+            }
+
             validatePropertyAnnotation(problemsHolder, phpClass, issueReceptor, "created_at", null);
             validatePropertyAnnotation(problemsHolder, phpClass, issueReceptor, "updated_at", null);
         }
@@ -416,8 +420,12 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                 issueReceptor = getReportableElement(phpClass, fieldPrimaryKey);
             }
             else {
-                issueReceptor = phpClass.getNameIdentifier();
-                assert issueReceptor != null;
+                final PsiElement issueReceptorPrimary = phpClass.getNameIdentifier();
+                issueReceptor = (issueReceptorPrimary == null) ? phpClass : issueReceptorPrimary;
+            }
+
+            if (issueReceptor == null) {
+                return;
             }
 
             final Field fieldKeyType = PhpClassUtil.findPropertyDeclaration(phpClass, "keyType");
@@ -502,23 +510,16 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
             return "mixed";
         }
 
-        @NotNull
+        @Nullable
         private static PsiElement getReportableElement(
             @NotNull final PsiNameIdentifierOwner phpClass,
             @NotNull final PhpClassMember fieldPrimaryKey
         ) {
-            final PsiElement issueReceptor;
-
             if (Objects.equals(fieldPrimaryKey.getContainingClass(), phpClass)) {
-                issueReceptor = fieldPrimaryKey.getNameIdentifier();
-                assert issueReceptor != null;
-            }
-            else {
-                issueReceptor = phpClass.getNameIdentifier();
-                assert issueReceptor != null;
+                return fieldPrimaryKey.getNameIdentifier();
             }
 
-            return issueReceptor;
+            return phpClass.getNameIdentifier();
         }
 
         private static boolean isRelationship(@NotNull final Collection<String> functionTypes) {

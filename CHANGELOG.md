@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 * [#8] **Inspection**: *column without annotation* now try to guess the column type (read the [doc](https://github.com/rentalhost/laravel-insight/wiki/Inspections#column-without-annotation) to more information);
 
+### Fixed
+
+* **NPE**: when class name identifier is absent (eg. `class {}`);
+
 ## 0.1.1 - 2017-06-01
 
 ### Changed
