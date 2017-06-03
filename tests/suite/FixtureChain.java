@@ -1,15 +1,20 @@
 package net.rentalhost.suite;
 
 import com.intellij.codeInsight.intention.IntentionAction;
+import com.intellij.codeInspection.InspectionManager;
 import com.intellij.codeInspection.LocalInspectionTool;
+import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.testFramework.fixtures.CodeInsightTestFixture;
+import com.jetbrains.php.lang.psi.visitors.PhpElementVisitor;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.function.Consumer;
 
 import org.jetbrains.annotations.NotNull;
 
 public class FixtureChain {
     private final CodeInsightTestFixture fixture;
+    private       LocalInspectionTool    inspectionTool;
 
     FixtureChain(final CodeInsightTestFixture myFixture) {
         fixture = myFixture;
@@ -42,10 +47,18 @@ public class FixtureChain {
         fixture.checkResultByFile(fixedFilePath);
     }
 
+    public void runVisitor(final Consumer<PhpElementVisitor> consumer) {
+        final ProblemsHolder    problemsHolder    = new ProblemsHolder(InspectionManager.getInstance(fixture.getProject()), fixture.getFile(), true);
+        final PhpElementVisitor psiElementVisitor = (PhpElementVisitor) inspectionTool.buildVisitor(problemsHolder, false);
+
+        consumer.accept(psiElementVisitor);
+    }
+
     @NotNull
-    FixtureChain addInspectionTool(@NotNull final Class<? extends LocalInspectionTool> inspectionTool) {
+    FixtureChain addInspectionTool(@NotNull final Class<? extends LocalInspectionTool> localInspectionTool) {
         try {
-            fixture.enableInspections(inspectionTool.getConstructor().newInstance());
+            inspectionTool = localInspectionTool.getConstructor().newInstance();
+            fixture.enableInspections(inspectionTool);
         }
         catch (@NotNull InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ignored) {
         }
