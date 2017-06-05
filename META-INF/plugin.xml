@@ -19,6 +19,9 @@
     ]]></change-notes>
 
     <extensions defaultExtensionNs="com.intellij">
+        <psi.referenceContributor language="PHP" implementation="net.rentalhost.idea.laravelInsight.scope.ScopeReferenceContribuitor"/>
+        <psi.referenceProvider language="PHP" providerClass="net.rentalhost.idea.laravelInsight.scope.ScopeReferenceProvider"/>
+
         <localInspection language="PHP"
                          groupPath="PHP,Laravel Insight"
                          groupName="Annotation"
