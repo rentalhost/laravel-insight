@@ -2,7 +2,7 @@
     <id>net.rentalhost.idea.laravelInsight</id>
     <name>Laravel Insight</name>
     <version>0.1.1</version>
-    <idea-version since-build="145.0"/>
+    <idea-version since-build="145.0" />
 
     <vendor email="david.rodrigues@rentalhost.net" url="https://rentalhost.net/">Rentalhost.net</vendor>
 
@@ -19,6 +19,8 @@
     ]]></change-notes>
 
     <extensions defaultExtensionNs="com.intellij">
+        <gotoDeclarationHandler implementation="net.rentalhost.idea.laravelInsight.scope.ScopeDeclarationHandler" />
+
         <localInspection language="PHP"
                          groupPath="PHP,Laravel Insight"
                          groupName="Annotation"
@@ -26,6 +28,6 @@
                          enabledByDefault="true"
                          level="WEAK WARNING"
                          shortName="ColumnWithoutAnnotationInspection"
-                         implementationClass="net.rentalhost.idea.laravelInsight.annotation.ColumnWithoutAnnotationInspection"/>
+                         implementationClass="net.rentalhost.idea.laravelInsight.annotation.ColumnWithoutAnnotationInspection" />
     </extensions>
 </idea-plugin>
