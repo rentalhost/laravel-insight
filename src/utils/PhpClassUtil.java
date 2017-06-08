@@ -6,7 +6,6 @@ import com.jetbrains.php.lang.psi.elements.ClassReference;
 import com.jetbrains.php.lang.psi.elements.Field;
 import com.jetbrains.php.lang.psi.elements.Method;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
-import com.jetbrains.php.lang.psi.elements.PhpNamedElement;
 import com.jetbrains.php.lang.psi.elements.PhpReference;
 import com.jetbrains.php.lang.psi.elements.PhpUse;
 import com.jetbrains.php.lang.psi.elements.PhpUseList;
@@ -150,7 +149,13 @@ public enum PhpClassUtil {
     ) {
         return RecursionResolver.resolve(classObject, resolver -> {
             final PhpClass classCurrent   = (PhpClass) resolver.getObject();
-            final Field    classComponent = findClassComponentByName(propertyNameExpected, classCurrent.getFields());
+            Field          classComponent = null;
+
+            for (final Field classField : classCurrent.getFields()) {
+                if (classField.getName().equals(propertyNameExpected)) {
+                    classComponent = classField;
+                }
+            }
 
             if (classComponent != null) {
                 return classComponent;
@@ -171,9 +176,17 @@ public enum PhpClassUtil {
         @NotNull final PhpClass classObject,
         @NotNull final String methodNameExpected
     ) {
+        final String methodNameExpectedLowercased = methodNameExpected.toLowerCase();
+
         return RecursionResolver.resolve(classObject, resolver -> {
             final PhpClass classCurrent   = (PhpClass) resolver.getObject();
-            final Method   classComponent = findClassComponentByName(methodNameExpected, classCurrent.getMethods());
+            Method         classComponent = null;
+
+            for (final Method classMethod : classCurrent.getMethods()) {
+                if (classMethod.getName().toLowerCase().equals(methodNameExpectedLowercased)) {
+                    classComponent = classMethod;
+                }
+            }
 
             if (classComponent != null) {
                 return classComponent;
@@ -187,19 +200,5 @@ public enum PhpClassUtil {
 
             return (Method) resolver.resolve(classSuperResolved);
         });
-    }
-
-    @Nullable
-    private static <ComponentType extends PhpNamedElement> ComponentType findClassComponentByName(
-        @NotNull final String propertyNameExpected,
-        @NotNull final Iterable<ComponentType> classComponents
-    ) {
-        for (final ComponentType classField : classComponents) {
-            if (classField.getName().equals(propertyNameExpected)) {
-                return classField;
-            }
-        }
-
-        return null;
     }
 }

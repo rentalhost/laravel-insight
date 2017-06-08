@@ -190,6 +190,9 @@ public class PhpClassUtilTest extends FixtureSuite {
         // FirstClass have only methodFromFirstClass().
         Assert.assertEquals(classFirstClass, valueOf(PhpClassUtil.findMethodDeclaration(classFirstClass, "methodFromFirstClass")).getContainingClass());
 
+        // Make sure that lowercased names are find out too.
+        Assert.assertEquals(classFirstClass, valueOf(PhpClassUtil.findMethodDeclaration(classFirstClass, "methodfromfirstclass")).getContainingClass());
+
         // SecondClass have both methodFromFirstClass() (from #1) and methodFromSecondClass().
         Assert.assertEquals(classFirstClass, valueOf(PhpClassUtil.findMethodDeclaration(classSecondClass, "methodFromFirstClass")).getContainingClass());
         Assert.assertEquals(classSecondClass, valueOf(PhpClassUtil.findMethodDeclaration(classSecondClass, "methodFromSecondClass")).getContainingClass());
