@@ -5,13 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 0.2.0 [Unreleased]
+## 0.2.0 [[Digon Release](https://github.com/rentalhost/laravel-insight/releases/tag/0.2.0)] - 2017-06-09
 
 ### Added
 
+* **Plugin**: is now distributed on official Jetbrains plugins repository ([see](https://plugins.jetbrains.com/plugin/9730-laravel-insight));
 * [#10] **Query Scopes**: *ctrl+click* on a scoped method resolve to scope declaration ([more info](https://github.com/rentalhost/laravel-insight/wiki/Auxiliary-Features#query-scopes));
 * [#10] **Query Scopes**: code completion to scope methods ([more info](https://github.com/rentalhost/laravel-insight/wiki/Auxiliary-Features#query-scopes));
-* [#8] **Inspection**: *column without annotation* now try to guess the column type ([more info](https://github.com/rentalhost/laravel-insight/wiki/Inspections#column-without-annotation));
+* [#8] **Inspection**: *column without annotation* now try to guess the column type based on some contexts ([more info](https://github.com/rentalhost/laravel-insight/wiki/Inspections#column-without-annotation));
 
 ### Fixed
 
