@@ -1,7 +1,15 @@
 package net.rentalhost.suite;
 
+import com.intellij.codeInsight.completion.InsertionContext;
+import com.intellij.codeInsight.completion.OffsetMap;
+import com.intellij.codeInsight.lookup.Lookup;
+import com.intellij.codeInsight.lookup.LookupArranger;
+import com.intellij.codeInsight.lookup.LookupElement;
+import com.intellij.codeInsight.lookup.LookupManager;
+import com.intellij.codeInsight.lookup.impl.LookupImpl;
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -89,5 +97,52 @@ public class FixtureSuite extends CodeInsightFixtureTestCase {
                 consumer.run();
             }
         }.execute();
+    }
+
+    @NotNull
+    protected LookupElement[] getCompletionElements(
+        final PsiElement reference,
+        final int referenceDistance
+    ) {
+        myFixture.getEditor().getCaretModel().getPrimaryCaret().moveToOffset(reference.getTextOffset() + referenceDistance);
+        myFixture.completeBasic();
+
+        return valueOf(myFixture.getLookupElements());
+    }
+
+    protected void coverageHandleInsert(
+        final PsiFile fileSample,
+        final LookupElement completionElement
+    ) {
+        runWriteAction(() -> {
+            final InsertionContext insertionContext = getInsertionContext(fileSample, completionElement);
+            completionElement.handleInsert(insertionContext);
+        });
+    }
+
+    protected void moveCaret(final int offset) {
+        getEditor().getCaretModel().moveToOffset(offset);
+    }
+
+    protected void acceptLookupElement(final LookupElement completionElement) {
+        final LookupImpl lookup = (LookupImpl) LookupManager
+            .getInstance(getProject())
+            .createLookup(getEditor(), new LookupElement[] { completionElement }, "", new LookupArranger.DefaultArranger());
+        lookup.finishLookup('\n');
+    }
+
+    @NotNull
+    private InsertionContext getInsertionContext(
+        final PsiFile fileSample,
+        final LookupElement completionElement
+    ) {
+        final Editor fixtureEditor = myFixture.getEditor();
+
+        return new InsertionContext(new OffsetMap(fixtureEditor.getDocument()),
+                                    Lookup.NORMAL_SELECT_CHAR,
+                                    new LookupElement[] { completionElement },
+                                    fileSample,
+                                    fixtureEditor,
+                                    false);
     }
 }

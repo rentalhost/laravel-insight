@@ -37,6 +37,7 @@ import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 
 import net.rentalhost.idea.laravelInsight.resources.LaravelClasses;
+import net.rentalhost.idea.utils.PhpClassUtil;
 
 public class ScopeCompletionContributor extends CompletionContributor {
     public ScopeCompletionContributor() {
@@ -70,9 +71,14 @@ public class ScopeCompletionContributor extends CompletionContributor {
 
             final Set<String>          elementClassReferenceAbsolute = elementClassReferenceRelative.getType().globalLocationAware(elementClassReferenceRelative).getTypes();
             final Collection<PhpClass> elementClasses                = PhpIndex.getInstance(element.getProject()).getAnyByFQN(elementClassReferenceAbsolute.iterator().next());
-            final PhpClass             elementClass                  = elementClasses.iterator().next();
 
-            if (elementClass == null) {
+            if (elementClasses.isEmpty()) {
+                return;
+            }
+
+            final PhpClass elementClass = elementClasses.iterator().next();
+
+            if (PhpClassUtil.findSuperOfType(elementClass, LaravelClasses.ELOQUENT_MODEL.toString()) == null) {
                 return;
             }
 
