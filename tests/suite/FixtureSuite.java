@@ -6,7 +6,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.testFramework.fixtures.CodeInsightFixtureTestCase;
+import com.jetbrains.php.lang.psi.elements.AssignmentExpression;
 import com.jetbrains.php.lang.psi.elements.PhpNamedElement;
+import com.jetbrains.php.lang.psi.elements.PhpPsiElement;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
@@ -29,6 +31,21 @@ public class FixtureSuite extends CodeInsightFixtureTestCase {
             if (namedElement.getName().equals(elementName)) {
                 return namedElement;
             }
+        }
+
+        return valueOf(null);
+    }
+
+    @NotNull
+    protected static PhpPsiElement getElementAssignmentValueByName(
+        @Nullable final PsiElement file,
+        final String elementName
+    ) {
+        final PhpNamedElement element       = getElementByName(file, elementName);
+        final PsiElement      elementParent = element.getParent();
+
+        if (elementParent instanceof AssignmentExpression) {
+            return valueOf(((AssignmentExpression) elementParent).getValue());
         }
 
         return valueOf(null);

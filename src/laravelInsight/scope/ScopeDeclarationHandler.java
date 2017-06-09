@@ -9,7 +9,6 @@ import com.jetbrains.php.PhpIndex;
 import com.jetbrains.php.lang.psi.elements.MemberReference;
 import com.jetbrains.php.lang.psi.elements.Method;
 import com.jetbrains.php.lang.psi.elements.MethodReference;
-import com.jetbrains.php.lang.psi.elements.ParenthesizedExpression;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
 import com.jetbrains.php.lang.psi.elements.PhpExpression;
 import com.jetbrains.php.lang.psi.elements.PhpTypedElement;
@@ -32,13 +31,13 @@ public class ScopeDeclarationHandler implements GotoDeclarationHandler {
         final Editor editor
     ) {
         if (sourceElement == null) {
-            return PsiElement.EMPTY_ARRAY;
+            return null;
         }
 
         final PsiElement sourceParent = sourceElement.getParent();
 
         if (!(sourceParent instanceof MethodReference)) {
-            return PsiElement.EMPTY_ARRAY;
+            return null;
         }
 
         final PhpExpression sourceReference = ((MemberReference) sourceParent).getClassReference();
@@ -46,10 +45,6 @@ public class ScopeDeclarationHandler implements GotoDeclarationHandler {
 
         final PsiElement sourceReferenceDirect = PsiElementUtil.skipParentheses(sourceReference);
         assert sourceReferenceDirect != null;
-
-        if (sourceReferenceDirect instanceof ParenthesizedExpression) {
-            return PsiElement.EMPTY_ARRAY;
-        }
 
         final Project     sourceProject        = sourceElement.getProject();
         final String      sourceResolution     = "scope" + sourceElement.getText();
@@ -77,12 +72,12 @@ public class ScopeDeclarationHandler implements GotoDeclarationHandler {
             return new PsiElement[] { methodDeclaration };
         }
 
-        return PsiElement.EMPTY_ARRAY;
+        return null;
     }
 
     @Nullable
     @Override
     public String getActionText(final DataContext context) {
-        return null;
+        return "Go to scope declaration";
     }
 }
