@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>net.rentalhost.idea.laravelInsight</id>
     <name>Laravel Insight</name>
-    <version>0.1.1</version>
+    <version>0.2.0</version>
     <idea-version since-build="145.0" />
 
     <vendor email="david.rodrigues@rentalhost.net" url="https://rentalhost.net/">Rentalhost.net</vendor>
@@ -15,7 +15,8 @@
     ]]></description>
 
     <change-notes><![CDATA[
-        Initial release.
+        <strong>Digon Release</strong><br />
+        <a href="https://github.com/rentalhost/laravel-insight/releases/tag/0.2.0">Official changelog</a>.
     ]]></change-notes>
 
     <extensions defaultExtensionNs="com.intellij">
