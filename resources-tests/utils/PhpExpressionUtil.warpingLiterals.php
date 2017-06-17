@@ -41,3 +41,7 @@ $shouldAvoidCyclicLoopingsWithVariablesB = $shouldAvoidCyclicLoopingsWithVariabl
 $variableDirect = "value";
 $variableIndirect = $variableDirect;
 $variableWrapping = $variableIndirect;
+
+$withParanteshesDirect = (("parentheses"));
+$withParanteshesIndirect = (($withParanteshesDirect));
+$withParanteshesWrapping = (($withParanteshesIndirect));

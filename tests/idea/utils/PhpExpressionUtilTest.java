@@ -71,5 +71,10 @@ public class PhpExpressionUtilTest extends FixtureSuite {
         final StringLiteralExpression variableWrapping = (StringLiteralExpression) PhpExpressionUtil.from(getStringLiteral(fileSample, "variableWrapping"));
 
         Assert.assertEquals("value", valueOf(variableWrapping).getContents());
+
+        // With wrapping parentheses.
+        final StringLiteralExpression withParanteshesWrapping = (StringLiteralExpression) PhpExpressionUtil.from(getStringLiteral(fileSample, "withParanteshesWrapping"));
+
+        Assert.assertEquals("parentheses", valueOf(withParanteshesWrapping).getContents());
     }
 }

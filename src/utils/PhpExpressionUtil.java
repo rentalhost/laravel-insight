@@ -32,7 +32,11 @@ public enum PhpExpressionUtil {
     @Nullable
     public static PhpExpression from(@NotNull final PhpExpression elementInitial) {
         return RecursionResolver.resolve(elementInitial, resolver -> {
-            final PhpExpression element = (PhpExpression) resolver.getObject();
+            PhpExpression element = (PhpExpression) resolver.getObject();
+
+            if (element instanceof ParenthesizedExpression) {
+                element = (PhpExpression) ((ParenthesizedExpression) element).unparenthesize();
+            }
 
             if ((element instanceof ConstantReference) &&
                 isPrimaryConstant(element)) {
@@ -80,6 +84,10 @@ public enum PhpExpressionUtil {
             if (elementParent instanceof AssignmentExpression) {
                 referencedValue = ((AssignmentExpression) elementParent).getValue();
             }
+        }
+
+        if (referencedValue instanceof ParenthesizedExpression) {
+            referencedValue = ((ParenthesizedExpression) referencedValue).unparenthesize();
         }
 
         if (!(referencedValue instanceof PhpReference)) {
