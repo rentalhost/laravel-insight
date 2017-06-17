@@ -10,8 +10,8 @@
       <sourceFolder url="file://$MODULE_DIR$/resources-tests" type="java-test-resource" />
       <excludeFolder url="file://$MODULE_DIR$/out" />
     </content>
-    <orderEntry type="jdk" jdkName="IntelliJ IDEA IU-172.2465.6" jdkType="IDEA JDK" />
+    <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" scope="PROVIDED" name="lib" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="lib" level="application" />
   </component>
 </module>
