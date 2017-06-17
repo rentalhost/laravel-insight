@@ -5,9 +5,11 @@ import com.jetbrains.php.lang.psi.elements.AssignmentExpression;
 import com.jetbrains.php.lang.psi.elements.Constant;
 import com.jetbrains.php.lang.psi.elements.ConstantReference;
 import com.jetbrains.php.lang.psi.elements.Field;
+import com.jetbrains.php.lang.psi.elements.ParenthesizedExpression;
 import com.jetbrains.php.lang.psi.elements.PhpExpression;
 import com.jetbrains.php.lang.psi.elements.PhpPsiElement;
 import com.jetbrains.php.lang.psi.elements.PhpReference;
+import com.jetbrains.php.lang.psi.elements.Variable;
 import com.jetbrains.php.lang.psi.elements.impl.ClassConstImpl;
 
 import java.util.ArrayList;
@@ -71,6 +73,13 @@ public enum PhpExpressionUtil {
         }
         else if (elementResolved instanceof Constant) {
             referencedValue = ((Constant) elementResolved).getValue();
+        }
+        else if (elementResolved instanceof Variable) {
+            final PsiElement elementParent = elementResolved.getParent();
+
+            if (elementParent instanceof AssignmentExpression) {
+                referencedValue = ((AssignmentExpression) elementParent).getValue();
+            }
         }
 
         if (!(referencedValue instanceof PhpReference)) {

@@ -37,3 +37,7 @@ $shouldAvoidCyclicLoopingsWithConstants = SHOULD_IGNORES_CYCLIC_LOOPINGS_A;
 
 $shouldAvoidCyclicLoopingsWithVariablesA = $shouldAvoidCyclicLoopingsWithVariablesB;
 $shouldAvoidCyclicLoopingsWithVariablesB = $shouldAvoidCyclicLoopingsWithVariablesA;
+
+$variableDirect = "value";
+$variableIndirect = $variableDirect;
+$variableWrapping = $variableIndirect;

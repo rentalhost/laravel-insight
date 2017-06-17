@@ -66,5 +66,10 @@ public class PhpExpressionUtilTest extends FixtureSuite {
 
         Assert.assertNull(PhpExpressionUtil.from(shouldAvoidCyclicLoopingsWithConstants));
         Assert.assertNull(PhpExpressionUtil.from(shouldAvoidCyclicLoopingsWithVariablesA));
+
+        // Resolving variables.
+        final StringLiteralExpression variableWrapping = (StringLiteralExpression) PhpExpressionUtil.from(getStringLiteral(fileSample, "variableWrapping"));
+
+        Assert.assertEquals("value", valueOf(variableWrapping).getContents());
     }
 }
