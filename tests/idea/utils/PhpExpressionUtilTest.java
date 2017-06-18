@@ -2,6 +2,7 @@ package net.rentalhost.idea.utils;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocProperty;
 import com.jetbrains.php.lang.psi.elements.AssignmentExpression;
 import com.jetbrains.php.lang.psi.elements.ConstantReference;
 import com.jetbrains.php.lang.psi.elements.Field;
@@ -40,7 +41,7 @@ public class PhpExpressionUtilTest extends FixtureSuite {
         Assert.assertEquals("indirectValue", assignedLiteral.getContents());
         Assert.assertEquals("indirectValue", withSubAssignment.getContents());
 
-        final PhpExpression ccUnresolvedConstantReference = (PhpExpression) getElementByName(fileSample, "ccUnresolvedConstantReference");
+        final PsiElement ccUnresolvedConstantReference = (PhpExpression) getElementByName(fileSample, "ccUnresolvedConstantReference");
 
         Assert.assertTrue(PhpExpressionUtil.resolve(ccUnresolvedConstantReference) instanceof ConstantReference);
 
@@ -62,11 +63,11 @@ public class PhpExpressionUtilTest extends FixtureSuite {
         Assert.assertEquals("null", classResolvingDirectlyFromProperty.getText());
 
         // Avoiding complex loopings.
-        final PhpExpression shouldAvoidCyclicLoopingsWithConstants = (PhpExpression) getElementByName(fileSample, "shouldAvoidCyclicLoopingsWithConstants");
+        final PsiElement shouldAvoidCyclicLoopingsWithConstants = (PhpExpression) getElementByName(fileSample, "shouldAvoidCyclicLoopingsWithConstants");
 
         Assert.assertEquals("SHOULD_IGNORES_CYCLIC_LOOPINGS_A", PhpExpressionUtil.resolve(shouldAvoidCyclicLoopingsWithConstants).getText());
 
-        final PhpExpression shouldAvoidCyclicLoopingsWithVariablesA = (PhpExpression) getElementByName(fileSample, "shouldAvoidCyclicLoopingsWithVariablesA");
+        final PsiElement shouldAvoidCyclicLoopingsWithVariablesA = (PhpExpression) getElementByName(fileSample, "shouldAvoidCyclicLoopingsWithVariablesA");
 
         Assert.assertEquals("$shouldAvoidCyclicLoopingsWithVariablesA", PhpExpressionUtil.resolve(shouldAvoidCyclicLoopingsWithVariablesA).getText());
 
@@ -81,12 +82,12 @@ public class PhpExpressionUtilTest extends FixtureSuite {
         Assert.assertEquals("parentheses", withParanteshesWrapping.getContents());
 
         // Should not resolve totally.
-        final PhpExpression indirectShouldNotResolveTotally = PhpExpressionUtil.resolve(getStringLiteral(fileSample, "indirectShouldNotResolveTotally"));
+        final PsiElement indirectShouldNotResolveTotally = PhpExpressionUtil.resolve(getStringLiteral(fileSample, "indirectShouldNotResolveTotally"));
 
         Assert.assertTrue(indirectShouldNotResolveTotally instanceof MethodReference);
 
         // Stop on first ConstantReference.
-        final PhpExpression stopOnFirstConstantReference =
+        final PsiElement stopOnFirstConstantReference =
             PhpExpressionUtil.resolve(getStringLiteral(fileSample, "stopOnFirstConstantReference"), ConstantReference.class::isInstance);
 
         Assert.assertTrue(stopOnFirstConstantReference instanceof ConstantReference);
@@ -94,8 +95,8 @@ public class PhpExpressionUtilTest extends FixtureSuite {
 
         // Make sure that resolves to a @property will not broke.
         final AssignmentExpression ccInstancePropertyRef = (AssignmentExpression) getElementByName(fileSample, "ccInstancePropertyRef").getParent();
-        final PhpExpression        ccInstanceProperty    = PhpExpressionUtil.resolve(valueOf((PhpExpression) ccInstancePropertyRef.getValue()));
+        final PsiElement           ccInstanceProperty    = PhpExpressionUtil.resolve(valueOf((PhpExpression) ccInstancePropertyRef.getValue()));
 
-        Assert.assertTrue(ccInstanceProperty instanceof MethodReference);
+        Assert.assertTrue(ccInstanceProperty instanceof PhpDocProperty);
     }
 }

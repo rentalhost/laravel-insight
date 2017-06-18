@@ -30,7 +30,6 @@ import com.jetbrains.php.lang.psi.elements.ParenthesizedExpression;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
 import com.jetbrains.php.lang.psi.elements.PhpClassMember;
 import com.jetbrains.php.lang.psi.elements.PhpExpression;
-import com.jetbrains.php.lang.psi.elements.PhpPsiElement;
 import com.jetbrains.php.lang.psi.elements.PhpReference;
 import com.jetbrains.php.lang.psi.elements.PhpTypedElement;
 import com.jetbrains.php.lang.psi.elements.PhpUse;
@@ -187,7 +186,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                     final String elementType;
 
                     if (!isCastProperty && element.isIndexed()) {
-                        final PhpPsiElement elementChildResolved = PhpExpressionUtil.resolve((PhpExpression) elementIssued);
+                        final PsiElement elementChildResolved = PhpExpressionUtil.resolve(elementIssued);
 
                         if (!(elementChildResolved instanceof StringLiteralExpression)) {
                             continue;
@@ -197,8 +196,8 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                         elementType = CarbonClasses.CARBON.toString();
                     }
                     else if (isCastProperty && !element.isIndexed()) {
-                        final PsiElement    elementHashKey      = element.getKey();
-                        final PhpExpression elementHashKeyValue = PhpExpressionUtil.resolve((PhpExpression) elementHashKey);
+                        final PsiElement elementHashKey      = element.getKey();
+                        final PsiElement elementHashKeyValue = PhpExpressionUtil.resolve(elementHashKey);
 
                         if (!(elementHashKeyValue instanceof StringLiteralExpression)) {
                             continue;
@@ -207,8 +206,8 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                         elementName = ((StringLiteralExpression) elementHashKeyValue).getContents();
                         elementIssued = elementHashKey;
 
-                        final PsiElement    fieldHashValue         = element.getValue();
-                        final PhpExpression fieldHashResolvedValue = PhpExpressionUtil.resolve((PhpExpression) fieldHashValue);
+                        final PsiElement fieldHashValue         = element.getValue();
+                        final PsiElement fieldHashResolvedValue = PhpExpressionUtil.resolve(fieldHashValue);
 
                         if (!(fieldHashResolvedValue instanceof StringLiteralExpression)) {
                             continue;
@@ -297,7 +296,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                 return;
             }
 
-            final PsiElement fieldTimestampsDefaultValueResolved = PhpExpressionUtil.resolve((PhpExpression) fieldTimestampsDefaultValue);
+            final PsiElement fieldTimestampsDefaultValueResolved = PhpExpressionUtil.resolve(fieldTimestampsDefaultValue);
 
             if (!(fieldTimestampsDefaultValueResolved instanceof ConstantReference)) {
                 return;
@@ -391,7 +390,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                     return;
                 }
 
-                final PhpExpression fieldPrimaryKeyResolved = PhpExpressionUtil.resolve((PhpExpression) fieldPrimaryKeyValue);
+                final PsiElement fieldPrimaryKeyResolved = PhpExpressionUtil.resolve(fieldPrimaryKeyValue);
 
                 if (!(fieldPrimaryKeyResolved instanceof StringLiteralExpression)) {
                     return;
@@ -413,7 +412,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
             String      fieldType    = "int";
 
             if (fieldKeyType != null) {
-                final PhpExpression fieldKeyTypeValueRaw = (PhpExpression) fieldKeyType.getDefaultValue();
+                final PsiElement fieldKeyTypeValueRaw = fieldKeyType.getDefaultValue();
 
                 if (fieldKeyTypeValueRaw != null) {
                     final PsiElement fieldKeyTypeValue = PhpExpressionUtil.resolve(fieldKeyTypeValueRaw);
