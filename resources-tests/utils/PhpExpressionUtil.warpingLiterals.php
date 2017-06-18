@@ -12,6 +12,9 @@ $assignedLiteral = $withSubAssignment = $thirdLevel = WARPING_LITERAL;
 
 $ccUnresolvedConstantReference = CC_UNRESOLVED_REFERENCE;
 
+/**
+ * @property mixed $ccInstanceProperty
+ */
 class ResolvingInsideClass
 {
     const DIRECT_LITERAL = 'indirectClassValue';
@@ -31,6 +34,11 @@ class ResolvingInsideClass
 
     public static function shouldNotResolveTotally()
     {
+    }
+
+    public function declaredOnDocComment()
+    {
+        $ccInstancePropertyRef = $this->ccInstanceProperty;
     }
 }
 

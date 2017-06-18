@@ -23,7 +23,7 @@ public class PhpExpressionUtilTest extends FixtureSuite {
         return valueOf((PhpExpression) ((AssignmentExpression) getElementByName(fileSample, variableName).getParent()).getValue());
     }
 
-    public void testFrom() {
+    public void testResolve() {
         final PsiFile fileSample = getResourceFile("utils/PhpExpressionUtil.warpingLiterals.php");
 
         // Default const types.
@@ -91,5 +91,11 @@ public class PhpExpressionUtilTest extends FixtureSuite {
 
         Assert.assertTrue(stopOnFirstConstantReference instanceof ConstantReference);
         Assert.assertEquals("$stopOnFirstConstantReference = SHOULD_STOP_HERE", stopOnFirstConstantReference.getParent().getText());
+
+        // Make sure that resolves to a @property will not broke.
+        final AssignmentExpression ccInstancePropertyRef = (AssignmentExpression) getElementByName(fileSample, "ccInstancePropertyRef").getParent();
+        final PhpExpression        ccInstanceProperty    = PhpExpressionUtil.resolve(valueOf((PhpExpression) ccInstancePropertyRef.getValue()));
+
+        Assert.assertTrue(ccInstanceProperty instanceof MethodReference);
     }
 }

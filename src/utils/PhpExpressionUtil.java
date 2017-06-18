@@ -116,7 +116,9 @@ public enum PhpExpressionUtil {
             referencedValue = ((ParenthesizedExpression) referencedValue).unparenthesize();
         }
 
-        assert referencedValue != null;
+        if (referencedValue == null) {
+            return element;
+        }
 
         if (!(referencedValue instanceof PhpReference) ||
             isPrimaryConstant(referencedValue)) {
