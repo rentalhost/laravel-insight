@@ -187,7 +187,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                     final String elementType;
 
                     if (!isCastProperty && element.isIndexed()) {
-                        final PhpPsiElement elementChildResolved = PhpExpressionUtil.from((PhpExpression) elementIssued);
+                        final PhpPsiElement elementChildResolved = PhpExpressionUtil.resolve((PhpExpression) elementIssued);
 
                         if (!(elementChildResolved instanceof StringLiteralExpression)) {
                             continue;
@@ -198,7 +198,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                     }
                     else if (isCastProperty && !element.isIndexed()) {
                         final PsiElement    elementHashKey      = element.getKey();
-                        final PhpExpression elementHashKeyValue = PhpExpressionUtil.from((PhpExpression) elementHashKey);
+                        final PhpExpression elementHashKeyValue = PhpExpressionUtil.resolve((PhpExpression) elementHashKey);
 
                         if (!(elementHashKeyValue instanceof StringLiteralExpression)) {
                             continue;
@@ -208,7 +208,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                         elementIssued = elementHashKey;
 
                         final PsiElement    fieldHashValue         = element.getValue();
-                        final PhpExpression fieldHashResolvedValue = PhpExpressionUtil.from((PhpExpression) fieldHashValue);
+                        final PhpExpression fieldHashResolvedValue = PhpExpressionUtil.resolve((PhpExpression) fieldHashValue);
 
                         if (!(fieldHashResolvedValue instanceof StringLiteralExpression)) {
                             continue;
@@ -297,7 +297,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                 return;
             }
 
-            final PsiElement fieldTimestampsDefaultValueResolved = PhpExpressionUtil.from((PhpExpression) fieldTimestampsDefaultValue);
+            final PsiElement fieldTimestampsDefaultValueResolved = PhpExpressionUtil.resolve((PhpExpression) fieldTimestampsDefaultValue);
 
             if (!(fieldTimestampsDefaultValueResolved instanceof ConstantReference)) {
                 return;
@@ -391,7 +391,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                     return;
                 }
 
-                final PhpExpression fieldPrimaryKeyResolved = PhpExpressionUtil.from((PhpExpression) fieldPrimaryKeyValue);
+                final PhpExpression fieldPrimaryKeyResolved = PhpExpressionUtil.resolve((PhpExpression) fieldPrimaryKeyValue);
 
                 if (!(fieldPrimaryKeyResolved instanceof StringLiteralExpression)) {
                     return;
@@ -416,7 +416,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                 final PhpExpression fieldKeyTypeValueRaw = (PhpExpression) fieldKeyType.getDefaultValue();
 
                 if (fieldKeyTypeValueRaw != null) {
-                    final PsiElement fieldKeyTypeValue = PhpExpressionUtil.from(fieldKeyTypeValueRaw);
+                    final PsiElement fieldKeyTypeValue = PhpExpressionUtil.resolve(fieldKeyTypeValueRaw);
 
                     if (fieldKeyTypeValue instanceof StringLiteralExpression) {
                         fieldType = ((StringLiteralExpression) fieldKeyTypeValue).getContents();

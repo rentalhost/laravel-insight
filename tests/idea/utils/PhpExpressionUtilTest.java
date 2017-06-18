@@ -26,11 +26,11 @@ public class PhpExpressionUtilTest extends FixtureSuite {
         final PsiFile fileSample = getResourceFile("utils/PhpExpressionUtil.warpingLiterals.php");
 
         // Default const types.
-        final StringLiteralExpression directLiteral     = (StringLiteralExpression) PhpExpressionUtil.from(getStringLiteral(fileSample, "directLiteral"));
-        final StringLiteralExpression indirectLiteral   = (StringLiteralExpression) PhpExpressionUtil.from(getStringLiteral(fileSample, "indirectLiteral"));
-        final StringLiteralExpression warpingLiteral    = (StringLiteralExpression) PhpExpressionUtil.from(getStringLiteral(fileSample, "warpingLiteral"));
-        final StringLiteralExpression assignedLiteral   = (StringLiteralExpression) PhpExpressionUtil.from(getStringLiteral(fileSample, "assignedLiteral"));
-        final StringLiteralExpression withSubAssignment = (StringLiteralExpression) PhpExpressionUtil.from(getStringLiteral(fileSample, "withSubAssignment"));
+        final StringLiteralExpression directLiteral     = (StringLiteralExpression) PhpExpressionUtil.resolve(getStringLiteral(fileSample, "directLiteral"));
+        final StringLiteralExpression indirectLiteral   = (StringLiteralExpression) PhpExpressionUtil.resolve(getStringLiteral(fileSample, "indirectLiteral"));
+        final StringLiteralExpression warpingLiteral    = (StringLiteralExpression) PhpExpressionUtil.resolve(getStringLiteral(fileSample, "warpingLiteral"));
+        final StringLiteralExpression assignedLiteral   = (StringLiteralExpression) PhpExpressionUtil.resolve(getStringLiteral(fileSample, "assignedLiteral"));
+        final StringLiteralExpression withSubAssignment = (StringLiteralExpression) PhpExpressionUtil.resolve(getStringLiteral(fileSample, "withSubAssignment"));
 
         Assert.assertEquals("directValue", valueOf(directLiteral).getContents());
 
@@ -41,22 +41,22 @@ public class PhpExpressionUtilTest extends FixtureSuite {
 
         final PhpExpression ccUnresolvedConstantReference = (PhpExpression) getElementByName(fileSample, "ccUnresolvedConstantReference");
 
-        Assert.assertNull(PhpExpressionUtil.from(ccUnresolvedConstantReference));
+        Assert.assertNull(PhpExpressionUtil.resolve(ccUnresolvedConstantReference));
 
         // Class const types.
-        final StringLiteralExpression classIndirectLiteral = (StringLiteralExpression) PhpExpressionUtil.from(getStringLiteral(fileSample, "classIndirectLiteral"));
-        final StringLiteralExpression classWarpingLiteral  = (StringLiteralExpression) PhpExpressionUtil.from(getStringLiteral(fileSample, "classWarpingLiteral"));
+        final StringLiteralExpression classIndirectLiteral = (StringLiteralExpression) PhpExpressionUtil.resolve(getStringLiteral(fileSample, "classIndirectLiteral"));
+        final StringLiteralExpression classWarpingLiteral  = (StringLiteralExpression) PhpExpressionUtil.resolve(getStringLiteral(fileSample, "classWarpingLiteral"));
 
         Assert.assertEquals("indirectClassValue", valueOf(classIndirectLiteral).getContents());
         Assert.assertEquals("indirectClassValue", valueOf(classWarpingLiteral).getContents());
 
         final ConstantReference classResolvingFromProperty =
-            (ConstantReference) PhpExpressionUtil.from(valueOf((PhpExpression) ((Field) getElementByName(fileSample, "resolvingFromProperty")).getDefaultValue()));
+            (ConstantReference) PhpExpressionUtil.resolve(valueOf((PhpExpression) ((Field) getElementByName(fileSample, "resolvingFromProperty")).getDefaultValue()));
 
         Assert.assertEquals("TRUE", valueOf(classResolvingFromProperty).getText());
 
         final ConstantReference classResolvingDirectlyFromProperty =
-            (ConstantReference) PhpExpressionUtil.from(valueOf((PhpExpression) ((Field) getElementByName(fileSample, "resolvingDirectlyFromProperty")).getDefaultValue()));
+            (ConstantReference) PhpExpressionUtil.resolve(valueOf((PhpExpression) ((Field) getElementByName(fileSample, "resolvingDirectlyFromProperty")).getDefaultValue()));
 
         Assert.assertEquals("null", valueOf(classResolvingDirectlyFromProperty).getText());
 
@@ -64,16 +64,16 @@ public class PhpExpressionUtilTest extends FixtureSuite {
         final PhpExpression shouldAvoidCyclicLoopingsWithConstants  = (PhpExpression) getElementByName(fileSample, "shouldAvoidCyclicLoopingsWithConstants");
         final PhpExpression shouldAvoidCyclicLoopingsWithVariablesA = (PhpExpression) getElementByName(fileSample, "shouldAvoidCyclicLoopingsWithVariablesA");
 
-        Assert.assertNull(PhpExpressionUtil.from(shouldAvoidCyclicLoopingsWithConstants));
-        Assert.assertNull(PhpExpressionUtil.from(shouldAvoidCyclicLoopingsWithVariablesA));
+        Assert.assertNull(PhpExpressionUtil.resolve(shouldAvoidCyclicLoopingsWithConstants));
+        Assert.assertNull(PhpExpressionUtil.resolve(shouldAvoidCyclicLoopingsWithVariablesA));
 
         // Resolving variables.
-        final StringLiteralExpression variableWrapping = (StringLiteralExpression) PhpExpressionUtil.from(getStringLiteral(fileSample, "variableWrapping"));
+        final StringLiteralExpression variableWrapping = (StringLiteralExpression) PhpExpressionUtil.resolve(getStringLiteral(fileSample, "variableWrapping"));
 
         Assert.assertEquals("value", valueOf(variableWrapping).getContents());
 
         // With wrapping parentheses.
-        final StringLiteralExpression withParanteshesWrapping = (StringLiteralExpression) PhpExpressionUtil.from(getStringLiteral(fileSample, "withParanteshesWrapping"));
+        final StringLiteralExpression withParanteshesWrapping = (StringLiteralExpression) PhpExpressionUtil.resolve(getStringLiteral(fileSample, "withParanteshesWrapping"));
 
         Assert.assertEquals("parentheses", valueOf(withParanteshesWrapping).getContents());
     }

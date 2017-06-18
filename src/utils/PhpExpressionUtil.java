@@ -30,7 +30,7 @@ public enum PhpExpressionUtil {
     }
 
     @Nullable
-    public static PhpExpression from(@NotNull final PhpExpression elementInitial) {
+    public static PhpExpression resolve(@NotNull final PhpExpression elementInitial) {
         return RecursionResolver.resolve(elementInitial, resolver -> {
             PhpExpression element = (PhpExpression) resolver.getObject();
 
