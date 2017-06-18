@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public enum PhpExpressionUtil {
     ;
@@ -29,9 +28,9 @@ public enum PhpExpressionUtil {
         primaryConstants.add("false");
     }
 
-    @Nullable
+    @NotNull
     public static PhpExpression resolve(@NotNull final PhpExpression elementInitial) {
-        return RecursionResolver.resolve(elementInitial, resolver -> {
+        final PhpExpression elementResolution = RecursionResolver.resolve(elementInitial, resolver -> {
             PhpExpression element = (PhpExpression) resolver.getObject();
 
             if (element instanceof ParenthesizedExpression) {
@@ -44,7 +43,7 @@ public enum PhpExpressionUtil {
             }
 
             if (element instanceof PhpReference) {
-                return RecursionResolver.resolve(element, PhpExpressionUtil::recursionResolver);
+                return (PhpExpression) RecursionResolver.resolve(element, PhpExpressionUtil::recursionResolver);
             }
 
             if (element instanceof AssignmentExpression) {
@@ -52,7 +51,7 @@ public enum PhpExpressionUtil {
                 assert elementValue != null;
 
                 if (elementValue instanceof PhpReference) {
-                    return RecursionResolver.resolve(elementValue, PhpExpressionUtil::recursionResolver);
+                    return (PhpExpression) RecursionResolver.resolve(elementValue, PhpExpressionUtil::recursionResolver);
                 }
 
                 return (PhpExpression) resolver.resolve(elementValue);
@@ -60,14 +59,18 @@ public enum PhpExpressionUtil {
 
             return element;
         });
+        assert elementResolution != null;
+
+        return elementResolution;
     }
 
-    @Nullable
-    static PhpExpression recursionResolver(@NotNull final net.rentalhost.idea.utils.RecursionResolver.Resolver<PhpReference, PhpExpression> resolver) {
-        final PsiElement elementResolved = resolver.getObject().resolve();
+    @NotNull
+    static PsiElement recursionResolver(@NotNull final RecursionResolver.Resolver<PhpReference, PhpExpression> resolver) {
+        final PhpReference element         = resolver.getObject();
+        final PsiElement   elementResolved = element.resolve();
 
         if (elementResolved == null) {
-            return null;
+            return element;
         }
 
         PsiElement referencedValue = null;
@@ -86,19 +89,26 @@ public enum PhpExpressionUtil {
             }
         }
 
+        if (referencedValue == null) {
+            return element;
+        }
+
         if (referencedValue instanceof ParenthesizedExpression) {
             referencedValue = ((ParenthesizedExpression) referencedValue).unparenthesize();
         }
 
-        if (!(referencedValue instanceof PhpReference)) {
-            return (PhpExpression) referencedValue;
+        if (!(referencedValue instanceof PhpReference) ||
+            isPrimaryConstant(referencedValue)) {
+            return referencedValue;
         }
 
-        if (isPrimaryConstant(referencedValue)) {
-            return (PhpExpression) referencedValue;
+        final PhpExpression elementResolution = resolver.resolve((PhpReference) referencedValue);
+
+        if (elementResolution == null) {
+            return element;
         }
 
-        return resolver.resolve((PhpReference) referencedValue);
+        return elementResolution;
     }
 
     private static boolean isPrimaryConstant(@NotNull final PsiElement element) {

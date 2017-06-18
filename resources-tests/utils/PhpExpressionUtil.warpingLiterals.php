@@ -28,6 +28,10 @@ class ResolvingInsideClass
         $classIndirectLiteral = self::INDIRECT_LITERAL;
         $classWarpingLiteral = self::WARPING_LITERAL;
     }
+
+    public static function shouldNotResolveTotally()
+    {
+    }
 }
 
 const SHOULD_IGNORES_CYCLIC_LOOPINGS_A = SHOULD_IGNORES_CYCLIC_LOOPINGS_B;
@@ -45,3 +49,6 @@ $variableWrapping = $variableIndirect;
 $withParanteshesDirect = (("parentheses"));
 $withParanteshesIndirect = (($withParanteshesDirect));
 $withParanteshesWrapping = (($withParanteshesIndirect));
+
+$shouldNotResolveTotally = Reference::shouldNotResolveTotally();
+$indirectShouldNotResolveTotally = $shouldNotResolveTotally;
