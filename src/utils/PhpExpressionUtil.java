@@ -14,8 +14,10 @@ import com.jetbrains.php.lang.psi.elements.impl.ClassConstImpl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.function.Function;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public enum PhpExpressionUtil {
     ;
@@ -30,8 +32,21 @@ public enum PhpExpressionUtil {
 
     @NotNull
     public static PhpExpression resolve(@NotNull final PhpExpression elementInitial) {
+        return resolve(elementInitial, null);
+    }
+
+    @NotNull
+    public static PhpExpression resolve(
+        @NotNull final PhpExpression elementInitial,
+        @Nullable final Function<PsiElement, Boolean> stopConditional
+    ) {
         final PhpExpression elementResolution = RecursionResolver.resolve(elementInitial, resolver -> {
             PhpExpression element = (PhpExpression) resolver.getObject();
+
+            if ((stopConditional != null) &&
+                stopConditional.apply(element)) {
+                return element;
+            }
 
             if (element instanceof ParenthesizedExpression) {
                 element = (PhpExpression) ((ParenthesizedExpression) element).unparenthesize();
@@ -43,7 +58,7 @@ public enum PhpExpressionUtil {
             }
 
             if (element instanceof PhpReference) {
-                return (PhpExpression) RecursionResolver.resolve(element, PhpExpressionUtil::recursionResolver);
+                return (PhpExpression) RecursionResolver.resolve(element, resolver1 -> recursionResolver(resolver1, stopConditional));
             }
 
             if (element instanceof AssignmentExpression) {
@@ -51,7 +66,7 @@ public enum PhpExpressionUtil {
                 assert elementValue != null;
 
                 if (elementValue instanceof PhpReference) {
-                    return (PhpExpression) RecursionResolver.resolve(elementValue, PhpExpressionUtil::recursionResolver);
+                    return (PhpExpression) RecursionResolver.resolve(elementValue, resolver1 -> recursionResolver(resolver1, stopConditional));
                 }
 
                 return (PhpExpression) resolver.resolve(elementValue);
@@ -65,11 +80,19 @@ public enum PhpExpressionUtil {
     }
 
     @NotNull
-    static PsiElement recursionResolver(@NotNull final RecursionResolver.Resolver<PhpReference, PhpExpression> resolver) {
+    static PsiElement recursionResolver(
+        @NotNull final RecursionResolver.Resolver<PhpReference, PsiElement> resolver,
+        @Nullable final Function<PsiElement, Boolean> stopConditional
+    ) {
         final PhpReference element         = resolver.getObject();
         final PsiElement   elementResolved = element.resolve();
 
         if (elementResolved == null) {
+            return element;
+        }
+
+        if ((stopConditional != null) &&
+            stopConditional.apply(element)) {
             return element;
         }
 
@@ -89,20 +112,18 @@ public enum PhpExpressionUtil {
             }
         }
 
-        if (referencedValue == null) {
-            return element;
-        }
-
         if (referencedValue instanceof ParenthesizedExpression) {
             referencedValue = ((ParenthesizedExpression) referencedValue).unparenthesize();
         }
+
+        assert referencedValue != null;
 
         if (!(referencedValue instanceof PhpReference) ||
             isPrimaryConstant(referencedValue)) {
             return referencedValue;
         }
 
-        final PhpExpression elementResolution = resolver.resolve((PhpReference) referencedValue);
+        final PsiElement elementResolution = resolver.resolve((PhpReference) referencedValue);
 
         if (elementResolution == null) {
             return element;

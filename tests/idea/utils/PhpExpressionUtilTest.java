@@ -84,5 +84,12 @@ public class PhpExpressionUtilTest extends FixtureSuite {
         final PhpExpression indirectShouldNotResolveTotally = PhpExpressionUtil.resolve(getStringLiteral(fileSample, "indirectShouldNotResolveTotally"));
 
         Assert.assertTrue(indirectShouldNotResolveTotally instanceof MethodReference);
+
+        // Stop on first ConstantReference.
+        final PhpExpression stopOnFirstConstantReference =
+            PhpExpressionUtil.resolve(getStringLiteral(fileSample, "stopOnFirstConstantReference"), ConstantReference.class::isInstance);
+
+        Assert.assertTrue(stopOnFirstConstantReference instanceof ConstantReference);
+        Assert.assertEquals("$stopOnFirstConstantReference = SHOULD_STOP_HERE", stopOnFirstConstantReference.getParent().getText());
     }
 }
