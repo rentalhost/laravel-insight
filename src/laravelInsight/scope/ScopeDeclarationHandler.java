@@ -3,24 +3,17 @@ package net.rentalhost.idea.laravelInsight.scope;
 import com.intellij.codeInsight.navigation.actions.GotoDeclarationHandler;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.jetbrains.php.PhpIndex;
-import com.jetbrains.php.lang.psi.elements.MemberReference;
 import com.jetbrains.php.lang.psi.elements.Method;
 import com.jetbrains.php.lang.psi.elements.MethodReference;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
-import com.jetbrains.php.lang.psi.elements.PhpExpression;
-import com.jetbrains.php.lang.psi.elements.PhpTypedElement;
 
-import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.rentalhost.idea.laravelInsight.resources.LaravelClasses;
 import net.rentalhost.idea.utils.PhpClassUtil;
-import net.rentalhost.idea.utils.PsiElementUtil;
 
 public class ScopeDeclarationHandler implements GotoDeclarationHandler {
     @Nullable
@@ -40,30 +33,20 @@ public class ScopeDeclarationHandler implements GotoDeclarationHandler {
             return null;
         }
 
-        final PhpExpression sourceReference = ((MemberReference) sourceParent).getClassReference();
-        assert sourceReference != null;
+        final List<PhpClass> sourceClasses = PhpClassUtil.resolve(sourceParent);
 
-        final PsiElement sourceReferenceDirect = PsiElementUtil.skipParentheses(sourceReference);
-        assert sourceReferenceDirect != null;
+        if (sourceClasses.isEmpty()) {
+            return null;
+        }
 
-        final Project     sourceProject        = sourceElement.getProject();
-        final String      sourceResolution     = "scope" + sourceElement.getText();
-        final Set<String> sourceReferenceTypes = ((PhpTypedElement) sourceReferenceDirect).getType().global(sourceProject).getTypes();
+        final String sourceResolution = "scope" + sourceElement.getText();
 
-        for (final String sourceReferenceType : sourceReferenceTypes) {
-            final Collection<PhpClass> referenceClasses = PhpIndex.getInstance(sourceProject).getAnyByFQN(sourceReferenceType);
-
-            if (referenceClasses.isEmpty()) {
+        for (final PhpClass sourceClass : sourceClasses) {
+            if (PhpClassUtil.findSuperOfType(sourceClass, LaravelClasses.ELOQUENT_MODEL.toString()) == null) {
                 continue;
             }
 
-            final PhpClass referenceClass = referenceClasses.iterator().next();
-
-            if (PhpClassUtil.findSuperOfType(referenceClass, LaravelClasses.ELOQUENT_MODEL.toString()) == null) {
-                continue;
-            }
-
-            final Method methodDeclaration = PhpClassUtil.findMethodDeclaration(referenceClass, sourceResolution);
+            final Method methodDeclaration = PhpClassUtil.findMethodDeclaration(sourceClass, sourceResolution);
 
             if (methodDeclaration == null) {
                 continue;

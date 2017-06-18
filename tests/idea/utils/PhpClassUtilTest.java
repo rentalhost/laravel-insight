@@ -243,4 +243,21 @@ public class PhpClassUtilTest extends FixtureSuite {
 
         Assert.assertNull(PhpClassUtil.getTraitContainingClass(useImport));
     }
+
+    public void testResolve() {
+        final PsiFile    fileSample     = getResourceFile("utils/PhpClassUtil.resolve.php");
+        final PsiElement classReference = getElementByName(fileSample, "Reference");
+
+        final PsiElement newReference = getElementByName(fileSample, "newReference").getParent();
+
+        Assert.assertEquals(classReference, PhpClassUtil.resolve(newReference).get(0));
+
+        final PsiElement farReference = getElementByName(fileSample, "farReference").getParent();
+
+        Assert.assertEquals(classReference, PhpClassUtil.resolve(farReference).get(0));
+
+        final PsiElement unresolvedReference = getElementByName(fileSample, "unresolvedReference").getParent();
+
+        Assert.assertEquals(0, PhpClassUtil.resolve(unresolvedReference).size());
+    }
 }

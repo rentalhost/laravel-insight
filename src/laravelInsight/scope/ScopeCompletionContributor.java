@@ -19,20 +19,16 @@ import com.intellij.patterns.StandardPatterns;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ProcessingContext;
 import com.jetbrains.php.PhpIcons;
-import com.jetbrains.php.PhpIndex;
 import com.jetbrains.php.PhpPresentationUtil;
 import com.jetbrains.php.lang.lexer.PhpTokenTypes;
 import com.jetbrains.php.lang.psi.elements.FieldReference;
-import com.jetbrains.php.lang.psi.elements.MemberReference;
 import com.jetbrains.php.lang.psi.elements.Method;
 import com.jetbrains.php.lang.psi.elements.MethodReference;
 import com.jetbrains.php.lang.psi.elements.Parameter;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
-import com.jetbrains.php.lang.psi.elements.PhpExpression;
 
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -64,29 +60,24 @@ public class ScopeCompletionContributor extends CompletionContributor {
             final ProcessingContext context,
             @NotNull final CompletionResultSet result
         ) {
-            final PsiElement      element                       = parameters.getPosition();
-            final MemberReference elementReference              = (MemberReference) element.getParent();
-            final PhpExpression   elementClassReferenceRelative = elementReference.getClassReference();
-            assert elementClassReferenceRelative != null;
-
-            final Set<String>          elementClassReferenceAbsolute = elementClassReferenceRelative.getType().globalLocationAware(elementClassReferenceRelative).getTypes();
-            final Collection<PhpClass> elementClasses                = PhpIndex.getInstance(element.getProject()).getAnyByFQN(elementClassReferenceAbsolute.iterator().next());
+            final PsiElement     element        = parameters.getPosition();
+            final List<PhpClass> elementClasses = PhpClassUtil.resolve(element.getParent());
 
             if (elementClasses.isEmpty()) {
                 return;
             }
 
-            final PhpClass elementClass = elementClasses.iterator().next();
+            for (final PhpClass elementClass : elementClasses) {
+                if (PhpClassUtil.findSuperOfType(elementClass, LaravelClasses.ELOQUENT_MODEL.toString()) == null) {
+                    return;
+                }
 
-            if (PhpClassUtil.findSuperOfType(elementClass, LaravelClasses.ELOQUENT_MODEL.toString()) == null) {
-                return;
-            }
+                for (final Method method : elementClass.getMethods()) {
+                    if (method.getName().startsWith("scope")) {
+                        final String methodSliced = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, method.getName().substring(5));
 
-            for (final Method method : elementClass.getMethods()) {
-                if (method.getName().startsWith("scope")) {
-                    final String methodSliced = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, method.getName().substring(5));
-
-                    result.addElement(new CompletionContributorLookupElement(element, method, methodSliced));
+                        result.addElement(new CompletionContributorLookupElement(element, method, methodSliced));
+                    }
                 }
             }
         }

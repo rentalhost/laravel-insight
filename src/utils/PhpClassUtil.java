@@ -2,17 +2,22 @@ package net.rentalhost.idea.utils;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.jetbrains.php.PhpIndex;
 import com.jetbrains.php.lang.psi.elements.ClassReference;
 import com.jetbrains.php.lang.psi.elements.Field;
+import com.jetbrains.php.lang.psi.elements.MemberReference;
 import com.jetbrains.php.lang.psi.elements.Method;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
 import com.jetbrains.php.lang.psi.elements.PhpReference;
+import com.jetbrains.php.lang.psi.elements.PhpTypedElement;
 import com.jetbrains.php.lang.psi.elements.PhpUse;
 import com.jetbrains.php.lang.psi.elements.PhpUseList;
 import com.jetbrains.php.lang.psi.elements.impl.PhpUseImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.Stack;
 
 import org.jetbrains.annotations.NotNull;
@@ -200,5 +205,41 @@ public enum PhpClassUtil {
 
             return (Method) resolver.resolve(classSuperResolved);
         });
+    }
+
+    @NotNull
+    public static List<PhpClass> resolve(@NotNull final PsiElement element) {
+        final List<PhpClass> classes          = new ArrayList<>();
+        PsiElement           elementProcessed = PsiElementUtil.resolve(element);
+
+        if (elementProcessed instanceof MemberReference) {
+            elementProcessed = ((MemberReference) elementProcessed).getClassReference();
+
+            if (elementProcessed == null) {
+                return classes;
+            }
+
+            elementProcessed = PsiElementUtil.resolve(elementProcessed, MemberReference.class::isInstance);
+        }
+
+        if (!(elementProcessed instanceof PhpTypedElement)) {
+            return classes;
+        }
+
+        final PsiElement context = element.getContext();
+        assert context != null;
+
+        final Set<String> classReferenceTypes = ((PhpTypedElement) elementProcessed).getType().globalLocationAware(context).getTypes();
+        final PhpIndex    phpIndexInstance    = PhpIndex.getInstance(element.getProject());
+
+        for (final String classReferenceType : classReferenceTypes) {
+            for (final PhpClass classInstance : phpIndexInstance.getAnyByFQN(classReferenceType)) {
+                if (!classes.contains(classInstance)) {
+                    classes.add(classInstance);
+                }
+            }
+        }
+
+        return classes;
     }
 }
