@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.3.0 [Unreleased]
+
+### Added
+
+* **Resolution**: improvement to variable types resolution (eg. when inside of parentheses);
+
 ## 0.2.0 [[Digon Release](https://github.com/rentalhost/laravel-insight/releases/tag/0.2.0)] - 2017-06-09
 
 ### Added

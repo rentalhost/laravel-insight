@@ -52,7 +52,6 @@ import net.rentalhost.idea.laravelInsight.resources.CarbonClasses;
 import net.rentalhost.idea.laravelInsight.resources.LaravelClasses;
 import net.rentalhost.idea.utils.PhpClassUtil;
 import net.rentalhost.idea.utils.PhpDocCommentUtil;
-import net.rentalhost.idea.utils.PhpExpressionUtil;
 import net.rentalhost.idea.utils.PhpFunctionUtil;
 import net.rentalhost.idea.utils.PsiElementUtil;
 
@@ -186,7 +185,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                     final String elementType;
 
                     if (!isCastProperty && element.isIndexed()) {
-                        final PsiElement elementChildResolved = PhpExpressionUtil.resolve(elementIssued);
+                        final PsiElement elementChildResolved = PsiElementUtil.resolve(elementIssued);
 
                         if (!(elementChildResolved instanceof StringLiteralExpression)) {
                             continue;
@@ -197,7 +196,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                     }
                     else if (isCastProperty && !element.isIndexed()) {
                         final PsiElement elementHashKey      = element.getKey();
-                        final PsiElement elementHashKeyValue = PhpExpressionUtil.resolve(elementHashKey);
+                        final PsiElement elementHashKeyValue = PsiElementUtil.resolve(elementHashKey);
 
                         if (!(elementHashKeyValue instanceof StringLiteralExpression)) {
                             continue;
@@ -207,7 +206,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                         elementIssued = elementHashKey;
 
                         final PsiElement fieldHashValue         = element.getValue();
-                        final PsiElement fieldHashResolvedValue = PhpExpressionUtil.resolve(fieldHashValue);
+                        final PsiElement fieldHashResolvedValue = PsiElementUtil.resolve(fieldHashValue);
 
                         if (!(fieldHashResolvedValue instanceof StringLiteralExpression)) {
                             continue;
@@ -296,7 +295,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                 return;
             }
 
-            final PsiElement fieldTimestampsDefaultValueResolved = PhpExpressionUtil.resolve(fieldTimestampsDefaultValue);
+            final PsiElement fieldTimestampsDefaultValueResolved = PsiElementUtil.resolve(fieldTimestampsDefaultValue);
 
             if (!(fieldTimestampsDefaultValueResolved instanceof ConstantReference)) {
                 return;
@@ -390,7 +389,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                     return;
                 }
 
-                final PsiElement fieldPrimaryKeyResolved = PhpExpressionUtil.resolve(fieldPrimaryKeyValue);
+                final PsiElement fieldPrimaryKeyResolved = PsiElementUtil.resolve(fieldPrimaryKeyValue);
 
                 if (!(fieldPrimaryKeyResolved instanceof StringLiteralExpression)) {
                     return;
@@ -415,7 +414,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                 final PsiElement fieldKeyTypeValueRaw = fieldKeyType.getDefaultValue();
 
                 if (fieldKeyTypeValueRaw != null) {
-                    final PsiElement fieldKeyTypeValue = PhpExpressionUtil.resolve(fieldKeyTypeValueRaw);
+                    final PsiElement fieldKeyTypeValue = PsiElementUtil.resolve(fieldKeyTypeValueRaw);
 
                     if (fieldKeyTypeValue instanceof StringLiteralExpression) {
                         fieldType = ((StringLiteralExpression) fieldKeyTypeValue).getContents();
