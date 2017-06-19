@@ -1,4 +1,4 @@
-package net.rentalhost.idea.laravelInsight.annotation;
+package net.rentalhost.idea.laravelInsight.eloquent;
 
 import com.google.common.base.CaseFormat;
 import com.intellij.codeInspection.LocalQuickFix;
@@ -56,7 +56,7 @@ import net.rentalhost.idea.utils.PhpFunctionUtil;
 import net.rentalhost.idea.utils.PsiElementUtil;
 
 public class ColumnWithoutAnnotationInspection extends PhpInspection {
-    @NotNull private static final String messagePropertyUndefined = "@property $%s was not annotated";
+    @NotNull private static final String messagePropertyUndefined = "Column was not annotated as @property $%s";
 
     @NotNull
     @Override

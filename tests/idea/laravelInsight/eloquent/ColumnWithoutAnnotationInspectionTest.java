@@ -1,4 +1,4 @@
-package net.rentalhost.idea.laravelInsight.annotation;
+package net.rentalhost.idea.laravelInsight.eloquent;
 
 import com.intellij.psi.PsiFile;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
@@ -9,23 +9,23 @@ import net.rentalhost.suite.FixtureSuite;
 public class ColumnWithoutAnnotationInspectionTest extends FixtureSuite {
     public void testAll() {
         inspectTool(ColumnWithoutAnnotationInspection.class)
-            .addTestFile("laravelInsight/annotation/ColumnWithoutAnnotationInspection.externalReference.php")
-            .addTestFile("laravelInsight/annotation/ColumnWithoutAnnotationInspection.php")
+            .addTestFile("laravelInsight/eloquent/ColumnWithoutAnnotationInspection.externalReference.php")
+            .addTestFile("laravelInsight/eloquent/ColumnWithoutAnnotationInspection.php")
             .highlightTest()
-            .quickFixesTest("laravelInsight/annotation/ColumnWithoutAnnotationInspection.php");
+            .quickFixesTest("laravelInsight/eloquent/ColumnWithoutAnnotationInspection.php");
 
         inspectTool(ColumnWithoutAnnotationInspection.class)
-            .addTestFile("laravelInsight/annotation/ColumnWithoutAnnotationInspection.coverage.php")
+            .addTestFile("laravelInsight/eloquent/ColumnWithoutAnnotationInspection.coverage.php")
             .highlightTest();
 
         inspectTool(ColumnWithoutAnnotationInspection.class)
-            .addTestFile("laravelInsight/annotation/ColumnWithoutAnnotationInspection.matchTypes.php")
+            .addTestFile("laravelInsight/eloquent/ColumnWithoutAnnotationInspection.matchTypes.php")
             .highlightTest()
-            .quickFixesTest("laravelInsight/annotation/ColumnWithoutAnnotationInspection.matchTypes.php");
+            .quickFixesTest("laravelInsight/eloquent/ColumnWithoutAnnotationInspection.matchTypes.php");
     }
 
     public void testNPEs() {
-        final PsiFile fileSample = getResourceFile("laravelInsight/annotation/ColumnWithoutAnnotationInspection.npe.php");
+        final PsiFile fileSample = getResourceFile("laravelInsight/eloquent/ColumnWithoutAnnotationInspection.npe.php");
 
         final PhpClass classShouldBeRemovedProgramatically = (PhpClass) getElementByName(fileSample, "ShouldBeRemovedProgramatically");
         runWriteAction(() -> valueOf(classShouldBeRemovedProgramatically.getNameIdentifier()).delete());

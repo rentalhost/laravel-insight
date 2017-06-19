@@ -28,11 +28,11 @@
 
         <localInspection language="PHP"
                          groupPath="PHP,Laravel Insight"
-                         groupName="Annotation"
-                         displayName="Columns need to be annotated"
+                         groupName="Eloquent"
+                         displayName="Model: columns should be annotated"
                          enabledByDefault="true"
                          level="WEAK WARNING"
                          shortName="ColumnWithoutAnnotationInspection"
-                         implementationClass="net.rentalhost.idea.laravelInsight.annotation.ColumnWithoutAnnotationInspection" />
+                         implementationClass="net.rentalhost.idea.laravelInsight.eloquent.ColumnWithoutAnnotationInspection" />
     </extensions>
 </idea-plugin>
