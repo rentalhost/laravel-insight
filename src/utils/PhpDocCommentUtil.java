@@ -8,6 +8,7 @@ import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocProperty;
 import com.jetbrains.php.lang.documentation.phpdoc.psi.tags.PhpDocPropertyTag;
 import com.jetbrains.php.lang.documentation.phpdoc.psi.tags.PhpDocTag;
 import com.jetbrains.php.lang.psi.PhpPsiElementFactory;
+import com.jetbrains.php.lang.psi.elements.PhpClass;
 import com.jetbrains.php.lang.psi.elements.PhpNamedElement;
 
 import java.util.Arrays;
@@ -34,6 +35,30 @@ public enum PhpDocCommentUtil {
             if ((property != null) && Objects.equals(property.getName(), propertyName)) {
                 return property;
             }
+        }
+
+        return null;
+    }
+
+    @Nullable
+    public static PhpDocProperty findPropertyRecursively(
+        @NotNull final PhpClass phpClass,
+        @NotNull final String propertyName
+    ) {
+        PhpClass phpClassCurrent = phpClass;
+
+        while (phpClassCurrent != null) {
+            final PhpDocComment classDocComment = phpClassCurrent.getDocComment();
+
+            if (classDocComment != null) {
+                final PhpDocProperty propertyFound = findProperty(classDocComment, propertyName);
+
+                if (propertyFound != null) {
+                    return propertyFound;
+                }
+            }
+
+            phpClassCurrent = PhpClassUtil.getSuper(phpClassCurrent);
         }
 
         return null;

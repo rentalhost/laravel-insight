@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
+* **Fluent:** property without annotation inspection;
 * **Fluent**: should not be instantiated directly;
 * **Fluent**: should not be used as type directly;
 * **Blade**: support to folding Blade statements and comments;

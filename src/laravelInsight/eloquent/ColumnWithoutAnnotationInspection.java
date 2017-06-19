@@ -326,23 +326,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                 return;
             }
 
-            PhpClass fieldClassCurrent = phpClass;
-            boolean  isNotAnnotated    = true;
-
-            while (fieldClassCurrent != null) {
-                final PhpDocComment classDocComment = fieldClassCurrent.getDocComment();
-
-                if (classDocComment != null) {
-                    if (PhpDocCommentUtil.findProperty(classDocComment, propertyName) != null) {
-                        isNotAnnotated = false;
-                        break;
-                    }
-                }
-
-                fieldClassCurrent = PhpClassUtil.getSuper(fieldClassCurrent);
-            }
-
-            if (isNotAnnotated) {
+            if (PhpDocCommentUtil.findPropertyRecursively(phpClass, propertyName) == null) {
                 String propertyTypeIdentified = propertyType;
 
                 if (propertyTypeIdentified == null) {

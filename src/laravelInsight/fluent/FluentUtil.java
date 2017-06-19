@@ -41,4 +41,23 @@ enum FluentUtil {
         return isDirectInstance ||
                (StringUtils.countMatches(expressionClassFQN, "\\") == 1);
     }
+
+    static boolean isUsingIndirectly(@Nullable final PsiElement parameter) {
+        if (parameter == null) {
+            return false;
+        }
+
+        final List<PhpClass> expressionClasses = PhpClassUtil.resolve(parameter);
+
+        if (expressionClasses.isEmpty()) {
+            return false;
+        }
+
+        final PhpClass expressionClass    = expressionClasses.get(0);
+        final String   expressionClassFQN = expressionClass.getFQN();
+
+        return !expressionClassFQN.equals(LaravelClasses.SUPPORT_FLUENT.toString()) &&
+               !expressionClassFQN.equals(LaravelClasses.SUPPORT_FLUENT_L54.toString()) &&
+               (PhpClassUtil.findSuperOfType(expressionClass, LaravelClasses.SUPPORT_FLUENT.toString()) == null);
+    }
 }
