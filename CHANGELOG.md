@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 * **Fluent**: should not be instantiated directly;
+* **Fluent**: should not be used as type directly;
 * **Blade**: support to folding Blade statements and comments;
 * **Resolution**: improvement to variable types resolution (eg. when inside of parentheses);
 
@@ -30,7 +31,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
-* **Inspection**: *property without annotation* renamed to *column without annotation*;
+* **Eloquent**: *property without annotation* renamed to *column without annotation*;
 
 ### Fixed
 
@@ -41,5 +42,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 * Initial development release;
-* **Inspection:** column without annotation ([more info](https://github.com/rentalhost/laravel-insight/wiki/Inspections#column-without-annotation));
+* **Eloquent:** column without annotation inspection ([more info](https://github.com/rentalhost/laravel-insight/wiki/Inspections#column-without-annotation));
 

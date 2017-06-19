@@ -32,7 +32,7 @@
         <localInspection language="PHP"
                          groupPath="PHP,Laravel Insight"
                          groupName="Eloquent"
-                         displayName="Model: columns should be annotated"
+                         displayName="Columns should be annotated"
                          enabledByDefault="true"
                          level="WEAK WARNING"
                          shortName="ColumnWithoutAnnotationInspection"
@@ -47,5 +47,13 @@
                          level="WEAK WARNING"
                          shortName="DirectInstantiationInspection"
                          implementationClass="net.rentalhost.idea.laravelInsight.fluent.DirectInstantiationInspection" />
+        <localInspection language="PHP"
+                         groupPath="PHP,Laravel Insight"
+                         groupName="Fluent"
+                         displayName="Should not uses as type"
+                         enabledByDefault="true"
+                         level="WEAK WARNING"
+                         shortName="UsingAsTypeInspection"
+                         implementationClass="net.rentalhost.idea.laravelInsight.fluent.UsingAsTypeInspection" />
     </extensions>
 </idea-plugin>
