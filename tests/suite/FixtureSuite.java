@@ -131,6 +131,14 @@ public class FixtureSuite extends CodeInsightFixtureTestCase {
         lookup.finishLookup('\n');
     }
 
+    @SuppressWarnings ("TestMethodWithIncorrectSignature")
+    protected void testFolding(final String foldingFile) {
+        final String filePath = "resources-tests/" + foldingFile;
+
+        myFixture.configureByFile(filePath);
+        myFixture.testFolding(filePath);
+    }
+
     @NotNull
     private InsertionContext getInsertionContext(
         final PsiFile fileSample,

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
+* **Blade**: support to folding Blade statements;
 * **Resolution**: improvement to variable types resolution (eg. when inside of parentheses);
 
 ## 0.2.0 [[Digon Release](https://github.com/rentalhost/laravel-insight/releases/tag/0.2.0)] - 2017-06-09
