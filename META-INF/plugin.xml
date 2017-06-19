@@ -21,11 +21,14 @@
     ]]></change-notes>
 
     <extensions defaultExtensionNs="com.intellij">
+        <!-- Query Scopes -->
         <completion.contributor implementationClass="net.rentalhost.idea.laravelInsight.scope.ScopeCompletionContributor" language="PHP" />
         <gotoDeclarationHandler implementation="net.rentalhost.idea.laravelInsight.scope.ScopeDeclarationHandler" />
 
+        <!-- Blade -->
         <lang.foldingBuilder implementationClass="net.rentalhost.idea.laravelInsight.blade.BladeFoldingBuilder" language="Blade" order="first" />
 
+        <!-- Eloquent -->
         <localInspection language="PHP"
                          groupPath="PHP,Laravel Insight"
                          groupName="Eloquent"

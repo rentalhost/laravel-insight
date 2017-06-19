@@ -273,7 +273,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
             CAST_TYPES.put("object", "object");
             CAST_TYPES.put("array", "array");
             CAST_TYPES.put("json", "array");
-            CAST_TYPES.put("collection", LaravelClasses.ELOQUENT_COLLECTION.toString());
+            CAST_TYPES.put("collection", LaravelClasses.SUPPORT_COLLECTION.toString());
             CAST_TYPES.put("date", CarbonClasses.CARBON.toString());
             CAST_TYPES.put("datetime", CarbonClasses.CARBON.toString());
             CAST_TYPES.put("timestamp", CarbonClasses.CARBON.toString());
