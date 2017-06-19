@@ -135,3 +135,11 @@ Check if unfinished @if is treated correctly
     @if ($itWasFinished)<fold text=' {...} '>
         It was finished.
 </fold>@endif
+
+{{-- Inline comments should not be folded. --}}
+<fold text='{{-- Small comment. --}}'>{{--
+    Small comment.
+--}}</fold>
+<fold text='{{-- Multiline comments could be f... --}}'>{{--
+    Multiline comments could be folded.
+--}}</fold>
