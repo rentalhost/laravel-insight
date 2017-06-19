@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 
+import net.rentalhost.idea.laravelInsight.utils.PropertyQuickFix;
 import net.rentalhost.idea.utils.PhpClassUtil;
 import net.rentalhost.idea.utils.PhpDocCommentUtil;
 
@@ -61,7 +62,8 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
                     if (PhpDocCommentUtil.findPropertyRecursively(fieldClass, fieldName) == null) {
                         problemsHolder.registerProblem((PsiElement) fieldNameNode,
                                                        String.format(messagePropertyUndefined, fieldName),
-                                                       ProblemHighlightType.WEAK_WARNING);
+                                                       ProblemHighlightType.WEAK_WARNING,
+                                                       new PropertyQuickFix(fieldClass, fieldName, "mixed"));
                     }
                 }
             }

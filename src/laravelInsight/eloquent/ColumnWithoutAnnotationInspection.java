@@ -1,25 +1,13 @@
 package net.rentalhost.idea.laravelInsight.eloquent;
 
 import com.google.common.base.CaseFormat;
-import com.intellij.codeInspection.LocalQuickFix;
-import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.ide.util.PsiNavigationSupport;
 import com.intellij.lang.ASTNode;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.fileEditor.FileEditorManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.psi.SmartPointerManager;
-import com.intellij.psi.SmartPsiElementPointer;
 import com.jetbrains.php.PhpIndex;
-import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocComment;
-import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocProperty;
-import com.jetbrains.php.lang.documentation.phpdoc.psi.tags.PhpDocTag;
 import com.jetbrains.php.lang.inspections.PhpInspection;
 import com.jetbrains.php.lang.psi.elements.ConstantReference;
 import com.jetbrains.php.lang.psi.elements.Field;
@@ -43,13 +31,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.rentalhost.idea.adapters.ArrayAdapter;
 import net.rentalhost.idea.laravelInsight.resources.CarbonClasses;
 import net.rentalhost.idea.laravelInsight.resources.LaravelClasses;
+import net.rentalhost.idea.laravelInsight.utils.PropertyQuickFix;
 import net.rentalhost.idea.utils.PhpClassUtil;
 import net.rentalhost.idea.utils.PhpDocCommentUtil;
 import net.rentalhost.idea.utils.PhpFunctionUtil;
@@ -355,7 +343,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
             problemsHolder.registerProblem(issuedElement,
                                            String.format(messagePropertyUndefined, propertyName),
                                            ProblemHighlightType.WEAK_WARNING,
-                                           new InspectionQuickFix(primaryClass, propertyName, propertyType));
+                                           new PropertyQuickFix(primaryClass, propertyName, propertyType));
         }
 
         static void reportPrimaryKey(
@@ -495,69 +483,6 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                    functionTypes.contains(LaravelClasses.ELOQUENT_RELATIONSHIP_MORPHTOMANY.toString()) ||
                    functionTypes.contains(LaravelClasses.ELOQUENT_RELATIONSHIP_BELONGSTO.toString()) ||
                    functionTypes.contains(LaravelClasses.ELOQUENT_RELATIONSHIP_BELONGSTOMANY.toString());
-        }
-    }
-
-    static class InspectionQuickFix implements LocalQuickFix {
-        @NotNull private final SmartPsiElementPointer<PhpClass> primaryClassPointer;
-        @NotNull private final String                           propertyName;
-        @NotNull private final String                           propertyType;
-        @NotNull private final String                           familyName;
-
-        InspectionQuickFix(
-            @NotNull final PhpClass primaryClass,
-            @NotNull final String propertyName,
-            @NotNull final String propertyType
-        ) {
-            final SmartPointerManager pointerManager = SmartPointerManager.getInstance(primaryClass.getProject());
-
-            primaryClassPointer = pointerManager.createSmartPsiElementPointer(primaryClass);
-            this.propertyName = propertyName;
-            this.propertyType = propertyType;
-            familyName = String.format("Declare @property $%s on %s class", propertyName, primaryClass.getName());
-        }
-
-        @Nls
-        @NotNull
-        @Override
-        public String getFamilyName() {
-            return familyName;
-        }
-
-        @Override
-        public void applyFix(
-            @NotNull final Project project,
-            @NotNull final ProblemDescriptor descriptor
-        ) {
-            final PhpClass primaryClass = primaryClassPointer.getElement();
-            assert primaryClass != null;
-
-            final PhpDocComment primaryClassDocComment = primaryClass.getDocComment();
-
-            if (primaryClassDocComment != null) {
-                final PhpDocProperty primaryClassProperty = PhpDocCommentUtil.findProperty(primaryClassDocComment, propertyName);
-
-                if (!Objects.equals(primaryClassProperty, null)) {
-                    return;
-                }
-            }
-
-            final PhpDocTag  docCommentNewTag    = PhpDocCommentUtil.createTag(primaryClass, "@property", propertyType + " $" + propertyName);
-            final PsiElement docCommentReference = docCommentNewTag.getParent();
-
-            final Navigatable navigator = PsiNavigationSupport.getInstance().getDescriptor(docCommentReference.getNavigationElement());
-            if (navigator != null) {
-                navigator.navigate(true);
-
-                final Editor selectedTextEditor = FileEditorManager.getInstance(project).getSelectedTextEditor();
-                if (selectedTextEditor != null) {
-                    final int startOffset = docCommentNewTag.getTextOffset() + 10;
-                    final int endOffset   = startOffset + propertyType.length();
-
-                    selectedTextEditor.getSelectionModel().setSelection(startOffset, endOffset);
-                    selectedTextEditor.getCaretModel().moveToOffset(endOffset);
-                }
-            }
         }
     }
 }
