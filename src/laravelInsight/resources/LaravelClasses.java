@@ -13,7 +13,8 @@ public enum LaravelClasses {
     ELOQUENT_RELATIONSHIP_BELONGSTO("\\Illuminate\\Database\\Eloquent\\Relations\\BelongsTo"),
     ELOQUENT_RELATIONSHIP_BELONGSTOMANY("\\Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany"),
     ELOQUENT_BUILDER("\\Illuminate\\Database\\Eloquent\\Builder"),
-    SUPPORT_COLLECTION("\\Illuminate\\Support\\Collection");
+    SUPPORT_COLLECTION("\\Illuminate\\Support\\Collection"),
+    SUPPORT_FLUENT("\\Illuminate\\Support\\Fluent");
 
     private final String classname;
 

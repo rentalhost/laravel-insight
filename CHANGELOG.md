@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
+* **Fluent**: should not be instantiated directly;
 * **Blade**: support to folding Blade statements and comments;
 * **Resolution**: improvement to variable types resolution (eg. when inside of parentheses);
 

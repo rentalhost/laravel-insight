@@ -37,5 +37,15 @@
                          level="WEAK WARNING"
                          shortName="ColumnWithoutAnnotationInspection"
                          implementationClass="net.rentalhost.idea.laravelInsight.eloquent.ColumnWithoutAnnotationInspection" />
+
+        <!-- Fluent -->
+        <localInspection language="PHP"
+                         groupPath="PHP,Laravel Insight"
+                         groupName="Fluent"
+                         displayName="Should not be instantiated directly"
+                         enabledByDefault="true"
+                         level="WEAK WARNING"
+                         shortName="DirectInstantiationInspection"
+                         implementationClass="net.rentalhost.idea.laravelInsight.fluent.DirectInstantiationInspection" />
     </extensions>
 </idea-plugin>
