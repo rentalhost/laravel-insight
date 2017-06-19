@@ -12,6 +12,11 @@ namespace Illuminate\Support {
     }
 }
 
+namespace Facades\Illuminate\Support {
+    class Fluent {
+    }
+}
+
 namespace MyNamespace {
     use Illuminate\Support\Fluent as FluentDirect;
 
@@ -27,4 +32,7 @@ namespace MyNamespace {
 
     // Not acceptable: Fluent should not be instantiated, even from Facade.
     $fluentInstantiatedViaFacade = new <weak_warning descr="Fluent should not be instantiated directly.">\FacadeFluent</weak_warning>();
+
+    // Not acceptable: Fluent should not be instantiated, even from Facade (as from Laravel 5.4+).
+    $fluentInstantiatedViaFacadeL54 = new <weak_warning descr="Fluent should not be instantiated directly.">\Facades\Illuminate\Support\Fluent</weak_warning>();
 }

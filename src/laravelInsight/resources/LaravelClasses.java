@@ -14,7 +14,8 @@ public enum LaravelClasses {
     ELOQUENT_RELATIONSHIP_BELONGSTOMANY("\\Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany"),
     ELOQUENT_BUILDER("\\Illuminate\\Database\\Eloquent\\Builder"),
     SUPPORT_COLLECTION("\\Illuminate\\Support\\Collection"),
-    SUPPORT_FLUENT("\\Illuminate\\Support\\Fluent");
+    SUPPORT_FLUENT("\\Illuminate\\Support\\Fluent"),
+    SUPPORT_FLUENT_L54("\\Facades\\Illuminate\\Support\\Fluent");
 
     private final String classname;
 

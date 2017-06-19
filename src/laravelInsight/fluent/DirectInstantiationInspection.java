@@ -44,15 +44,18 @@ public class DirectInstantiationInspection extends PhpInspection {
 
                 final PhpClass expressionClass    = expressionClasses.get(0);
                 final String   expressionClassFQN = expressionClass.getFQN();
+                final boolean isDirectInstance = expressionClassFQN.equals(LaravelClasses.SUPPORT_FLUENT.toString()) ||
+                                                 expressionClassFQN.equals(LaravelClasses.SUPPORT_FLUENT_L54.toString());
 
-                if (!expressionClassFQN.equals(LaravelClasses.SUPPORT_FLUENT.toString()) &&
+                if (!isDirectInstance &&
                     (PhpClassUtil.findSuperOfType(expressionClass, LaravelClasses.SUPPORT_FLUENT.toString()) == null)) {
                     return;
                 }
 
-                // Case #1: new \Illuminate\Support\Fluent (directly);
+                // Case #1: new \Illuminate\Support\Fluent (directly) or
+                //          new \Facades\Illuminate\Support\Fluent (facade, from Laravel 5.4);
                 // Case #2: new \Fluent (facade);
-                if (expressionClassFQN.equals(LaravelClasses.SUPPORT_FLUENT.toString()) ||
+                if (isDirectInstance ||
                     (StringUtils.countMatches(expressionClassFQN, "\\") == 1)) {
                     final ClassReference classReference = expression.getClassReference();
                     assert classReference != null;
