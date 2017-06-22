@@ -504,3 +504,18 @@ class EloquentCasts_ShouldIgnoresEmptyColumnName extends Model
         '' => 'int'
     ];
 }
+
+/**
+ * @property int $id
+ * @property mixed $chained_property
+ */
+class EloquentModel_ChainedProperty extends Model
+{
+    public function getSelf(): ?self
+    {
+        return $this;
+    }
+}
+
+$chainedProperty = new EloquentModel_ChainedProperty;
+$chainedProperty->getSelf()->chained_property;

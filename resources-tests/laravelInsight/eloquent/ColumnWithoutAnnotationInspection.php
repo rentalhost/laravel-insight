@@ -378,3 +378,14 @@ class <weak_warning descr="Column was not annotated as @property $id">EloquentCa
         '' => 'int'
     ];
 }
+
+class <weak_warning descr="Column was not annotated as @property $id">EloquentModel_ChainedProperty</weak_warning> extends Model
+{
+    public function getSelf(): ?self
+    {
+        return $this;
+    }
+}
+
+$chainedProperty = new EloquentModel_ChainedProperty;
+$chainedProperty->getSelf()-><weak_warning descr="Column was not annotated as @property $chained_property">chained_property</weak_warning>;
