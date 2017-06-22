@@ -267,5 +267,9 @@ public class PhpClassUtilTest extends FixtureSuite {
         final PsiElement unresolvedReference = getElementByName(fileSample, "unresolvedReference").getParent();
 
         Assert.assertEquals(0, PhpClassUtil.resolve(unresolvedReference).size());
+
+        final PsiElement ccNotTypedElement = getElementByName(fileSample, "ccNotTypedElement").getParent();
+
+        Assert.assertEquals(0, PhpClassUtil.resolve(ccNotTypedElement).size());
     }
 }

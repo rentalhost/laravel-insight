@@ -11,6 +11,10 @@ Testing Blade folding...
 @yield ('will be ignored')
 
 @if ($expr)<fold text=' {...} '>
+    @yield ('will be ignored (code-coverage)')
+</fold>@endif
+
+@if ($expr)<fold text=' {...} '>
     If folding.
 </fold>@endif
 

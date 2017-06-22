@@ -18,3 +18,5 @@ $indirectReference->$farReference;
 $indirectReference->getSelf()->$chainedReference;
 
 (new UnresolvedReference)->$unresolvedReference;
+
+/* no type */->$ccNotTypedElement;

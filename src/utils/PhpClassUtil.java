@@ -9,6 +9,7 @@ import com.jetbrains.php.lang.psi.elements.MemberReference;
 import com.jetbrains.php.lang.psi.elements.Method;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
 import com.jetbrains.php.lang.psi.elements.PhpClassMember;
+import com.jetbrains.php.lang.psi.elements.PhpExpression;
 import com.jetbrains.php.lang.psi.elements.PhpReference;
 import com.jetbrains.php.lang.psi.elements.PhpTypedElement;
 import com.jetbrains.php.lang.psi.elements.PhpUse;
@@ -210,21 +211,19 @@ public enum PhpClassUtil {
 
     @NotNull
     public static List<PhpClass> resolve(@NotNull final PsiElement element) {
-        final List<PhpClass> classes          = new ArrayList<>();
-        PsiElement           elementProcessed = PsiElementUtil.resolve(element);
+        PsiElement elementProcessed = PsiElementUtil.resolve(element);
 
         if (elementProcessed instanceof PhpClassMember) {
             elementProcessed = ((PhpClassMember) elementProcessed).getContainingClass();
         }
         else if (elementProcessed instanceof MemberReference) {
-            elementProcessed = ((MemberReference) elementProcessed).getClassReference();
+            final PhpExpression elementClassReference = ((MemberReference) elementProcessed).getClassReference();
+            assert elementClassReference != null;
 
-            if (elementProcessed == null) {
-                return classes;
-            }
-
-            elementProcessed = PsiElementUtil.resolve(elementProcessed, MemberReference.class::isInstance);
+            elementProcessed = PsiElementUtil.resolve(elementClassReference, MemberReference.class::isInstance);
         }
+
+        final List<PhpClass> classes = new ArrayList<>();
 
         if (!(elementProcessed instanceof PhpTypedElement)) {
             return classes;

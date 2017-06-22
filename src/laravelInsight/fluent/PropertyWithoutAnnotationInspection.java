@@ -40,13 +40,14 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
                 if (FluentUtil.isUsingIndirectly(fieldReference)) {
                     final List<PhpClass> fieldClasses = PhpClassUtil.resolve(fieldReference);
                     final PhpClass       fieldClass   = fieldClasses.get(0);
-                    final ASTNode        fieldNameNode = fieldReference.getNameNode();
+                    final String         fieldName    = fieldReference.getName();
 
-                    if (fieldNameNode == null) {
+                    assert fieldName != null;
+
+                    if (fieldName.isEmpty()) {
                         return;
                     }
 
-                    final String fieldName        = fieldNameNode.getText();
                     final Field fieldDeclaration = PhpClassUtil.findPropertyDeclaration(fieldClass, fieldName);
 
                     if ((fieldDeclaration != null) &&
@@ -55,7 +56,9 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
                     }
 
                     if (PhpDocCommentUtil.findPropertyRecursively(fieldClass, fieldName) == null) {
-                        problemsHolder.registerProblem((PsiElement) fieldNameNode,
+                        assert fieldReference.getNameNode() != null;
+
+                        problemsHolder.registerProblem((PsiElement) fieldReference.getNameNode(),
                                                        String.format(messagePropertyUndefined, fieldName),
                                                        ProblemHighlightType.WEAK_WARNING,
                                                        new PropertyQuickFix(fieldClass, fieldName, "mixed"));

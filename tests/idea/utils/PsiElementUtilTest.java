@@ -103,6 +103,12 @@ public class PsiElementUtilTest extends FixtureSuite {
         Assert.assertTrue(stopOnFirstConstantReference instanceof ConstantReference);
         Assert.assertEquals("$stopOnFirstConstantReference = SHOULD_STOP_HERE", stopOnFirstConstantReference.getParent().getText());
 
+        final PsiElement stopOnFirstConstantReferenceIndirect =
+            PsiElementUtil.resolve(getStringLiteral(fileSample, "stopOnFirstConstantReferenceIndirect"), ConstantReference.class::isInstance);
+
+        Assert.assertTrue(stopOnFirstConstantReferenceIndirect instanceof ConstantReference);
+        Assert.assertEquals("$stopOnFirstConstantReference = SHOULD_STOP_HERE", stopOnFirstConstantReferenceIndirect.getParent().getText());
+
         // Make sure that resolves to a @property will not broke.
         final AssignmentExpression ccInstancePropertyRef = (AssignmentExpression) getElementByName(fileSample, "ccInstancePropertyRef").getParent();
         final PsiElement           ccInstanceProperty    = PsiElementUtil.resolve(valueOf((PhpExpression) ccInstancePropertyRef.getValue()));

@@ -29,11 +29,13 @@ namespace MyNamespace {
 
     class ChildFluent extends Fluent
     {
+        public $publicIsOkay;
     }
 
     // Acceptable: Fluent is intantiated via ChildFluent.
     $fluentInstantiatedIndirectly = new ChildFluent();
     $fluentInstantiatedIndirectly-><weak_warning descr="Property was not annotated as @property $shouldAccept">shouldAccept</weak_warning>;
+    $fluentInstantiatedIndirectly->publicIsOkay;
 
     // Acceptable: static property.
     ChildFluent::<weak_warning descr="Property was not annotated as @property $staticShouldBeAccepted">$staticShouldBeAccepted</weak_warning>;
@@ -47,4 +49,7 @@ namespace MyNamespace {
     $fluentInstantiatedViaFacadeL54 = new \Facades\Illuminate\Support\Fluent();
     $fluentInstantiatedViaFacade->shouldNotAccept;
     \Facades\Illuminate\Support\Fluent::$shouldNotAccept;
+
+    // Code-coverage:
+    $fluentInstantiatedIndirectly->{'fieldNameIsEmpty'};
 }

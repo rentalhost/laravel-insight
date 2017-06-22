@@ -64,3 +64,4 @@ $indirectShouldNotResolveTotally = $shouldNotResolveTotally;
 const SHOULD_STOP_HERE = NOT_HERE;
 const NOT_HERE = false;
 $stopOnFirstConstantReference = SHOULD_STOP_HERE;
+$stopOnFirstConstantReferenceIndirect = $stopOnFirstConstantReference;
