@@ -256,6 +256,10 @@ public class PhpClassUtilTest extends FixtureSuite {
 
         Assert.assertEquals(classReference, PhpClassUtil.resolve(farReference).get(0));
 
+        final PsiElement chainedReference = getElementByName(fileSample, "chainedReference").getParent();
+
+        Assert.assertEquals(classReference, PhpClassUtil.resolve(chainedReference).get(0));
+
         final PsiElement unresolvedReference = getElementByName(fileSample, "unresolvedReference").getParent();
 
         Assert.assertEquals(0, PhpClassUtil.resolve(unresolvedReference).size());
