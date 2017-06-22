@@ -8,6 +8,7 @@ import com.jetbrains.php.lang.psi.elements.Field;
 import com.jetbrains.php.lang.psi.elements.MemberReference;
 import com.jetbrains.php.lang.psi.elements.Method;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
+import com.jetbrains.php.lang.psi.elements.PhpClassMember;
 import com.jetbrains.php.lang.psi.elements.PhpReference;
 import com.jetbrains.php.lang.psi.elements.PhpTypedElement;
 import com.jetbrains.php.lang.psi.elements.PhpUse;
@@ -212,7 +213,10 @@ public enum PhpClassUtil {
         final List<PhpClass> classes          = new ArrayList<>();
         PsiElement           elementProcessed = PsiElementUtil.resolve(element);
 
-        if (elementProcessed instanceof MemberReference) {
+        if (elementProcessed instanceof PhpClassMember) {
+            elementProcessed = ((PhpClassMember) elementProcessed).getContainingClass();
+        }
+        else if (elementProcessed instanceof MemberReference) {
             elementProcessed = ((MemberReference) elementProcessed).getClassReference();
 
             if (elementProcessed == null) {

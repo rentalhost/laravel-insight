@@ -2,6 +2,8 @@
 
 class Reference
 {
+    public $classMember;
+
     public function getSelf(): ?self
     {
         return $this;
