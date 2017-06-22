@@ -2,7 +2,6 @@ package net.rentalhost.idea.laravelInsight.fluent;
 
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.jetbrains.php.lang.inspections.PhpInspection;
@@ -37,14 +36,10 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
         return new PhpElementVisitor() {
             @Override
             public void visitPhpFieldReference(@NotNull final FieldReference fieldReference) {
-                if (fieldReference.isStatic()) {
-                    return;
-                }
-
                 // Eg. is not like (new Fluent)->property;
                 if (FluentUtil.isUsingIndirectly(fieldReference)) {
-                    final List<PhpClass> fieldClasses  = PhpClassUtil.resolve(fieldReference);
-                    final PhpClass       fieldClass    = fieldClasses.get(0);
+                    final List<PhpClass> fieldClasses = PhpClassUtil.resolve(fieldReference);
+                    final PhpClass       fieldClass   = fieldClasses.get(0);
                     final ASTNode        fieldNameNode = fieldReference.getNameNode();
 
                     if (fieldNameNode == null) {
@@ -52,7 +47,7 @@ public class PropertyWithoutAnnotationInspection extends PhpInspection {
                     }
 
                     final String fieldName        = fieldNameNode.getText();
-                    final Field  fieldDeclaration = PhpClassUtil.findPropertyDeclaration(fieldClass, fieldName);
+                    final Field fieldDeclaration = PhpClassUtil.findPropertyDeclaration(fieldClass, fieldName);
 
                     if ((fieldDeclaration != null) &&
                         fieldDeclaration.getModifier().isPublic()) {
