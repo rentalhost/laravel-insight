@@ -27,8 +27,7 @@ enum FluentUtil {
 
         final PhpClass expressionClass    = expressionClasses.get(0);
         final String   expressionClassFQN = expressionClass.getFQN();
-        final boolean isDirectInstance = expressionClassFQN.equals(LaravelClasses.SUPPORT_FLUENT.toString()) ||
-                                         expressionClassFQN.equals(LaravelClasses.SUPPORT_FLUENT_L54.toString());
+        final boolean  isDirectInstance   = isFluentFQN(expressionClassFQN);
 
         if (!isDirectInstance &&
             (PhpClassUtil.findSuperOfType(expressionClass, LaravelClasses.SUPPORT_FLUENT.toString()) == null)) {
@@ -39,7 +38,7 @@ enum FluentUtil {
         //          new \Facades\Illuminate\Support\Fluent (facade, from Laravel 5.4);
         // Case #2: new \Fluent (facade);
         return isDirectInstance ||
-               (StringUtils.countMatches(expressionClassFQN, "\\") == 1);
+               isFacade(expressionClassFQN);
     }
 
     static boolean isUsingIndirectly(@Nullable final PsiElement parameter) {
@@ -56,8 +55,17 @@ enum FluentUtil {
         final PhpClass expressionClass    = expressionClasses.get(0);
         final String   expressionClassFQN = expressionClass.getFQN();
 
-        return !expressionClassFQN.equals(LaravelClasses.SUPPORT_FLUENT.toString()) &&
-               !expressionClassFQN.equals(LaravelClasses.SUPPORT_FLUENT_L54.toString()) &&
-               (PhpClassUtil.findSuperOfType(expressionClass, LaravelClasses.SUPPORT_FLUENT.toString()) == null);
+        return !isFluentFQN(expressionClassFQN) &&
+               !isFacade(expressionClassFQN) &&
+               (PhpClassUtil.findSuperOfType(expressionClass, LaravelClasses.SUPPORT_FLUENT.toString()) != null);
+    }
+
+    private static boolean isFacade(final String classFQN) {
+        return StringUtils.countMatches(classFQN, "\\") == 1;
+    }
+
+    private static boolean isFluentFQN(final String classFQN) {
+        return classFQN.equals(LaravelClasses.SUPPORT_FLUENT.toString()) ||
+               classFQN.equals(LaravelClasses.SUPPORT_FLUENT_L54.toString());
     }
 }

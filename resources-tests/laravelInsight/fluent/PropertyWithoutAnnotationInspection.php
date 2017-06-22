@@ -27,7 +27,7 @@ namespace MyNamespace {
     $fluentInstantiatedDirectly = new FluentDirect;
     $fluentInstantiatedDirectly->shouldNotAccept;
 
-    class ChildFluent extends Fluent
+    class ChildFluent extends FluentDirect
     {
         public $publicIsOkay;
     }
@@ -52,4 +52,11 @@ namespace MyNamespace {
 
     // Code-coverage:
     $fluentInstantiatedIndirectly->{'fieldNameIsEmpty'};
+
+    class NotAFluent
+    {
+    }
+
+    $notAFluentInstance = new NotAFluent();
+    $notAFluentInstance->shouldBeIgnored;
 }
