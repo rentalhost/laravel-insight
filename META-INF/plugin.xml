@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>net.rentalhost.idea.laravelInsight</id>
     <name>Laravel Insight</name>
-    <version>0.3.0</version>
+    <version>0.3.1</version>
     <idea-version since-build="145.0" />
 
     <vendor email="david.rodrigues@rentalhost.net" url="https://rentalhost.net/">Rentalhost.net</vendor>
@@ -12,7 +12,8 @@
 
     <description><![CDATA[
         <strong>Laravel Insight</strong> is a very helpful PhpStorm IDE plugin that
-        introduces a lot of features when you are working with Laravel Framework.<br /><br />
+        introduces a lot of features when you are working with Laravel Framework.
+        <br /><br />
 
         <ul>
             <li>Better <strong>Blade</strong> support (eg. <em>folding</em>);</li>
@@ -25,9 +26,10 @@
 
     <change-notes><![CDATA[
         <strong>Trigon Release</strong><br />
-        <a href="https://github.com/rentalhost/laravel-insight/releases/tag/0.3.0">Official changelog</a>.
+        <a href="https://github.com/rentalhost/laravel-insight/releases">Official changelog</a>.
+        <br /><br />
 
-        <h3>Added</h3>
+        <h1>Added</h1>
         <ul>
             <li><strong>Fluent:</strong> property without annotation inspection (<a href="https://github.com/rentalhost/laravel-insight/wiki/Inspections#fluent-property-without-annotation">more info</a>);</li>
             <li><strong>Fluent</strong>: should not be instantiated directly (<a href="https://github.com/rentalhost/laravel-insight/wiki/Inspections#fluent-should-not-be-instantiated-directly">more info</a>);</li>
@@ -35,9 +37,14 @@
             <li><strong>Blade</strong>: support to folding Blade statements and comments (<a href="https://github.com/rentalhost/laravel-insight/wiki/Auxiliary-Features#blade-folding-support">more info</a>);</li>
         </ul>
 
-        <h3>Improvement</h3>
+        <h1>Improvement</h1>
         <ul>
             <li><strong>Resolution</strong>: improvement to variable types resolution (eg. when inside of parentheses);</li>
+        </ul>
+
+        <h1>Fixed on <code>0.3.1</code></h1>
+        <ul>
+            <li><strong>NPE</strong>: when <code>use</code> trait is temporarily empty;</li>
         </ul>
     ]]></change-notes>
 
