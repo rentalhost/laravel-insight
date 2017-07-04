@@ -9,3 +9,7 @@ class BaseModel extends Model {
 
 class ShouldBeRemovedProgramatically extends BaseModel {
 }
+
+trait CCNullTargetReference {
+    use CCWillBeRemoved;
+}

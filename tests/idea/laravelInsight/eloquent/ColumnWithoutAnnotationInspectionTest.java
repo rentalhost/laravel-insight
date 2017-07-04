@@ -3,6 +3,7 @@ package net.rentalhost.idea.laravelInsight.eloquent;
 import com.intellij.psi.PsiFile;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
 import com.jetbrains.php.lang.psi.elements.PhpClassMember;
+import com.jetbrains.php.lang.psi.elements.PhpUse;
 
 import net.rentalhost.suite.FixtureSuite;
 
@@ -42,5 +43,11 @@ public class ColumnWithoutAnnotationInspectionTest extends FixtureSuite {
 
         inspectTool(ColumnWithoutAnnotationInspection.class)
             .runVisitor(visitor -> visitor.visitPhpClass(fieldPrimaryKey.getContainingClass()));
+
+        final PhpUse ccWillBeRemoved = (PhpUse) getElementByName(fileSample, "CCWillBeRemoved");
+        runWriteAction(() -> ccWillBeRemoved.getChildren()[0].delete());
+
+        inspectTool(ColumnWithoutAnnotationInspection.class)
+            .runVisitor(visitor -> visitor.visitPhpUse(ccWillBeRemoved));
     }
 }

@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.3.1: 2017-07-04
+
+### Fixed
+
+* **NPE**: when `use` trait is temporarily empty (`use <caret>;`);
+
 ## 0.3.0: [Trigon Release](https://github.com/rentalhost/laravel-insight/releases/tag/0.3.0) - 2017-06-22
 
 ### Added
@@ -31,7 +37,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 * **NPE**: when class name identifier is absent (eg. `class {}`);
 
-## 0.1.1 - 2017-06-01
+## 0.1.1: 2017-06-01
 
 ### Changed
 

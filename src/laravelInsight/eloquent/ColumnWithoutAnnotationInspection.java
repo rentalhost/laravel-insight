@@ -214,7 +214,10 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
             public void visitPhpUse(@NotNull final PhpUse expression) {
                 if (expression.isTraitImport()) {
                     final PhpReference traitReferenceClass = expression.getTargetReference();
-                    assert traitReferenceClass != null;
+
+                    if (traitReferenceClass == null) {
+                        return;
+                    }
 
                     final PhpClass traitContainingClass = PhpClassUtil.getTraitContainingClass(expression);
                     assert traitContainingClass != null;
