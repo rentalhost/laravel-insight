@@ -26,7 +26,7 @@ public enum PhpFunctionUtil {
 
     @NotNull
     public static PhpType getReturnType(@NotNull final Function functionInitial) {
-        final PhpType typeResolved = RecursionResolver.resolve(functionInitial, resolver -> {
+        final PhpType typeResolved = RecursionResolver.resolve(functionInitial, (RecursionResolver.Resolver resolver) -> {
             final Function   function           = (Function) resolver.getObject();
             final PsiElement functionReturnType = function.getReturnType();
 
@@ -57,7 +57,11 @@ public enum PhpFunctionUtil {
 
                         if (phpInstructionArgument instanceof NewExpression) {
                             final ClassReference phpInstructionClassReference = ((NewExpression) phpInstructionArgument).getClassReference();
-                            assert phpInstructionClassReference != null;
+
+                            // @todo Code-coverage.
+                            if (phpInstructionClassReference == null) {
+                                continue;
+                            }
 
                             functionReturnTypes.add(phpInstructionClassReference.getFQN());
                         }

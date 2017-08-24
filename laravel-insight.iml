@@ -12,6 +12,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" scope="PROVIDED" name="lib" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="PhpStorm 2017.2" level="application" />
   </component>
 </module>
