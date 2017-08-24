@@ -29,6 +29,22 @@ public class BladeFoldingBuilder extends FoldingBuilderEx {
     private static final int     MULTILINE_COMMENT_LENGTH_LIMIT = 32;
     private static final Pattern MULTIPLE_SPACES                = Pattern.compile("\\s+\\s");
 
+    private static final Collection<String> IGNORED_DIRECTIVES = new ArrayList<>();
+
+    static {
+        // This directives are implemented by WI-36875,
+        // so we should ignore it for now, once that can be folded after this fix.
+        IGNORED_DIRECTIVES.add("@if");
+        IGNORED_DIRECTIVES.add("@elseif");
+        IGNORED_DIRECTIVES.add("@unless");
+        IGNORED_DIRECTIVES.add("@forelse");
+        IGNORED_DIRECTIVES.add("@can");
+        IGNORED_DIRECTIVES.add("@elsecan");
+        IGNORED_DIRECTIVES.add("@cannot");
+        IGNORED_DIRECTIVES.add("@elsecannot");
+        IGNORED_DIRECTIVES.add("@hassection");
+    }
+
     private static void processDirectives(
         @Nullable final BladePsiDirective baseDirective,
         @NotNull final Queue<BladePsiDirective> directives,
@@ -40,6 +56,11 @@ public class BladeFoldingBuilder extends FoldingBuilderEx {
 
             if (directive == null) {
                 break;
+            }
+
+            if (IGNORED_DIRECTIVES.contains(directive.getName())) {
+                directives.poll();
+                continue;
             }
 
             if (baseDirective == null) {

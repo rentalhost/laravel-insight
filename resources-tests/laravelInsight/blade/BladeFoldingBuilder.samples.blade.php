@@ -1,41 +1,41 @@
 Testing Blade folding...
 
-@if ($expr)<fold text=' {...} '>
-    If folding with elseif and else.</fold>
-@elseif ($expr)<fold text=' {...} '>
-    Elseif folding.</fold>
-@else<fold text=' {...} '>
+@if ($expr)<fold text='...'>
+    If folding with elseif and else.
+</fold>@elseif ($expr)<fold text='...'>
+    Elseif folding.
+</fold>@else<fold text=' {...} '>
     Else folding.
 </fold>@endif
 
 @yield ('will be ignored')
 
-@if ($expr)<fold text=' {...} '>
+@if ($expr)<fold text='...'>
     @yield ('will be ignored (code-coverage)')
 </fold>@endif
 
-@if ($expr)<fold text=' {...} '>
+@if ($expr)<fold text='...'>
     If folding.
 </fold>@endif
 
-@if ($expr)<fold text=' {...} '>
-    @if ($expr)<fold text=' {...} '>
+@if ($expr)<fold text='...'>
+    @if ($expr)<fold text='...'>
         Nested folding.
     </fold>@endif
 </fold>@endif
 
-@if ($longEmptyContent)<fold text=' {...} '>
+@if ($longEmptyContent)<fold text='...'>
 
 </fold>@endif
 
-@if ($shouldNotBeFoldedBecauseHaveNoContent) @endif
-@if ($shouldNotBeFoldedBecauseHaveNoContent) @elseif ($too) @else @endif
+@if ($shouldNotBeFoldedBecauseHaveNoContent)<fold text='...'> </fold>@endif
+@if ($shouldNotBeFoldedBecauseHaveNoContent)<fold text='...'> </fold>@elseif ($too)<fold text='...'> </fold>@else<fold text='...'> </fold>@endif
 @if ($shouldNotBeFoldedBecauseHaveNoContent)@endif
 @if($shouldNotBeFoldedBecauseHaveNoContent)@elseif($too)@else@endif
 
-@unless ($expr)<fold text=' {...} '>
-    Unless folding.</fold>
-@else<fold text=' {...} '>
+@unless ($expr)<fold text='...'>
+    Unless folding.
+</fold>@else<fold text=' {...} '>
     Else folding.
 </fold>@endunless
 
@@ -55,9 +55,9 @@ Testing Blade folding...
     Foreach folding.
 </fold>@endforeach
 
-@forelse ($expr)<fold text=' {...} '>
-    Foreach folding.</fold>
-@empty<fold text=' {...} '>
+@forelse ($expr)<fold text='...'>
+    Foreach folding.
+</fold>@empty<fold text=' {...} '>
     Empty folding.
 </fold>@endforelse
 
@@ -97,46 +97,44 @@ Testing Blade folding...
     Verbatim folding.
 </fold>@endverbatim
 
-@can ($expr)<fold text=' {...} '>
-    Can folding.</fold>
-@elsecan ($expr)<fold text=' {...} '>
-    ElseCan folding.</fold>
-@else<fold text=' {...} '>
+@can ($expr)<fold text='...'>
+    Can folding.
+</fold>@elsecan ($expr)<fold text='...'>
+    ElseCan folding.
+</fold>@else<fold text=' {...} '>
     Else folding.
 </fold>@endcan
 
-@cannot ($expr)<fold text=' {...} '>
-    Cannot folding.</fold>
-@elsecannot ($expr)<fold text=' {...} '>
-    ElseCannot folding.</fold>
-@else<fold text=' {...} '>
+@cannot ($expr)<fold text='...'>
+    Cannot folding.
+</fold>@elsecannot ($expr)<fold text='...'>
+    ElseCannot folding.
+</fold>@else<fold text=' {...} '>
     Else folding.
 </fold>@endcannot
 
-Currently is not supported on PhpStorm (WI-36875):
-
-@php
+@php<fold text=' {...} '>
     $phpFolding;
-@endphp
+</fold>@endphp
 
-@push ($expr)
+@push ($expr)<fold text=' {...} '>
     Push folding.
-@endpush
+</fold>@endpush
 
-@hassection ($expr)
+@hassection ($expr)<fold text='...'>
     HasSection folding.
-@endif
+</fold>@endif
 
-@hassection ($expr)
+@hassection ($expr)<fold text='...'>
     HasSection folding.
-@else<fold text=' {...} '>
+</fold>@else<fold text=' {...} '>
     ElseSection folding.
 </fold>@endif
 
 Check if unfinished @if is treated correctly
 
 @if ($unfinishedFolding)
-    @if ($itWasFinished)<fold text=' {...} '>
+    @if ($itWasFinished)<fold text='...'>
         It was finished.
 </fold>@endif
 

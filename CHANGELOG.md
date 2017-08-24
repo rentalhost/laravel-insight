@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.3.2: 2017-08-24
+
+### Added
+* **Blade**: supporting added to following directives: `@php` and `@push`;
+
+### Fixed
+
+* **Blade**: disabling folding feature from this plugin for directives `@if`, `@elseif`, `@unless`, `@forelse`, `@can`, `@elsecan`, `@cannot`, `@elsecannot` and `@hassection`, once that it was implemented by [**WI-36875**](https://youtrack.jetbrains.com/issue/WI-36875) - it still will be foldable, but will be handled now by PhpStorm;
+
 ## 0.3.1: 2017-07-04
 
 ### Fixed
@@ -31,7 +40,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * **Plugin**: is now distributed on official Jetbrains plugins repository ([more info](https://plugins.jetbrains.com/plugin/9730-laravel-insight));
 * **Query Scopes**: *ctrl+click* on a scoped method resolve to scope declaration ([more info](https://github.com/rentalhost/laravel-insight/wiki/Auxiliary-Features#eloquent-query-scopes-support));
 * **Query Scopes**: code completion to scope methods ([more info](https://github.com/rentalhost/laravel-insight/wiki/Auxiliary-Features#eloquent-query-scopes-support));
-* **Inspection**: *column without annotation* now try to guess the column type based on some contexts ([more info](https://github.com/rentalhost/laravel-insight/wiki/Inspections#eloquent-column-without-annotation));
+* **Eloquent Inspection**: *column without annotation* now try to guess the column type based on some contexts ([more info](https://github.com/rentalhost/laravel-insight/wiki/Inspections#eloquent-column-without-annotation));
 
 ### Fixed
 
@@ -41,7 +50,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
-* **Eloquent**: *property without annotation* renamed to *column without annotation*;
+* **Eloquent Inspection**: *property without annotation* renamed to *column without annotation*;
 
 ### Fixed
 
@@ -52,5 +61,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 * Initial development release;
-* **Eloquent:** column without annotation inspection ([more info](https://github.com/rentalhost/laravel-insight/wiki/Inspections#eloquent-column-without-annotation));
+* **Eloquent Inspection:** column without annotation inspection ([more info](https://github.com/rentalhost/laravel-insight/wiki/Inspections#eloquent-column-without-annotation));
 
