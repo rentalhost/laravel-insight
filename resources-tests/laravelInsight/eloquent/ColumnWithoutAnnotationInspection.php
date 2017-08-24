@@ -21,6 +21,14 @@ trait NotAnySoftDeletesTrait
 {
 }
 
+/**
+ * @property mixed $deleted_at
+ */
+trait SoftDeletesThatDeclaresTheProperty
+{
+    use SoftDeletes;
+}
+
 class <weak_warning descr="Column was not annotated as @property $id">EloquentCasts_WithoutPhpdoc</weak_warning> extends Model
 {
     protected $casts = [
@@ -164,6 +172,14 @@ class <weak_warning descr="Column was not annotated as @property $id">Eloquent_T
 {
     use SoftDeletesWrapper,
         ShouldNotReportsThat;
+}
+
+/**
+ * @property int $id
+ */
+class Eloquent_TraitSoftDeletesThatDeclaresTheProperty_ShouldNotThrowWarning extends Model
+{
+    use SoftDeletesThatDeclaresTheProperty;
 }
 
 class <weak_warning descr="Column was not annotated as @property $id">Eloquent_ShouldCheckIfIsTheRightSoftDeletesTrait</weak_warning> extends Model

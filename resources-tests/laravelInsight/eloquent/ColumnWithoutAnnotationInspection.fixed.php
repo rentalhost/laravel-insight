@@ -22,6 +22,14 @@ trait NotAnySoftDeletesTrait
 }
 
 /**
+ * @property mixed $deleted_at
+ */
+trait SoftDeletesThatDeclaresTheProperty
+{
+    use SoftDeletes;
+}
+
+/**
  * @property int $id
  * @property int $someProperty
  */
@@ -220,6 +228,14 @@ class Eloquent_TraitSoftDeletes_ShouldConsiderDeclarationOnClass extends Model
 {
     use SoftDeletesWrapper,
         ShouldNotReportsThat;
+}
+
+/**
+ * @property int $id
+ */
+class Eloquent_TraitSoftDeletesThatDeclaresTheProperty_ShouldNotThrowWarning extends Model
+{
+    use SoftDeletesThatDeclaresTheProperty;
 }
 
 /**

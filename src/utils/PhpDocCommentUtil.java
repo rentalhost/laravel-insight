@@ -11,6 +11,7 @@ import com.jetbrains.php.lang.psi.PhpPsiElementFactory;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
 import com.jetbrains.php.lang.psi.elements.PhpNamedElement;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -45,10 +46,11 @@ public enum PhpDocCommentUtil {
         @NotNull final PhpClass phpClass,
         @NotNull final String propertyName
     ) {
-        PhpClass phpClassCurrent = phpClass;
+        final List<PhpClass> supers = new ArrayList<>(Arrays.asList(phpClass.getSupers()));
+        supers.add(0, phpClass);
 
-        while (phpClassCurrent != null) {
-            final PhpDocComment classDocComment = phpClassCurrent.getDocComment();
+        for (final PhpClass phpClassSuper : supers) {
+            final PhpDocComment classDocComment = phpClassSuper.getDocComment();
 
             if (classDocComment != null) {
                 final PhpDocProperty propertyFound = findProperty(classDocComment, propertyName);
@@ -57,8 +59,6 @@ public enum PhpDocCommentUtil {
                     return propertyFound;
                 }
             }
-
-            phpClassCurrent = PhpClassUtil.getSuper(phpClassCurrent);
         }
 
         return null;
