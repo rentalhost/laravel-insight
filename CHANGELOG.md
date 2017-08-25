@@ -8,13 +8,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 0.3.2: 2017-08-24
 
 ### Added
+
 * **Blade**: supporting added to following directives: `@php` and `@push`;
 
 ### Fixed
 
 * **Eloquent Inspection**: *column without annotation* could not identify annotated properties on traits;
 * **Eloquent Inspection**: *column without annotation* could not identify annotated properties in some cases when `@param` overrides the method parameter type;
-* **Blade**: disabling folding feature from this plugin for directives `@if`, `@elseif`, `@unless`, `@forelse`, `@can`, `@elsecan`, `@cannot`, `@elsecannot` and `@hassection`, once that it was implemented by [**WI-36875**](https://youtrack.jetbrains.com/issue/WI-36875) - it still will be foldable, but will be handled now by PhpStorm;
+
+### Removed
+
+* **Blade**: removing folding feature from this plugin for directives `@if`, `@elseif`, `@unless`, `@forelse`, `@can`, `@elsecan`, `@cannot`, `@elsecannot` and `@hassection`, once that it was implemented by [**WI-36875**](https://youtrack.jetbrains.com/issue/WI-36875) - it still will be foldable, but will be handled now by PhpStorm;
+* **Blade**: removing comments folding feature from this plugin once that it was implemented by the next PhpStorm EAP;
 
 ## 0.3.1: 2017-07-04
 
