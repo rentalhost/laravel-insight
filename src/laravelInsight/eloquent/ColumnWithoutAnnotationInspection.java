@@ -8,6 +8,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.jetbrains.php.PhpIndex;
+import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocProperty;
 import com.jetbrains.php.lang.inspections.PhpInspection;
 import com.jetbrains.php.lang.psi.elements.ConstantReference;
 import com.jetbrains.php.lang.psi.elements.Field;
@@ -27,6 +28,7 @@ import com.jetbrains.php.lang.psi.visitors.PhpElementVisitor;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -114,8 +116,9 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
 
                 final Set<String> fieldClassReferenceTypes = ((PhpTypedElement) fieldClassReference).getType().global(problemsHolder.getProject()).getTypes();
 
-                for (final String fieldClassType : fieldClassReferenceTypes) {
-                    final Collection<PhpClass> fieldClasses = PhpIndex.getInstance(problemsHolder.getProject()).getAnyByFQN(fieldClassType);
+                for (final Iterator<String> iterator = fieldClassReferenceTypes.iterator(); iterator.hasNext(); ) {
+                    final String               fieldClassType = iterator.next();
+                    final Collection<PhpClass> fieldClasses   = PhpIndex.getInstance(problemsHolder.getProject()).getAnyByFQN(fieldClassType);
 
                     if (fieldClasses.isEmpty()) {
                         continue;
@@ -130,12 +133,18 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                     final Field fieldDeclaration = PhpClassUtil.findPropertyDeclaration(fieldClass, fieldNameText);
 
                     if ((fieldDeclaration != null) &&
+                        !(fieldDeclaration instanceof PhpDocProperty) &&
                         fieldDeclaration.getModifier().isPublic()) {
                         continue;
                     }
 
-                    InspectionHelper.validatePropertyAnnotation(problemsHolder, fieldClass, fieldNameNode.getPsi(), fieldNameText, null);
-                    break;
+                    if (PhpDocCommentUtil.findPropertyRecursively(fieldClass, fieldNameText) != null) {
+                        break;
+                    }
+
+                    if (!iterator.hasNext()) {
+                        InspectionHelper.validatePropertyAnnotation(problemsHolder, fieldClass, fieldNameNode.getPsi(), fieldNameText, null);
+                    }
                 }
             }
 

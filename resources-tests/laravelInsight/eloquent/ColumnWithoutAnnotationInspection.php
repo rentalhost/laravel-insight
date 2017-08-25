@@ -405,3 +405,50 @@ class <weak_warning descr="Column was not annotated as @property $id">EloquentMo
 
 $chainedProperty = new EloquentModel_ChainedProperty;
 $chainedProperty->getSelf()-><weak_warning descr="Column was not annotated as @property $chained_property">chained_property</weak_warning>;
+
+/**
+ * @property int            $id
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ */
+class EloquentModel_OverridedParamTypeViaPhpdoc_Base extends \Illuminate\Database\Eloquent\Model
+{
+}
+
+/**
+ * @property mixed $overrided_property
+ */
+class EloquentModel_OverridedParamTypeViaPhpdoc extends EloquentModel_OverridedParamTypeViaPhpdoc_Base
+{
+}
+
+/**
+ * @param EloquentModel_OverridedParamTypeViaPhpdoc $model
+ */
+function exampleMethod_OverridedParamTypeViaPhpdoc(EloquentModel_OverridedParamTypeViaPhpdoc_Base $model): void
+{
+    $model->overrided_property;
+}
+
+/**
+ * @property int   $id
+ */
+class EloquentModel_Base extends \Illuminate\Database\Eloquent\Model
+{
+}
+
+/**
+ * @property int   $id
+ * @property mixed $overrided_property2
+ */
+class EloquentModel_OverridedParamTypeViaPhpdoc_Case2 extends EloquentModel_Base
+{
+}
+
+/**
+ * @param EloquentModel_OverridedParamTypeViaPhpdoc_Case2 $model
+ */
+function exampleMethod_OverridedParamTypeViaPhpdoc_Case2(EloquentModel_Base $model): void
+{
+    $model->overrided_property2;
+}
