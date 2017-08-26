@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>net.rentalhost.idea.laravelInsight</id>
     <name>Laravel Insight</name>
-    <version>0.3.1</version>
+    <version>0.3.2</version>
     <idea-version since-build="145.0" />
 
     <vendor email="david.rodrigues@rentalhost.net" url="https://rentalhost.net/">Rentalhost.net</vendor>
@@ -42,9 +42,18 @@
             <li><strong>Resolution</strong>: improvement to variable types resolution (eg. when inside of parentheses);</li>
         </ul>
 
-        <h1>Fixed on <code>0.3.1</code></h1>
+        <h1>Changes on <code>0.3.1</code></h1>
         <ul>
-            <li><strong>NPE</strong>: when <code>use</code> trait is temporarily empty;</li>
+            <li><strong>NPE</strong> (<em>Fixed</em>): when <code>use</code> trait is temporarily empty;</li>
+        </ul>
+
+        <h1>Changes on <code>0.3.2</code></h1>
+        <ul>
+            <li><strong>Blade</strong> (<em>Added</em>): supporting added to following directives: <code>@php</code> and <code>@push</code>;</li>
+            <li><strong>Eloquent Inspection</strong> (<em>Fixed</em>): <em>column without annotation</em> could not identify annotated properties on traits;</li>
+            <li><strong>Eloquent Inspection</strong> (<em>Fixed</em>): <em>column without annotation</em> could not identify annotated properties in some cases when <code>@param</code> overrides the method parameter type;</li>
+            <li><strong>Blade</strong> (<em>Removed</em>): removing folding feature from this plugin for directives <code>@if</code>, <code>@elseif</code>, <code>@unless</code>, <code>@forelse</code>, <code>@can</code>, <code>@elsecan</code>, <code>@cannot</code>, <code>@elsecannot</code> and <code>@hassection</code>, once that it was implemented by <a href="https://youtrack.jetbrains.com/issue/WI">WI-36875</a> - it still will be foldable, but will be handled now by PhpStorm;</li>
+            <li><strong>Blade</strong> (<em>Removed</em>): removing comments folding feature from this plugin once that it was implemented by the next PhpStorm EAP;</li>
         </ul>
     ]]></change-notes>
 

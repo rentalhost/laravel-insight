@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 0.3.2: 2017-08-24
+## 0.3.2: 2017-08-26
 
 ### Added
 
@@ -36,7 +36,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * **Fluent**: should not be used as type directly ([more info](https://github.com/rentalhost/laravel-insight/wiki/Inspections#fluent-should-not-be-used-as-type-directly));
 * **Blade**: support to folding Blade statements and comments ([more info](https://github.com/rentalhost/laravel-insight/wiki/Auxiliary-Features#blade-folding-support));
 
-### Improvement
+### Improved
 
 * **Resolution**: improvement to variable types resolution (eg. when inside of parentheses);
 
