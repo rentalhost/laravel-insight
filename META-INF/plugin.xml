@@ -59,6 +59,7 @@
         <h1>Changes on <code>0.3.3</code></h1>
         <ul>
             <li><strong>Blade</strong> (<em>Reverted</em>): added support to comments folding again (FR <a href="https://youtrack.jetbrains.com/issue/WI-39264">#WI-39264</a>);</li>
+            <li><strong>Development</strong> (<em>Added</em>): added a <a href="https://github.com/rentalhost/laravel-insight/blob/master/development/DEVELOPMENT.md">development guide</a>;</li>
         </ul>
     ]]></change-notes>
 

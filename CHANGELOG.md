@@ -9,7 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Revert
 
-* **Blade**: added support to comments folding again (FR [#WI-39264](https://youtrack.jetbrains.com/issue/WI-39264));
+* **Blade**: added support to comments folding again (FR [**#WI-39264**](https://youtrack.jetbrains.com/issue/WI-39264));
+
+### Added
+
+* **Development**: added a [**development guide**](development/DEVELOPMENT.md);
 
 ## 0.3.2: 2017-08-26
 
