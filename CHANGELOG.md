@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 * **Development**: added a [**development guide**](development/DEVELOPMENT.md);
 
+### Fixed
+
+* **Plugin**: recompiled to support PS 2017.3+ builds;
+
 ## 0.3.2: 2017-08-26
 
 ### Added

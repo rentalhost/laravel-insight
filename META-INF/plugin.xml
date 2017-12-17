@@ -2,7 +2,7 @@
     <id>net.rentalhost.idea.laravelInsight</id>
     <name>Laravel Insight</name>
     <version>0.3.2</version>
-    <idea-version since-build="145.0" />
+    <idea-version since-build="171.*" until-build="173.*" />
 
     <vendor email="david.rodrigues@rentalhost.net" url="https://rentalhost.net/">Rentalhost.net</vendor>
 
@@ -60,6 +60,7 @@
         <ul>
             <li><strong>Blade</strong> (<em>Reverted</em>): added support to comments folding again (FR <a href="https://youtrack.jetbrains.com/issue/WI-39264">#WI-39264</a>);</li>
             <li><strong>Development</strong> (<em>Added</em>): added a <a href="https://github.com/rentalhost/laravel-insight/blob/master/development/DEVELOPMENT.md">development guide</a>;</li>
+            <li><strong>Plugin</strong> (<em>Fixed</em>): recompiled to support PS 2017.3+ builds;</li>
         </ul>
     ]]></change-notes>
 
