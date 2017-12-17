@@ -22,7 +22,7 @@ public class FixtureChain {
 
     @NotNull
     public FixtureChain addTestFile(@NotNull final String testFile) {
-        fixture.configureByFile("resources-tests/" + testFile);
+        fixture.configureByFile(testFile);
 
         return this;
     }
@@ -41,8 +41,7 @@ public class FixtureChain {
 
         fixture.setTestDataPath(".");
 
-        final String testFilePath  = "resources-tests/" + testFile;
-        final String fixedFilePath = testFilePath.substring(0, testFilePath.length() - 4) + ".fixed.php";
+        final String fixedFilePath = testFile.substring(0, testFile.length() - 4) + ".fixed.php";
 
         fixture.checkResultByFile(fixedFilePath);
     }

@@ -73,7 +73,7 @@ public class FixtureSuite extends CodeInsightFixtureTestCase {
 
     @NotNull
     protected PsiFile getResourceFile(final String path) {
-        return valueOf(myFixture.configureByFile("resources-tests/" + path));
+        return valueOf(myFixture.configureByFile(path));
     }
 
     @Nullable
@@ -133,10 +133,8 @@ public class FixtureSuite extends CodeInsightFixtureTestCase {
 
     @SuppressWarnings ("TestMethodWithIncorrectSignature")
     protected void testFolding(final String foldingFile) {
-        final String filePath = "resources-tests/" + foldingFile;
-
-        myFixture.configureByFile(filePath);
-        myFixture.testFolding(filePath);
+        myFixture.configureByFile(foldingFile);
+        myFixture.testFolding(foldingFile);
     }
 
     @NotNull
