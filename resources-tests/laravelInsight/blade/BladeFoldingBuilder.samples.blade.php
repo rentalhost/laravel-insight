@@ -138,10 +138,10 @@ Check if unfinished @if is treated correctly
         It was finished.
 </fold>@endif
 
-{{--<fold text='...'> Inline comments should not be folded. </fold>--}}
-{{--<fold text='...'>
+{{-- Inline comments should not be folded. --}}
+<fold text='{{-- Small comment. --}}'>{{--
     Small comment.
-</fold>--}}
-{{--<fold text='...'>
+--}}</fold>
+<fold text='{{-- Multiline comments could be f... --}}'>{{--
     Multiline comments could be folded.
-</fold>--}}
+--}}</fold>

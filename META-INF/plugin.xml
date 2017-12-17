@@ -55,6 +55,11 @@
             <li><strong>Blade</strong> (<em>Removed</em>): removing folding feature from this plugin for directives <code>@if</code>, <code>@elseif</code>, <code>@unless</code>, <code>@forelse</code>, <code>@can</code>, <code>@elsecan</code>, <code>@cannot</code>, <code>@elsecannot</code> and <code>@hassection</code>, once that it was implemented by <a href="https://youtrack.jetbrains.com/issue/WI">WI-36875</a> - it still will be foldable, but will be handled now by PhpStorm;</li>
             <li><strong>Blade</strong> (<em>Removed</em>): removing comments folding feature from this plugin once that it was implemented by the next PhpStorm EAP;</li>
         </ul>
+
+        <h1>Changes on <code>0.3.3</code></h1>
+        <ul>
+            <li><strong>Blade</strong> (<em>Reverted</em>): added support to comments folding again (FR <a href="https://youtrack.jetbrains.com/issue/WI-39264">#WI-39264</a>);</li>
+        </ul>
     ]]></change-notes>
 
     <extensions defaultExtensionNs="com.intellij">

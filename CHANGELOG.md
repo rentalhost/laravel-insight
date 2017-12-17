@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.3.3: 2017-12-17
+
+### Revert
+
+* **Blade**: added support to comments folding again (FR [#WI-39264](https://youtrack.jetbrains.com/issue/WI-39264));
+
 ## 0.3.2: 2017-08-26
 
 ### Added
