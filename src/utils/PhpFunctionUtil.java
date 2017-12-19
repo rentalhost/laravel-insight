@@ -1,22 +1,18 @@
 package net.rentalhost.idea.utils;
 
-import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.jetbrains.php.codeInsight.controlFlow.instructions.PhpInstruction;
 import com.jetbrains.php.codeInsight.controlFlow.instructions.PhpReturnInstruction;
 import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocComment;
 import com.jetbrains.php.lang.documentation.phpdoc.psi.tags.PhpDocReturnTag;
-import com.jetbrains.php.lang.lexer.PhpTokenTypes;
 import com.jetbrains.php.lang.psi.elements.ClassReference;
 import com.jetbrains.php.lang.psi.elements.Function;
 import com.jetbrains.php.lang.psi.elements.FunctionReference;
 import com.jetbrains.php.lang.psi.elements.NewExpression;
-import com.jetbrains.php.lang.psi.elements.PhpReference;
 import com.jetbrains.php.lang.psi.elements.PhpTypedElement;
 import com.jetbrains.php.lang.psi.resolve.types.PhpType;
 
-import java.util.Objects;
 import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
@@ -27,25 +23,7 @@ public enum PhpFunctionUtil {
     @NotNull
     public static PhpType getReturnType(@NotNull final Function functionInitial) {
         final PhpType typeResolved = RecursionResolver.resolve(functionInitial, (RecursionResolver.Resolver resolver) -> {
-            final Function   function           = (Function) resolver.getObject();
-            final PsiElement functionReturnType = function.getReturnType();
-
-            if (functionReturnType instanceof PhpReference) {
-                final String                 functionReturnTypeFQN     = ((PhpReference) functionReturnType).getFQN();
-                final PhpType.PhpTypeBuilder functionReturnTypePrimary = PhpType.builder().add(functionReturnTypeFQN);
-
-                final PsiElement prevMatch = TreeUtil.getPrevMatch(
-                    functionReturnType,
-                    filterBy -> (filterBy instanceof ASTNode) && Objects.equals(((ASTNode) filterBy).getElementType(), PhpTokenTypes.opQUEST),
-                    stopBy -> (stopBy instanceof ASTNode) && Objects.equals(((ASTNode) stopBy).getElementType(), PhpTokenTypes.chRPAREN)
-                );
-
-                if (prevMatch instanceof ASTNode) {
-                    functionReturnTypePrimary.add(PhpType.NULL);
-                }
-
-                return functionReturnTypePrimary.build();
-            }
+            final Function function = (Function) resolver.getObject();
 
             final PhpInstruction[] phpInstructions = function.getControlFlow().getInstructions();
             if (phpInstructions.length != 0) {

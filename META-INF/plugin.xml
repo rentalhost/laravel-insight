@@ -61,6 +61,7 @@
             <li><strong>Blade</strong> (<em>Reverted</em>): added support to comments folding again (FR <a href="https://youtrack.jetbrains.com/issue/WI-39264">#WI-39264</a>);</li>
             <li><strong>Development</strong> (<em>Added</em>): added a <a href="https://github.com/rentalhost/laravel-insight/blob/master/development/DEVELOPMENT.md">development guide</a>;</li>
             <li><strong>Plugin</strong> (<em>Fixed</em>): recompiled to support PS 2017.3+ builds;</li>
+            <li><strong>Return Type Support</strong> (<em>Disabled</em>): return type support was <em>disabled temporarily</em> due to software limitation (waiting for IntelliJ IDEA 2017.3.2);</li>
         </ul>
     ]]></change-notes>
 
