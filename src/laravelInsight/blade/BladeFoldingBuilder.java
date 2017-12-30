@@ -6,10 +6,8 @@ import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.FoldingGroup;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.jetbrains.php.blade.psi.BladeFileImpl;
 import com.jetbrains.php.blade.psi.BladePsiDirective;
 import org.apache.commons.lang.StringUtils;
@@ -20,15 +18,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.regex.Pattern;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class BladeFoldingBuilder extends FoldingBuilderEx {
-    private static final int     MULTILINE_COMMENT_LENGTH_LIMIT = 32;
-    private static final Pattern MULTIPLE_SPACES                = Pattern.compile("\\s+\\s");
-
     private static final Collection<String> IGNORED_DIRECTIVES = new ArrayList<>();
 
     static {
@@ -131,37 +125,6 @@ public class BladeFoldingBuilder extends FoldingBuilderEx {
         return 0;
     }
 
-    private static void processComments(
-        final Iterable<PsiComment> comments,
-        final Collection<FoldingDescriptor> foldingDescriptors
-    ) {
-        for (final PsiComment comment : comments) {
-            final String commentContentsRaw = comment.getText();
-            final String commentContents    = commentContentsRaw.substring(4, commentContentsRaw.length() - 4);
-
-            // Applicable only for multiline comments.
-            if (commentContents.indexOf('\n') != -1) {
-                final TextRange commentTextRange = comment.getTextRange();
-                final TextRange commentRange     = new TextRange(commentTextRange.getStartOffset(), commentTextRange.getEndOffset());
-
-                String commentContentsParsed = MULTIPLE_SPACES.matcher(commentContents.trim()).replaceAll(" ");
-
-                if (commentContentsParsed.length() >= MULTILINE_COMMENT_LENGTH_LIMIT) {
-                    commentContentsParsed = commentContentsParsed.substring(0, MULTILINE_COMMENT_LENGTH_LIMIT - 3) + "...";
-                }
-
-                final String finalCommentContentsParsed = commentContentsParsed;
-
-                foldingDescriptors.add(new FoldingDescriptor(comment.getNode(), commentRange, FoldingGroup.newGroup("Blade")) {
-                    @Override
-                    public String getPlaceholderText() {
-                        return "{{-- " + finalCommentContentsParsed + " --}}";
-                    }
-                });
-            }
-        }
-    }
-
     @NotNull
     @Override
     public FoldingDescriptor[] buildFoldRegions(
@@ -170,14 +133,13 @@ public class BladeFoldingBuilder extends FoldingBuilderEx {
         final boolean quick
     ) {
         if (!(root instanceof BladeFileImpl)) {
-            return FoldingDescriptor.EMPTY;
+            return FoldingDescriptor.EMPTY.clone();
         }
 
         final Queue<BladePsiDirective> directives         = new LinkedBlockingQueue(Arrays.asList(((BladeFileImpl) root).getDirectives()));
         final List<FoldingDescriptor>  foldingDescriptors = new ArrayList<>();
 
         processDirectives(null, directives, foldingDescriptors, document);
-        processComments(PsiTreeUtil.findChildrenOfType(root, PsiComment.class), foldingDescriptors);
 
         return foldingDescriptors.toArray(new FoldingDescriptor[foldingDescriptors.size()]);
     }
