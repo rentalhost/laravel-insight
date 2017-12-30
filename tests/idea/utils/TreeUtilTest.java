@@ -6,6 +6,7 @@ import com.intellij.psi.PsiFile;
 import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocComment;
 import com.jetbrains.php.lang.lexer.PhpTokenTypes;
 import com.jetbrains.php.lang.psi.elements.Function;
+import com.jetbrains.php.lang.psi.elements.PhpReturnType;
 import org.junit.Assert;
 
 import net.rentalhost.suite.FixtureSuite;
@@ -26,8 +27,9 @@ public class TreeUtilTest extends FixtureSuite {
             stopBy -> true
         ));
 
-        final Function   referenceFunction   = (Function) getElementByName(fileSample, "referenceFunction");
-        final PsiElement referenceReturnType = valueOf(referenceFunction.getReturnType());
+        final Function      referenceFunction   = (Function) getElementByName(fileSample, "referenceFunction");
+        final PhpReturnType returnType          = referenceFunction.getReturnType();
+        final PsiElement    referenceReturnType = valueOf((returnType != null) ? returnType.getClassReference() : null);
 
         Assert.assertNull(TreeUtil.getPrevMatch(
             referenceReturnType,

@@ -10,6 +10,7 @@ import com.jetbrains.php.lang.psi.elements.ClassReference;
 import com.jetbrains.php.lang.psi.elements.Function;
 import com.jetbrains.php.lang.psi.elements.FunctionReference;
 import com.jetbrains.php.lang.psi.elements.NewExpression;
+import com.jetbrains.php.lang.psi.elements.PhpReturnType;
 import com.jetbrains.php.lang.psi.elements.PhpTypedElement;
 import com.jetbrains.php.lang.psi.resolve.types.PhpType;
 
@@ -23,9 +24,15 @@ public enum PhpFunctionUtil {
     @NotNull
     public static PhpType getReturnType(@NotNull final Function functionInitial) {
         final PhpType typeResolved = RecursionResolver.resolve(functionInitial, (RecursionResolver.Resolver resolver) -> {
-            final Function function = (Function) resolver.getObject();
+            final Function      function           = (Function) resolver.getObject();
+            final PhpReturnType functionReturnType = function.getReturnType();
+
+            if (functionReturnType != null) {
+                return functionReturnType.getType();
+            }
 
             final PhpInstruction[] phpInstructions = function.getControlFlow().getInstructions();
+
             if (phpInstructions.length != 0) {
                 final PhpType.PhpTypeBuilder functionReturnTypes = PhpType.builder();
 
