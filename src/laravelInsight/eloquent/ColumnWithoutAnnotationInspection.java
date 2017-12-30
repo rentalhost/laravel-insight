@@ -236,7 +236,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                     }
 
                     if (Objects.equals(traitReferenceClass.getFQN(), LaravelClasses.ELOQUENT_SOFTDELETES_TRAIT.toString())) {
-                        InspectionHelper.validatePropertyAnnotation(problemsHolder, traitContainingClass, expression, "deleted_at", null);
+                        InspectionHelper.validatePropertyAnnotation(problemsHolder, traitContainingClass, expression, "deleted_at", CarbonClasses.CARBON + "|null");
                         return;
                     }
 
@@ -250,7 +250,7 @@ public class ColumnWithoutAnnotationInspection extends PhpInspection {
                         return;
                     }
 
-                    InspectionHelper.validatePropertyAnnotation(problemsHolder, traitContainingClass, expression, "deleted_at", null);
+                    InspectionHelper.validatePropertyAnnotation(problemsHolder, traitContainingClass, expression, "deleted_at", CarbonClasses.CARBON + "|null");
                 }
             }
         };

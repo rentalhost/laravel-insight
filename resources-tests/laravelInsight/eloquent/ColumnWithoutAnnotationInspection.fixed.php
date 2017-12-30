@@ -22,7 +22,7 @@ trait NotAnySoftDeletesTrait
 }
 
 /**
- * @property mixed $deleted_at
+ * @property \Carbon\Carbon|null $deleted_at
  */
 trait SoftDeletesThatDeclaresTheProperty
 {
@@ -202,7 +202,7 @@ class EloquentChild_ShouldConsiderParentProperties extends EloquentBasePropertie
 
 /**
  * @property int $id
- * @property \Carbon\Carbon $deleted_at
+ * @property \Carbon\Carbon|null $deleted_at
  */
 class Eloquent_TraitSoftDeletes_DirectUsageOfSoftDeletesTrait_ShouldDeclareDeletedAtProperty extends Model
 {
@@ -212,7 +212,7 @@ class Eloquent_TraitSoftDeletes_DirectUsageOfSoftDeletesTrait_ShouldDeclareDelet
 
 /**
  * @property int $id
- * @property \Carbon\Carbon $deleted_at
+ * @property \Carbon\Carbon|null $deleted_at
  */
 class Eloquent_TraitSoftDeletes_ShouldDeclareDeletedAtProperty extends Model
 {
@@ -221,7 +221,7 @@ class Eloquent_TraitSoftDeletes_ShouldDeclareDeletedAtProperty extends Model
 }
 
 /**
- * @property mixed $deleted_at
+ * @property \Carbon\Carbon|null $deleted_at
  * @property int $id
  */
 class Eloquent_TraitSoftDeletes_ShouldConsiderDeclarationOnClass extends Model

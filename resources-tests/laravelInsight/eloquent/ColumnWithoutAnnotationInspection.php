@@ -22,7 +22,7 @@ trait NotAnySoftDeletesTrait
 }
 
 /**
- * @property mixed $deleted_at
+ * @property \Carbon\Carbon|null $deleted_at
  */
 trait SoftDeletesThatDeclaresTheProperty
 {
@@ -166,7 +166,7 @@ class <weak_warning descr="Column was not annotated as @property $id">Eloquent_T
 }
 
 /**
- * @property mixed $deleted_at
+ * @property \Carbon\Carbon|null $deleted_at
  */
 class <weak_warning descr="Column was not annotated as @property $id">Eloquent_TraitSoftDeletes_ShouldConsiderDeclarationOnClass</weak_warning> extends Model
 {
